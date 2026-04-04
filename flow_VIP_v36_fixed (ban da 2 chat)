@@ -977,10 +977,10 @@
         "6fe64afb679256f6"
       ],
       [
-        "http_vip_post_btn"
+        "unban_vip_pre_fn"
       ],
       [
-        "http_chat_post_btn"
+        "unban_chat_pre_fn"
       ]
     ]
   },
@@ -1055,7 +1055,7 @@
         "6fe64afb679256f6"
       ],
       [
-        "074a0ce3cb5e587c"
+        "fn_unban_vip_attiva"
       ]
     ]
   },
@@ -1783,6 +1783,142 @@
     "wires": [
       [
         "6fe64afb679256f6"
+      ]
+    ]
+  },
+  {
+    "id": "unban_vip_pre_fn",
+    "type": "function",
+    "name": "🔓 Prep Unban VIP",
+    "func": "// Salva i dati per la generazione del link\nmsg._linkData = {\n    url: msg.url,\n    method: msg.method,\n    headers: msg.headers,\n    payload: msg.payload,\n    _activationMsg: msg._activationMsg,\n    _chatId: msg._chatId\n};\n// Prepara la chiamata unban sul Canale VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1002950341972,\n    user_id: parseInt(msg._chatId),\n    only_if_banned: true\n});\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "unban_vip_pre_http"
+      ]
+    ]
+  },
+  {
+    "id": "unban_vip_pre_http",
+    "type": "http request",
+    "name": "Unban VIP (pre-link)",
+    "method": "POST",
+    "url": "",
+    "ret": "obj",
+    "wires": [
+      [
+        "restore_vip_link_fn"
+      ]
+    ]
+  },
+  {
+    "id": "restore_vip_link_fn",
+    "type": "function",
+    "name": "🔁 Restore VIP Link",
+    "func": "var d = msg._linkData;\nmsg.url = d.url;\nmsg.method = d.method;\nmsg.headers = d.headers;\nmsg.payload = d.payload;\nmsg._activationMsg = d._activationMsg;\nmsg._chatId = d._chatId;\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "http_vip_post_btn"
+      ]
+    ]
+  },
+  {
+    "id": "unban_chat_pre_fn",
+    "type": "function",
+    "name": "🔓 Prep Unban Chat",
+    "func": "// Salva i dati per la generazione del link\nmsg._linkData = {\n    url: msg.url,\n    method: msg.method,\n    headers: msg.headers,\n    payload: msg.payload,\n    _activationMsg: msg._activationMsg,\n    _chatId: msg._chatId\n};\n// Prepara la chiamata unban sul Gruppo Chat VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1003726114956,\n    user_id: parseInt(msg._chatId),\n    only_if_banned: true\n});\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "unban_chat_pre_http"
+      ]
+    ]
+  },
+  {
+    "id": "unban_chat_pre_http",
+    "type": "http request",
+    "name": "Unban Chat (pre-link)",
+    "method": "POST",
+    "url": "",
+    "ret": "obj",
+    "wires": [
+      [
+        "restore_chat_link_fn"
+      ]
+    ]
+  },
+  {
+    "id": "restore_chat_link_fn",
+    "type": "function",
+    "name": "🔁 Restore Chat Link",
+    "func": "var d = msg._linkData;\nmsg.url = d.url;\nmsg.method = d.method;\nmsg.headers = d.headers;\nmsg.payload = d.payload;\nmsg._activationMsg = d._activationMsg;\nmsg._chatId = d._chatId;\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "http_chat_post_btn"
+      ]
+    ]
+  },
+  {
+    "id": "fn_unban_vip_attiva",
+    "type": "function",
+    "name": "🔓 Unban VIP (attiva)",
+    "func": "// Salva i dati di attivazione\nmsg._attiva = {\n    _activationChatId: msg._activationChatId,\n    _activationMsg: msg._activationMsg\n};\n// Unban dal Canale VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1002950341972,\n    user_id: parseInt(msg._activationChatId),\n    only_if_banned: true\n});\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "http_unban_vip_attiva"
+      ]
+    ]
+  },
+  {
+    "id": "http_unban_vip_attiva",
+    "type": "http request",
+    "name": "Unban VIP (attiva)",
+    "method": "POST",
+    "url": "",
+    "ret": "obj",
+    "wires": [
+      [
+        "fn_unban_chat_attiva"
+      ]
+    ]
+  },
+  {
+    "id": "fn_unban_chat_attiva",
+    "type": "function",
+    "name": "🔓 Unban Chat (attiva)",
+    "func": "// Unban dal Gruppo Chat VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1003726114956,\n    user_id: parseInt(msg._attiva._activationChatId),\n    only_if_banned: true\n});\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "http_unban_chat_attiva"
+      ]
+    ]
+  },
+  {
+    "id": "http_unban_chat_attiva",
+    "type": "http request",
+    "name": "Unban Chat (attiva)",
+    "method": "POST",
+    "url": "",
+    "ret": "obj",
+    "wires": [
+      [
+        "fn_restore_attiva"
+      ]
+    ]
+  },
+  {
+    "id": "fn_restore_attiva",
+    "type": "function",
+    "name": "🔁 Restore Attiva",
+    "func": "// Ripristina i dati di attivazione per generare i link\nmsg._activationChatId = msg._attiva._activationChatId;\nmsg._activationMsg = msg._attiva._activationMsg;\ndelete msg._attiva;\ndelete msg.url;\ndelete msg.method;\ndelete msg.headers;\ndelete msg.payload;\nreturn msg;",
+    "outputs": 1,
+    "wires": [
+      [
+        "074a0ce3cb5e587c"
       ]
     ]
   }
