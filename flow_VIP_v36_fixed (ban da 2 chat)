@@ -7,63 +7,6 @@
     "info": ""
   },
   {
-    "id": "8d5a8c063bf1b2ff",
-    "type": "subflow",
-    "name": "Subflow 1",
-    "info": "",
-    "in": [],
-    "out": [
-      {
-        "x": 400,
-        "y": 80,
-        "wires": [
-          {
-            "id": "2d1b632bd623bbd7",
-            "port": 0
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "4a2bd1f87cd7a08e",
-    "type": "subflow",
-    "name": "Subflow 1 (1)",
-    "info": "",
-    "in": [],
-    "out": [
-      {
-        "x": 400,
-        "y": 80,
-        "wires": [
-          {
-            "id": "097fa16a19395db7",
-            "port": 0
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "8796eea317fb9590",
-    "type": "subflow",
-    "name": "Subflow 2",
-    "info": "",
-    "in": [],
-    "out": [
-      {
-        "x": 400,
-        "y": 80,
-        "wires": [
-          {
-            "id": "904ff215673c7d6a",
-            "port": 0
-          }
-        ]
-      }
-    ]
-  },
-  {
     "id": "tg_bot_cfg",
     "type": "telegram bot",
     "botname": "VIPSignalsBot",
@@ -89,60 +32,6 @@
     "useselfsignedcertificate": false,
     "sslterminated": false,
     "verboselogging": false
-  },
-  {
-    "id": "2d1b632bd623bbd7",
-    "type": "telegram receiver",
-    "z": "8d5a8c063bf1b2ff",
-    "name": "📨 Ricevi Messaggi",
-    "bot": "tg_bot_cfg",
-    "saveDataDir": "",
-    "filterCommands": false,
-    "hasinput": false,
-    "inputs": 0,
-    "handleallupdates": false,
-    "x": 230,
-    "y": 80,
-    "wires": [
-      [],
-      []
-    ]
-  },
-  {
-    "id": "097fa16a19395db7",
-    "type": "telegram receiver",
-    "z": "4a2bd1f87cd7a08e",
-    "name": "📨 Ricevi Messaggi",
-    "bot": "tg_bot_cfg",
-    "saveDataDir": "",
-    "filterCommands": false,
-    "hasinput": false,
-    "inputs": 0,
-    "handleallupdates": false,
-    "x": 230,
-    "y": 80,
-    "wires": [
-      [],
-      []
-    ]
-  },
-  {
-    "id": "904ff215673c7d6a",
-    "type": "telegram receiver",
-    "z": "8796eea317fb9590",
-    "name": "📨 Ricevi Messaggi",
-    "bot": "tg_bot_cfg",
-    "saveDataDir": "",
-    "filterCommands": false,
-    "hasinput": false,
-    "inputs": 0,
-    "handleallupdates": true,
-    "x": 230,
-    "y": 80,
-    "wires": [
-      [],
-      []
-    ]
   },
   {
     "id": "14b8482510fcfb09",
@@ -1304,7 +1193,7 @@
     "y": 1160,
     "wires": [
       [
-        "d3720f12f2052f0b"
+        "0a261791bd78e9c4"
       ]
     ]
   },
