@@ -1,2 +1,7 @@
 FROM nodered/node-red:latest
-COPY "flow_VIP_v30_DEFINITIVO (kick solo Canale VIP).json" /data/flows.json
+
+# Flow aggiornato
+COPY flow_VIP_v41_FIXED.json /data/flows.json
+
+# Settings con persistenza
+COPY settings.js /data/settings.js
