@@ -1,0 +1,16 @@
+{
+  "name": "node-red-vip-bot",
+  "version": "1.0.0",
+  "description": "Node-RED VIP Telegram Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node-red --settings /app/settings.js --userDir /app/data"
+  },
+  "dependencies": {
+    "node-red": "^3.1.9",
+    "node-red-contrib-telegrambot": "^15.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
