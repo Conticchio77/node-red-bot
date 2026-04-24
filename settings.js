@@ -1,6 +1,5 @@
 // Node-RED Settings — ottimizzato per Railway
 module.exports = {
-
     // Porta da env (Railway la imposta automaticamente)
     uiPort: process.env.PORT || 1880,
 
@@ -16,13 +15,19 @@ module.exports = {
     // Credenziali NON cifrate → le inietta entrypoint.sh da env var
     credentialSecret: false,
 
-    // Admin UI — disabilitata in produzione per sicurezza
-    // Per abilitarla temporaneamente: cambia 'false' in true e aggiungi adminAuth
-    httpAdminRoot: false,
+    // Admin UI abilitata per accedere all'editor
+    httpAdminRoot: "/",
 
-    // Disabilita editor visuale in produzione
-    // (metti true solo per debug temporaneo)
-    disableEditor: true,
+    // Editor visuale abilitato
+    disableEditor: false,
+
+    // Projects disabilitati → modalità classica (import manuale JSON)
+    editorTheme: {
+        tours: false,
+        projects: {
+            enabled: false
+        }
+    },
 
     // Log
     logging: {
@@ -47,10 +52,5 @@ module.exports = {
     httpRequestTimeout: 30000,
 
     // Ottimizzazione per container
-    functionExternalModules: false,
-
-    // Evita warning su nodi deprecati
-    editorTheme: {
-        tours: false
-    }
+    functionExternalModules: false
 };
