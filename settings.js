@@ -1,155 +1,56 @@
-/**
- * Node-RED settings.js
- * Configurazione completa per Railway con persistenza su Volume
- *
- * REQUISITO: crea un Volume in Railway montato su /data
- * ──────────────────────────────────────────────────────
- */
-
+// Node-RED Settings — ottimizzato per Railway
 module.exports = {
 
-    // ─────────────────────────────────────────────────
-    // DIRECTORY DATI (Railway Volume → /data)
-    // ─────────────────────────────────────────────────
-    // Qui vengono salvati flows, credenziali, context e sessioni.
-    // Assicurati che il volume Railway sia montato su /data.
-    userDir: '/data',
-
-    // Cartella dove Node-RED cerca i nodi aggiuntivi installati
-    nodesDir: '/data/nodes',
-
-    // ─────────────────────────────────────────────────
-    // SERVER HTTP
-    // ─────────────────────────────────────────────────
-    // Railway espone la porta tramite la variabile PORT
+    // Porta da env (Railway la imposta automaticamente)
     uiPort: process.env.PORT || 1880,
 
-    // Disabilita la ricerca mDNS locale (inutile su Railway)
-    uiHost: '0.0.0.0',
+    // Nessun binding fisso: Railway usa il suo proxy
+    uiHost: "0.0.0.0",
 
-    // Percorso base dell'editor (lascia '/' per accesso diretto)
-    httpAdminRoot: '/',
+    // Directory dati runtime (volume persistente su Railway o /app/data)
+    userDir: "/app/data",
 
-    // Percorso base per le API HTTP del flow (es. http-in nodes)
-    httpNodeRoot: '/api',
+    // File del flow da caricare all'avvio
+    flowFile: "flows.json",
 
-    // ─────────────────────────────────────────────────
-    // SICUREZZA EDITOR (IMPORTANTE: imposta una password!)
-    // ─────────────────────────────────────────────────
-    // Genera l'hash con: node-red admin hash-pw
-    // Poi sostituisci il valore di "password" qui sotto.
-    //
-    // Per disabilitare l'autenticazione (sconsigliato in produzione)
-    // commenta tutto il blocco adminAuth.
-    //
-    adminAuth: {
-        type: 'credentials',
-        users: [
-            {
-                username: 'admin',
-                // ⚠️ CAMBIA QUESTA PASSWORD con l'hash generato da:
-                //    node-red admin hash-pw
-                // Esempio password "VIPBot2024!" hashata:
-                password: '$2b$08$dJJHr5Xx8w8zCvtMKFvMpOvECi4YWJN5xkNHhS7gDFDYCBl.Q5o.i',
-                permissions: '*'
-            }
-        ]
-    },
+    // Credenziali NON cifrate → le inietta entrypoint.sh da env var
+    credentialSecret: false,
 
-    // ─────────────────────────────────────────────────
-    // PERSISTENZA CONTEXT (flow.set / global.set)
-    // ─────────────────────────────────────────────────
-    // "default" → localfilesystem: tutti i flow.set() vengono
-    // scritti su disco in /data/context/ e sopravvivono ai restart.
-    //
-    // Puoi usare anche due store separati:
-    //   flow.set('key', val)         → usa "default" (file)
-    //   flow.set('key', val, 'file') → esplicito file
-    //   flow.set('key', val, 'memory') → solo RAM (utile per cache)
-    //
-    contextStorage: {
-        default: {
-            module: 'localfilesystem'
-        },
-        memory: {
-            module: 'memory'
-        }
-    },
+    // Admin UI — disabilitata in produzione per sicurezza
+    // Per abilitarla temporaneamente: cambia 'false' in true e aggiungi adminAuth
+    httpAdminRoot: false,
 
-    // ─────────────────────────────────────────────────
-    // FLOW FILE
-    // ─────────────────────────────────────────────────
-    // Nome del file flows salvato in userDir (/data/flows.json)
-    flowFile: 'flows.json',
+    // Disabilita editor visuale in produzione
+    // (metti true solo per debug temporaneo)
+    disableEditor: true,
 
-    // Chiave per cifrare le credenziali (CAMBIA con una stringa casuale!)
-    // Usala per cifrare token, password ecc. salvati nei nodi
-    credentialSecret: process.env.NODE_RED_CREDENTIAL_SECRET || 'cambia-questa-stringa-segreta-2024',
-
-    // ─────────────────────────────────────────────────
-    // LOGGING
-    // ─────────────────────────────────────────────────
+    // Log
     logging: {
         console: {
-            level: 'info',      // 'error' | 'warn' | 'info' | 'debug' | 'trace'
+            level: "info",
             metrics: false,
             audit: false
         }
     },
 
-    // ─────────────────────────────────────────────────
-    // EDITOR
-    // ─────────────────────────────────────────────────
-    editorTheme: {
-        projects: {
-            // Disabilita il sistema Projects (non necessario su Railway)
-            enabled: false
-        },
-        tours: false,
-        palette: {
-            // Abilita l'installazione di nodi dall'editor
-            editable: true
+    // Contesto: salva su file così sopravvive ai restart
+    contextStorage: {
+        default: {
+            module: "localfilesystem"
         }
     },
 
-    // ─────────────────────────────────────────────────
-    // SICUREZZA AGGIUNTIVA
-    // ─────────────────────────────────────────────────
-    // Abilita il sandboxing delle funzioni (più sicuro)
-    // Imposta false solo se hai problemi di compatibilità
+    // Sicurezza: limita dimensione payload HTTP
+    apiMaxLength: "5mb",
+
+    // Timeout HTTP request nodes (ms)
+    httpRequestTimeout: 30000,
+
+    // Ottimizzazione per container
     functionExternalModules: false,
 
-    // Timeout massimo per i nodi Function (ms). 0 = nessun limite
-    functionTimeout: 0,
-
-    // ─────────────────────────────────────────────────
-    // PERFORMANCE
-    // ─────────────────────────────────────────────────
-    // Intervallo di salvataggio dei flow su disco (ms)
-    // 0 = salva immediatamente ad ogni deploy
-    flowFilePretty: true,
-
-    // ─────────────────────────────────────────────────
-    // CORS (se usi http-in nodes con chiamate esterne)
-    // ─────────────────────────────────────────────────
-    // httpNodeCors: {
-    //     origin: '*',
-    //     methods: 'GET,PUT,POST,DELETE'
-    // },
-
-    // ─────────────────────────────────────────────────
-    // DIAGNOSTICS
-    // ─────────────────────────────────────────────────
-    diagnostics: {
-        enabled: true,
-        ui: true
-    },
-
-    // ─────────────────────────────────────────────────
-    // TELEMETRY (disabilita invio dati a IBM/Red Hat)
-    // ─────────────────────────────────────────────────
-    runtimeState: {
-        enabled: false,
-        ui: false
+    // Evita warning su nodi deprecati
+    editorTheme: {
+        tours: false
     }
 };
