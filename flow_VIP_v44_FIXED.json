@@ -908,7 +908,7 @@
     "type": "function",
     "z": "52af9f6200d53beb",
     "name": "⚡ Cache Gate",
-    "func": "// Controlla se abbiamo dati in cache validi (45 secondi)\nvar cache = flow.get('gs_cache');\nvar now = Date.now();\nif (cache && (now - cache.ts) < 120000) {\n        msg.payload = {values: cache.rows};\n    return [null, msg]; // output 2: va diretto a fn_process\n}\nreturn [msg, null]; // output 1: va a gs_read",
+    "func": "// Controlla se abbiamo dati in cache validi (5 minuti)\nvar cache = flow.get('gs_cache');\nvar now = Date.now();\nif (cache && (now - cache.ts) < 300000) {\n        msg.payload = {values: cache.rows};\n    return [null, msg]; // output 2: va diretto a fn_process\n}\nreturn [msg, null]; // output 1: va a gs_read",
     "outputs": 2,
     "x": 1080,
     "y": 840,
@@ -931,7 +931,7 @@
     "paytoqs": "ignore",
     "url": "https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec?action=read",
     "tls": "",
-    "persist": false,
+    "persist": true,
     "proxy": "",
     "authType": "",
     "x": 1280,
@@ -1932,5 +1932,79 @@
       ]
     ],
     "z": "52af9f6200d53beb"
+  },
+  {
+    "id": "warmup_inject_01",
+    "type": "inject",
+    "z": "52af9f6200d53beb",
+    "name": "🔄 Warm-up Cache (4 min)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "240",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "10",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 880,
+    "y": 960,
+    "wires": [
+      [
+        "warmup_fn_01"
+      ]
+    ]
+  },
+  {
+    "id": "warmup_fn_01",
+    "type": "function",
+    "z": "52af9f6200d53beb",
+    "name": "⚙️ Prep Warm-up",
+    "func": "// Pre-riscalda la cache chiamando GAS in background\nmsg.payload = {};\nmsg._warmup = true;\nreturn msg;",
+    "outputs": 1,
+    "x": 1080,
+    "y": 960,
+    "wires": [
+      [
+        "warmup_gas_01"
+      ]
+    ]
+  },
+  {
+    "id": "warmup_gas_01",
+    "type": "http request",
+    "z": "52af9f6200d53beb",
+    "name": "📡 GAS Warm-up Read",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec?action=read",
+    "tls": "",
+    "persist": true,
+    "proxy": "",
+    "authType": "",
+    "x": 1280,
+    "y": 960,
+    "wires": [
+      [
+        "warmup_store_01"
+      ]
+    ]
+  },
+  {
+    "id": "warmup_store_01",
+    "type": "function",
+    "z": "52af9f6200d53beb",
+    "name": "💾 Warm-up Cache Store",
+    "func": "// Aggiorna la cache solo se la risposta è valida\nif (msg.payload && msg.payload.values) {\n    flow.set('gs_cache', {rows: msg.payload.values, ts: Date.now()});\n    node.log('✅ Cache GS aggiornata dal warm-up: ' + msg.payload.values.length + ' righe');\n}\nreturn null; // non proseguire il flusso",
+    "outputs": 1,
+    "x": 1500,
+    "y": 960,
+    "wires": [
+      []
+    ]
   }
 ]
