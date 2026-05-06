@@ -1,29 +1,10 @@
 [
     {
-        "id": "da956154f9a1526c",
+        "id": "52af9f6200d53beb",
         "type": "tab",
         "label": "🤖 VIP Signals Bot",
         "disabled": false,
         "info": ""
-    },
-    {
-        "id": "22771c6424906493",
-        "type": "subflow",
-        "name": "Subflow 1",
-        "info": "",
-        "in": [],
-        "out": [
-            {
-                "x": 400,
-                "y": 80,
-                "wires": [
-                    {
-                        "id": "b97c525e45f18366",
-                        "port": 0
-                    }
-                ]
-            }
-        ]
     },
     {
         "id": "tg_bot_cfg",
@@ -53,28 +34,9 @@
         "verboselogging": false
     },
     {
-        "id": "b97c525e45f18366",
+        "id": "14b8482510fcfb09",
         "type": "telegram receiver",
-        "z": "22771c6424906493",
-        "name": "📨 Ricevi Messaggi",
-        "bot": "tg_bot_cfg",
-        "saveDataDir": "",
-        "filterCommands": false,
-        "hasinput": false,
-        "inputs": 0,
-        "handleallupdates": true,
-        "handleprocessupdates": false,
-        "x": 230,
-        "y": 80,
-        "wires": [
-            [],
-            []
-        ]
-    },
-    {
-        "id": "cc5d0569af9ade29",
-        "type": "telegram receiver",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📨 Ricevi Messaggi",
         "bot": "tg_bot_cfg",
         "saveDataDir": "",
@@ -87,15 +49,15 @@
         "y": 300,
         "wires": [
             [
-                "ac1c9bde32eb2ee2"
+                "631fbe98deda2b1b"
             ],
             []
         ]
     },
     {
-        "id": "32c5982ce07d8a0a",
+        "id": "634bc82bea749169",
         "type": "telegram receiver",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📸 Ricevi Foto/File",
         "bot": "tg_bot_cfg",
         "inputs": 0,
@@ -103,15 +65,15 @@
         "y": 440,
         "wires": [
             [
-                "73833dbbf427776f"
+                "a0acd1da30470ce6"
             ],
             []
         ]
     },
     {
-        "id": "8b9a1e2f3bb2ff34",
+        "id": "14425912a080f33c",
         "type": "telegram event",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📡 Canale VIP - Post",
         "bot": "tg_bot_cfg",
         "event": "channel_post",
@@ -119,14 +81,14 @@
         "y": 1500,
         "wires": [
             [
-                "ca877f7850d439c7"
+                "609f6c6e49d79a7a"
             ]
         ]
     },
     {
-        "id": "ac1c9bde32eb2ee2",
+        "id": "631fbe98deda2b1b",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔧 Fix Callback",
         "func": "var chatType = msg.payload.chat ? msg.payload.chat.type : '';\nvar chatId = msg.payload.chatId || (msg.payload.chat && msg.payload.chat.id) || 0;\nif (chatType === 'group' || chatType === 'supergroup' || chatType === 'channel') return null;\nif (parseInt(chatId) < 0) return null;\nvar msgType = msg.payload.type || '';\nif (msgType === 'photo' || msgType === 'document' || msgType === 'sticker' || msgType === 'image') return null;\nif (!msg.payload.from) {\n    msg.payload.from = {id: msg.payload.chatId, first_name: 'Utente', username: ''};\n}\nif (msg.payload.from) {\n    var f = msg.payload.from;\n    msg._from = { id: f.id || msg.payload.chatId, first_name: f.first_name || '', last_name: f.last_name || '', username: f.username || '' };\n}\nnode.warn('TYPE: ' + msg.payload.type + ' | CONTENT: ' + msg.payload.content);\nreturn msg;",
         "outputs": 1,
@@ -134,14 +96,14 @@
         "y": 300,
         "wires": [
             [
-                "38c2141577d242ab"
+                "1d1dc074157e87b9"
             ]
         ]
     },
     {
-        "id": "38c2141577d242ab",
+        "id": "1d1dc074157e87b9",
         "type": "switch",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔀 Router",
         "property": "payload.content",
         "propertyType": "msg",
@@ -377,161 +339,164 @@
         "y": 300,
         "wires": [
             [
-                "32051229db49638e"
+                "03292384cd31cfa8"
             ],
             [
-                "c50e0b0eb768ec15"
+                "08722ecaeb9bb10e"
             ],
             [
-                "c50e0b0eb768ec15"
+                "08722ecaeb9bb10e"
             ],
             [
-                "c50e0b0eb768ec15"
+                "08722ecaeb9bb10e"
             ],
             [
-                "cb307ea0d7b1415d"
+                "6497f6f017a390de"
             ],
             [
-                "cb307ea0d7b1415d"
+                "6497f6f017a390de"
             ],
             [
-                "f26990d66384987c"
+                "07f0fd2eec9b97b1"
             ],
             [
-                "f26990d66384987c"
+                "07f0fd2eec9b97b1"
             ],
             [
-                "91c613b1c2ead121"
+                "7dbdaeb91dab7c7f"
             ],
             [
-                "91c613b1c2ead121"
+                "7dbdaeb91dab7c7f"
             ],
             [
-                "4968686df6ee9db7"
+                "47af6fe0ab88bd20"
             ],
             [
-                "4968686df6ee9db7"
+                "47af6fe0ab88bd20"
             ],
             [
-                "906694ecaf6c5456"
+                "efc66cc22e9065eb"
             ],
             [
-                "906694ecaf6c5456"
+                "efc66cc22e9065eb"
             ],
             [
-                "be6251670adc84a5"
+                "03da1182e1e167f2"
             ],
             [
-                "d3ee80dbd929bffc"
+                "7864a4e69990efa1"
             ],
             [
-                "d9d826729e93b601"
+                "5cd4927fa511d85d"
             ],
             [
-                "d2b53a0ec66d913a"
+                "a193e615126c57b3"
             ],
             [
-                "72093d0ccd6aa41f"
+                "56c49f25e1c33deb"
             ],
             [
-                "b91052fb1d7a5c1c"
+                "c7736cfed2b1b95a"
             ],
             [
-                "4d757bbf07097d85"
+                "e32c89cfed022a62"
             ],
             [
-                "0c52c8f9d12c0cc5"
+                "a0625115d63d68ba"
             ],
             [
-                "3a8fba91872cd886"
+                "324d62047f7576e6"
             ],
             [
-                "7f57e4026212c3c9"
+                "e2750d18893a9229"
             ],
             [
-                "49183db026150fd2"
+                "c25fa61e5c85bcc8"
             ],
             [
-                "52bef690c09603c1"
+                "82225afbd4174332"
             ],
             [
-                "b86eeb44c4b524e1"
+                "560e02f51066a64c"
             ],
             [
-                "11d79776949ed9a3"
+                "bca032da0d917741"
             ],
             [
-                "63b7274145bc1126"
+                "e4bb86638a047889"
             ],
             [
-                "a73e6c3a4c8a0890"
+                "e3b80dbe78d10bfe"
             ],
             [
-                "910443106ef52715"
+                "fd9352d34617d29d"
             ],
             [
-                "1602b12fe2965826"
+                "2dbe3ef44e753ef4"
             ],
             [
-                "db462f7c1664358d"
+                "906a3bda10420f36"
             ],
             [
-                "2f79a4a63d77b4bd"
+                "6ca1d2659f0f1696"
             ],
             [
-                "24cc9fb80f750f18"
+                "c4896aa728ebb102"
             ],
             [
-                "12ae269958eb77cf"
+                "9312d87bbfadfc3e"
             ],
             [
-                "421cc28b36ce2c90"
+                "d2901b08dd7fce04"
             ],
             [
-                "24d458f6b5a083cf"
+                "376a2f3d29919776"
             ],
             [
-                "ec3e1f4936e91c0c"
+                "0e6377465601bdda"
             ],
             [
-                "cc7b1d51a0b0c43d"
+                "f33635ef635e072e"
             ],
             [
-                "f70e44d477f8099b"
+                "720199256e0f69d0"
             ],
             [
-                "c45641102932f422"
+                "8abd85139418abb0"
             ],
             [
-                "c8106fbf3d45573a"
+                "7a3df07bbecbf4aa"
             ],
             [
-                "1c29aba23591c6e6"
+                "bf8adc745333471c"
             ],
             [
-                "27132374719efae1"
+                "ae32309c7db11b83"
             ]
         ]
     },
     {
-        "id": "32051229db49638e",
+        "id": "03292384cd31cfa8",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🚀 /start",
-        "func": "var chatId = msg.payload.chatId;\nvar from = msg.payload.from || {};\nvar userId = from.id ? from.id.toString() : '';\nvar adminId = '858001417';\n\nif (userId === adminId) {\n    node.send([{payload: {\n        chatId: chatId, type: 'message',\n        content: '‍💼 *PANNELLO ADMIN*\n\nBenvenuto Marco! Cosa vuoi fare?',\n        options: {parse_mode: 'Markdown', reply_markup: {keyboard: [\n            ['👥 Lista Utenti', '📊 Statistiche'],\n            ['⭐ Rendi ELITE', '🚫 Togli ELITE'],\n            ['🎁 Aggiungi Segnali', '✅ Approva Pagamento'],\n            ['❌ Rifiuta Pagamento', '📋 Pagamenti in Attesa'],\n            ['📣 Broadcast']\n        ], resize_keyboard: true}}\n    }}]);\n    return null;\n}\n\n// Welcome message 1 - menu completo\nnode.send([{payload: {\n    chatId: chatId, type: 'message',\n    content: '👋 *Ciao e benvenuto nel Bot Ufficiale*\n👑 *SEGNALI DAL FUTURO VIP* 👑\n\nRicevi segnali sportivi VIP selezionati dal nostro BOT 🤖\n\n📊 *Cosa otterrai:*\n• Canale VIP con segnali esclusivi\n• Multiple mirate\n• Chat community privata\n\n🎁 *BONUS BENVENUTO*\nRicevi subito *30 segnali VIP gratuiti*.\n\n💰 *BONUS OGNI 100€*\nOgni 100€ cumulativi = *30 segnali VIP gratuiti*.',\n    options: {parse_mode: 'Markdown', reply_markup: {keyboard: [\n        ['👑 CANALE VIP', '💬 CHAT GRUPPO VIP'],\n        ['📊 STATO/SALDO', '📦 ACQUISTA'],\n        ['✅ ATTIVA / RIPRENDI', '⏸ PAUSA'],\n        ['📈 BOOK', '🎁 BONUS'],\n        ['🎯 METODO DI GIOCO', '📊 BILANCIO'],\n        ['🆘 ASSISTENZA']\n    ], resize_keyboard: true}}\n}}]);\n\n// Welcome message 2 - pulsante ATTIVA\nnode.send([{payload: {\n    chatId: chatId, type: 'message',\n    content: '🎁 Prova GRATIS i nostri segnali VIP!\n\nPremi *ATTIVA* e riceverai *30 Segnali VIP* in omaggio 👇',\n    options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [\n        [{text: '✅  A T T I V A  /  R I P R E N D I  ✅', callback_data: 'ATTIVA'}]\n    ]}}\n}}]);\n\n// ── Notifica Admin DIRETTA (no getChat, no dipendenze) ──\nfunction esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }\nvar fn  = esc((from.first_name || '').trim());\nvar ln  = esc((from.last_name  || '').trim());\nvar raw = (from.username || '').trim();\nvar fullName    = (fn + ' ' + ln).trim() || '⚠️ Anonimo';\nvar profileLink = raw\n    ? '<a href='https://t.me/' + raw + ''>@' + esc(raw) + '</a>'\n    : '<a href='tg://user?id=' + chatId + ''>apri profilo</a>';\n\nnode.send([{payload: {\n    chatId: adminId,\n    type: 'message',\n    content: '🔔 <b>NUOVO UTENTE - /start</b>\n\n'\n           + '👤 <b>Nome:</b> ' + fullName + '\n'\n           + '📱 <b>Username:</b> ' + profileLink + '\n'\n           + '🆔 <b>ID:</b> <code>' + chatId + '</code>',\n    options: {parse_mode: 'HTML'}\n}}]);\n\nreturn null;",
-        "outputs": 1,
+        "func": "var chatId = msg.payload.chatId;\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : '';\nvar adminId = '858001417';\n\nif (userId === adminId) {\n    node.send([{payload: {\n        chatId: chatId, type: 'message',\n        content: '👨‍💼 *PANNELLO ADMIN*\\n\\nBenvenuto Marco! Cosa vuoi fare?',\n        options: {parse_mode: 'Markdown', reply_markup: {keyboard: [\n            ['👥 Lista Utenti', '📊 Statistiche'],\n            ['⭐ Rendi ELITE', '🚫 Togli ELITE'],\n            ['🎁 Aggiungi Segnali', '✅ Approva Pagamento'],\n            ['❌ Rifiuta Pagamento', '📋 Pagamenti in Attesa'],\n            ['📣 Broadcast']\n        ], resize_keyboard: true}}\n    }}]);\n    return null;\n}\n\nnode.send([{payload: {\n    chatId: chatId, type: 'message',\n    content: '👋 *Ciao e benvenuto nel Bot Ufficiale*\\n👑 *SEGNALI DAL FUTURO VIP* 👑\\n\\nRicevi segnali sportivi VIP selezionati dal nostro BOT 🤖\\n\\n📊 *Cosa otterrai:*\\n• Canale VIP con segnali esclusivi\\n• Multiple mirate\\n• Chat community privata\\n\\n🎁 *BONUS BENVENUTO*\\nRicevi subito *30 segnali VIP gratuiti*.\\n\\n💰 *BONUS OGNI 100€*\\nOgni 100€ cumulativi = *30 segnali VIP gratuiti*.',\n    options: {parse_mode: 'Markdown', reply_markup: {keyboard: [\n        ['👑 CANALE VIP', '💬 CHAT GRUPPO VIP'],\n        ['📊 STATO/SALDO', '📦 ACQUISTA'],\n        ['✅ ATTIVA / RIPRENDI', '⏸ PAUSA'],\n        ['📈 BOOK', '🎁 BONUS'],\n        ['🎯 METODO DI GIOCO', '📊 BILANCIO'],\n        ['🆘 ASSISTENZA']\n    ], resize_keyboard: true}}\n}}]);\n\nnode.send([{payload: {\n    chatId: chatId, type: 'message',\n    content: '🎁 Prova GRATIS i nostri segnali VIP!\\n\\nPremi *ATTIVA* e riceverai *30 Segnali VIP* in omaggio 👇',\n    options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [\n        [{text: '✅  A T T I V A  /  R I P R E N D I  ✅', callback_data: 'ATTIVA'}]\n    ]}}\n}}]);\n// ── Trigga getChat per ricavare il vero nome dell'utente ──\nnode.send([null, {\n    _newUserChatId: chatId,\n    _adminId: adminId,\n    url: 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/getChat?chat_id=' + chatId,\n    method: 'GET',\n    headers: {}\n}]);\nreturn null;",
+        "outputs": 2,
         "x": 820,
         "y": 60,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
+            ],
+            [
+                "http_getchat_newuser"
             ]
         ]
     },
     {
-        "id": "cb307ea0d7b1415d",
+        "id": "6497f6f017a390de",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📚 BOOK",
         "func": "msg.payload = {chatId: msg.payload.chatId, type: 'message', content: '📈 *BOOK CONSIGLIATI* 📈\\n\\nPer seguirci al 100% registrati ad uno dei nostri BOOK!\\n\\n💰 *BONUS 100%* sul primo deposito\\n💰 *BONUS 100%* sul deposito settimanale\\n   • 22BET → ogni *Venerdì*\\n   • BETLABEL → ogni *Sabato*\\n\\n✅ *Vantaggi esclusivi:*\\n✔️ Puntata minima 0.20€ 🔥\\n✔️ Deposito minimo 10€ 🔥\\n✔️ Funzione Autobet 🔥\\n✔️ Partite e mercati esclusivi 👍\\n\\n⚠️ *IMPORTANTE*\\nCon questi book avrai *OGNI SETTIMANA* il bonus del 100% sul deposito fino a €100!\\n\\nScegli il tuo book e registrati ora 👇', options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [[{text: '🔥 22BET - Registrati qui', url: 'https://moy.auraodin.com/redirect.aspx?pid=159338&lpid=17&bid=1484'}],[{text: '🎯 BETLABEL - Registrati qui', url: 'https://moy.auraodin.com/redirect.aspx?pid=159338&lpid=1119&bid=1650'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -539,14 +504,14 @@
         "y": 120,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "72093d0ccd6aa41f",
+        "id": "56c49f25e1c33deb",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "👑 CANALE VIP",
         "func": "var chatId = msg.payload.chatId;\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : msg.payload.chatId.toString();\nmsg._chatId = chatId;\nmsg.chatId = chatId;\nmsg.userId = userId;\nmsg.firstName = (msg.payload.from && msg.payload.from.first_name) || '';\nmsg.lastName  = (msg.payload.from && msg.payload.from.last_name)  || '';\nmsg.username  = (msg.payload.from && msg.payload.from.username)   || '';\nmsg.action = 'canale_vip';\nreturn msg;",
         "outputs": 1,
@@ -554,14 +519,14 @@
         "y": 180,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "b91052fb1d7a5c1c",
+        "id": "c7736cfed2b1b95a",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "💬 CHAT GRUPPO VIP",
         "func": "var chatId = msg.payload.chatId;\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : msg.payload.chatId.toString();\nmsg._chatId = chatId;\nmsg.chatId = chatId;\nmsg.userId = userId;\nmsg.firstName = (msg.payload.from && msg.payload.from.first_name) || '';\nmsg.lastName  = (msg.payload.from && msg.payload.from.last_name)  || '';\nmsg.username  = (msg.payload.from && msg.payload.from.username)   || '';\nmsg.action = 'chat_vip';\nreturn msg;",
         "outputs": 1,
@@ -569,14 +534,14 @@
         "y": 240,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "0c52c8f9d12c0cc5",
+        "id": "a0625115d63d68ba",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🆘 ASSISTENZA",
         "func": "msg.payload = {chatId: msg.payload.chatId, type: 'message', content: '🆘 *ASSISTENZA*\\n\\nPer qualsiasi problema contatta il nostro supporto:', options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [[{text: '💬 Contatta Assistenza', url: 'https://t.me/marcod77'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -584,14 +549,14 @@
         "y": 300,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "3a8fba91872cd886",
+        "id": "324d62047f7576e6",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📊 BILANCIO",
         "func": "msg.payload = {\n  chatId: msg.payload.chatId,\n  type: 'message',\n  content: '📊 *BILANCIO TOTALE 2026*\\n\\nA bilancio va solo:\\n👑 SEGNALE VIP‼️ 👑\\n\\n✅ STEP 1 ➜ 1%\\n✅ STEP 2 ➜ 2,5%\\n_(quota minima 1,60)_\\n\\n_NB: lo stake indicato è solo un consiglio. Ognuno è libero di puntare secondo le proprie disponibilità_\\n\\nClicca per vedere il bilancio sempre aggiornato:',\n  options: {\n    parse_mode: 'Markdown',\n    reply_markup: {\n      inline_keyboard: [[{text: '📊 Apri Bilancio', url: 'https://app.bet-analytix.com/bankroll/1693870'}]]\n    }\n  }\n};\nreturn msg;",
         "outputs": 1,
@@ -599,14 +564,14 @@
         "y": 360,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "7f57e4026212c3c9",
+        "id": "e2750d18893a9229",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🎯 METODO DI GIOCO",
         "func": "msg.payload = {\n  chatId: msg.payload.chatId,\n  type: 'message',\n  content: '‼️ *Metodo di Gioco (SEGNALI VIP)*\\n\\n*STEP 1 → Stake 1%*\\n👉 Over 1,5 Primo Tempo _(quota minima 1.60)_\\n\\n*STEP 2 → Stake 2,5%*\\n👉 Se PT finisce 0–0 → Over 1,5 Finale\\n👉 Se PT finisce con 1 gol → Over 2,5 Finale\\n\\n📊 *Gestione Bankroll*\\n_Esempio con 100 unità:_\\n• STEP 1 = 1 unità\\n• STEP 2 = 2,5 unità\\n\\n\\n*Stake Altri segnali ⚠️*\\n✅ 0,5%\\n\\n_NB: lo stake indicato è solo un consiglio. Ognuno è libero di puntare secondo le proprie disponibilità_\\n\\n━━━━━━━━━━━━━━━━━━━\\n⚠️ *Nota importante*\\n• Segui sempre le quote minime indicate _(≥1.60)_.',\n  options: {\n    parse_mode: 'Markdown'\n  }\n};\nreturn msg;",
         "outputs": 1,
@@ -614,14 +579,14 @@
         "y": 420,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "2f79a4a63d77b4bd",
+        "id": "6ca1d2659f0f1696",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "👨‍💼 /adminhelp",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId){msg.payload={chatId:msg.payload.chatId,type:'message',content:'❌ Non autorizzato.',options:{}};return msg;}\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'👨‍💼 *COMANDI ADMIN*\\n\\n/approva_USERID ✅\\n/rifiuta_USERID ❌\\n/elite_USERID ⭐\\n/togli_elite_USERID 🚫\\n/aggiungi_USERID_N 🎁\\n/adminhelp\\n\\n*Esempio:* /aggiungi_858001417_30',options:{parse_mode:'Markdown'}};\nreturn msg;",
         "outputs": 1,
@@ -629,14 +594,14 @@
         "y": 480,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "906694ecaf6c5456",
+        "id": "efc66cc22e9065eb",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📦 ACQUISTA",
         "func": "// Manda risposta immediata solo se non ELITE (no Sheets needed)\n// Per ELITE mandiamo via cache_gate per mostrare prezzi scontati\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from ? msg.payload.from.id.toString() : '';\nmsg.action = 'acquista';\nreturn msg;",
         "outputs": 1,
@@ -644,14 +609,14 @@
         "y": 540,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "c50e0b0eb768ec15",
+        "id": "08722ecaeb9bb10e",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "✅ ATTIVA",
         "func": "if (msg.payload.from.id.toString() === '858001417') {\n    msg.payload = {chatId: msg.payload.chatId, type: 'message', content: '👨\\u200d💼 Sei l\\'amministratore! Usa /adminhelp.', options: {}};\n    return [msg, null];\n}\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.firstName = msg.payload.from.first_name || '';\nmsg.lastName = msg.payload.from.last_name || '';\nmsg.username = msg.payload.from.username || '';\n// Backup oggetto from per uso in Processa Logica\nmsg._from = {\n    first_name: msg.firstName,\n    last_name: msg.lastName,\n    username: msg.username\n};\nmsg.action = 'attiva';\nnode.send([{payload: {chatId: msg.chatId, type: 'message', content: '\\u23f3 *Attivazione in corso...*\\n\\nUn momento! \\ud83d\\udd04', options: {parse_mode: 'Markdown'}}}, msg]);\nreturn null;",
         "outputs": 2,
@@ -659,17 +624,17 @@
         "y": 600,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "f26990d66384987c",
+        "id": "07f0fd2eec9b97b1",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📊 SALDO",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.action = 'saldo';\nreturn [null, msg];",
         "outputs": 2,
@@ -677,17 +642,17 @@
         "y": 660,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "4d757bbf07097d85",
+        "id": "e32c89cfed022a62",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🎁 BONUS",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.action = 'bonus';\nreturn [null, msg];",
         "outputs": 2,
@@ -695,17 +660,17 @@
         "y": 720,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "91c613b1c2ead121",
+        "id": "7dbdaeb91dab7c7f",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⏸ PAUSA",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.action = 'pausa';\nreturn [null, msg];",
         "outputs": 2,
@@ -713,17 +678,17 @@
         "y": 780,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "4968686df6ee9db7",
+        "id": "47af6fe0ab88bd20",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "▶️ RIPRENDI",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.action = 'riprendi';\nreturn [null, msg];",
         "outputs": 2,
@@ -731,17 +696,17 @@
         "y": 840,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "be6251670adc84a5",
+        "id": "03da1182e1e167f2",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🥈 SILVER",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.package = {name:'SILVER', signals:50, price:10};\nmsg.action = 'package';\nreturn [null, msg];",
         "outputs": 2,
@@ -749,17 +714,17 @@
         "y": 900,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "d3ee80dbd929bffc",
+        "id": "7864a4e69990efa1",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🥇 GOLD",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.package = {name:'GOLD', signals:150, price:20};\nmsg.action = 'package';\nreturn [null, msg];",
         "outputs": 2,
@@ -767,17 +732,17 @@
         "y": 960,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "d9d826729e93b601",
+        "id": "5cd4927fa511d85d",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "💎 PLATINUM",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.package = {name:'PLATINUM', signals:300, price:35};\nmsg.action = 'package';\nreturn [null, msg];",
         "outputs": 2,
@@ -785,17 +750,17 @@
         "y": 1020,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "d2b53a0ec66d913a",
+        "id": "a193e615126c57b3",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📸 RICEVUTA",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '\\u23f3 _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nmsg.chatId = msg.payload.chatId;\nmsg.userId = msg.payload.from.id.toString();\nmsg.firstName = msg.payload.from.first_name || '';\nmsg.lastName = msg.payload.from.last_name || '';\nmsg.username = msg.payload.from.username || '';\nmsg.action = 'ricevuta';\nreturn [null, msg];",
         "outputs": 2,
@@ -803,17 +768,17 @@
         "y": 1080,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "63b7274145bc1126",
+        "id": "e4bb86638a047889",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "✅ /approva_",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nvar adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId;\nmsg.userId=msg.payload.from.id.toString();\nvar m=msg.payload.content.match(/\\/approva_(\\d+)/);\nif(!m) return null;\nmsg.targetUserId=m[1]; msg.action='approva';\nreturn [null, msg];",
         "outputs": 2,
@@ -821,17 +786,17 @@
         "y": 1140,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "a73e6c3a4c8a0890",
+        "id": "e3b80dbe78d10bfe",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "❌ /rifiuta_",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nvar adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId;\nmsg.userId=msg.payload.from.id.toString();\nvar m=msg.payload.content.match(/\\/rifiuta_(\\d+)/);\nif(!m) return null;\nmsg.targetUserId=m[1]; msg.action='rifiuta';\nreturn [null, msg];",
         "outputs": 2,
@@ -839,17 +804,17 @@
         "y": 1200,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "910443106ef52715",
+        "id": "fd9352d34617d29d",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⭐ /elite_",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nvar adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId; msg.userId=msg.payload.from.id.toString();\nvar m=msg.payload.content.match(/\\/elite_(\\d+)/);\nif(!m) return null;\nmsg.targetUserId=m[1]; msg.action='elite';\nreturn [null, msg];",
         "outputs": 2,
@@ -857,17 +822,17 @@
         "y": 1260,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "1602b12fe2965826",
+        "id": "2dbe3ef44e753ef4",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🚫 /togli_elite_",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nvar adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId; msg.userId=msg.payload.from.id.toString();\nvar m=msg.payload.content.match(/\\/togli_elite_(\\d+)/);\nif(!m) return null;\nmsg.targetUserId=m[1]; msg.action='togli_elite';\nreturn [null, msg];",
         "outputs": 2,
@@ -875,17 +840,17 @@
         "y": 1320,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "db462f7c1664358d",
+        "id": "906a3bda10420f36",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "➕ /aggiungi_",
         "func": "node.send([{payload: {chatId: msg.payload.chatId, type: 'message', content: '⏳ _Elaborazione..._', options: {parse_mode: 'Markdown'}}}, null]);\nvar adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId; msg.userId=msg.payload.from.id.toString();\nvar m=msg.payload.content.match(/\\/aggiungi_(\\d+)_(\\d+)/);\nif(!m) return null;\nmsg.targetUserId=m[1]; msg.signalsToAdd=parseInt(m[2]); msg.action='aggiungi';\nreturn [null, msg];",
         "outputs": 2,
@@ -893,17 +858,17 @@
         "y": 1380,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "27132374719efae1",
+        "id": "ae32309c7db11b83",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔇 Ignora",
         "func": "var adminId = '858001417';\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : '';\nvar msgType = msg.payload.type || '';\n\nif (userId === adminId) {\n    var adminWaiting = flow.get('admin_waiting');\n    if (adminWaiting) {\n        msg.chatId = msg.payload.chatId;\n        msg.userId = adminId;\n        return [null, null, msg];\n    }\n}\n\nif (msgType === 'message' || msgType === 'callback_query') {\n    msg.payload = {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: '\\u2753 Comando non riconosciuto.\\n\\nUsa /start per tornare al menu.',\n        options: {}\n    };\n    return [null, msg, null];\n}\nreturn null;",
         "outputs": 3,
@@ -911,20 +876,20 @@
         "y": 1440,
         "wires": [
             [
-                "4068cb60875a78f0"
+                "713101ea015b48c5"
             ],
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "59c7aac3129b4644"
+                "0cf11c84cd6ed7fb"
             ]
         ]
     },
     {
-        "id": "73833dbbf427776f",
+        "id": "a0acd1da30470ce6",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📸 Gestisci File Ricevuta",
         "func": "var adminId = '858001417';\nvar BOT_TOKEN = '8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI';\nvar _t = msg.payload.type || '';\nif (_t !== 'photo' && _t !== 'document' && _t !== 'image') return null;\n\nvar p = msg.payload;\nvar from = p.from || null;\nvar chatId = p.chatId || (p.chat && p.chat.id) || '';\nvar chatType = (p.chat && p.chat.type) || 'private';\nvar userId = from ? from.id.toString() : (chatId ? chatId.toString() : '');\n\nif (chatType !== 'private') return null;\nif (!userId) return null;\nif (parseInt(userId) < 0) return null;\n\nfunction getFileId(p) {\n    if (p.content && typeof p.content === 'string') return p.content;\n    if (p.photo && p.photo.length > 0) return p.photo[p.photo.length-1].file_id;\n    if (p.document && p.document.file_id) return p.document.file_id;\n    if (p.content && p.content.file_id) return p.content.file_id;\n    return null;\n}\n\n// ══════ ADMIN BROADCAST FOTO ══════\nif (userId === adminId) {\n    var adminWaiting = flow.get('admin_waiting');\n    if (adminWaiting && adminWaiting.action === 'broadcast') {\n        flow.set('admin_waiting', null);\n        var bFilter = adminWaiting.filter || 'attivo';\n        var fileId = getFileId(p);\n        var caption = p.caption || '';\n        node.warn('BROADCAST FOTO - fileId: ' + fileId + ' filter: ' + bFilter);\n        if (!fileId) {\n            node.send([{payload:{chatId:userId,type:'message',content:'\\u274c Nessuna foto valida ricevuta. Riprova.',options:{}}},null,null]);\n            return null;\n        }\n        node.send([{payload:{chatId:userId,type:'message',content:'\\u23f3 Broadcast foto in corso...',options:{}}},null,null]);\n        node.send([null, {\n            action: 'broadcast_foto',\n            chatId: userId,\n            userId: userId,\n            broadcastFileId: fileId,\n            broadcastCaption: caption,\n            broadcastFilter: bFilter,\n            payload: {}\n        }, null]);\n        return null;\n    }\n}\n// ══════════════════════════════════\n\nvar waitingRec = flow.get('waiting_receipt') || {};\nvar waiting = waitingRec[userId];\nnode.warn('RECEIPT: userId=' + userId + ' waiting=' + (waiting ? waiting.package.name : 'NO'));\nif (!waiting) return null;\n\nvar firstName = (from && from.first_name) ? from.first_name : (waiting.firstName || '');\nvar lastName  = (from && from.last_name)  ? from.last_name  : (waiting.lastName  || '');\nvar username  = (from && from.username)   ? from.username   : (waiting.username  || '');\nvar fullName  = (firstName + ' ' + lastName).trim() || userId;\nvar usernameStr = username ? '@' + username : 'nessuno';\nvar pkg = waiting.package;\n\ndelete waitingRec[userId];\nflow.set('waiting_receipt', waitingRec);\n\n// ── Recupera file_id per inviare la foto direttamente con i tasti ──\nvar fileIdSend = getFileId(p);\nvar captionAdmin = '\\ud83d\\udd14 *NUOVA RICEVUTA!*\\n\\n\\ud83d\\udc64 *Nome:* ' + fullName +\n    '\\n\\ud83d\\udcf1 *Username:* ' + usernameStr +\n    '\\n\\ud83c\\udd94 *ID:* ' + userId +\n    '\\n\\ud83d\\udce6 *Pacchetto:* ' + pkg.name + ' (' + pkg.signals + ' segnali)' +\n    '\\n\\ud83d\\udcb6 *Importo:* \\u20ac' + waiting.finalPrice.toFixed(2);\n\nif (fileIdSend) {\n    // ── Chiamata HTTP diretta a sendPhoto (bypass telegram-sender) ──\n    node.send([null, null, {\n        url: 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendPhoto',\n        method: 'POST',\n        headers: {'Content-Type': 'application/json'},\n        payload: JSON.stringify({\n            chat_id: adminId,\n            photo: fileIdSend,\n            caption: captionAdmin,\n            parse_mode: 'Markdown',\n            reply_markup: JSON.stringify({inline_keyboard: [[\n                {text: '\\u2705 APPROVA', callback_data: 'APPROVA_' + userId},\n                {text: '\\u274c RIFIUTA', callback_data: 'RIFIUTA_' + userId}\n            ]]})\n        })\n    }]);\n} else {\n    // Fallback testo se file_id non disponibile\n    node.send([{payload: {\n        chatId: adminId,\n        type: 'message',\n        content: captionAdmin + '\\n\\n\\u26a0\\ufe0f _Foto non disponibile_\\n\\n\\u2705 /approva_' + userId + '\\n\\u274c /rifiuta_' + userId,\n        options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [[\n            {text: '\\u2705 APPROVA', callback_data: 'APPROVA_' + userId},\n            {text: '\\u274c RIFIUTA', callback_data: 'RIFIUTA_' + userId}\n        ]]}}\n    }}, null, null]);\n}\n\n// Conferma all'utente\nnode.send([null, {payload: {\n    chatId: userId,\n    type: 'message',\n    content: '\\u2705 *Ricevuta inviata!*\\n\\nVerifica entro *30 minuti*. \\u23f3\\n\\nGrazie! \\ud83d\\ude4f',\n    options: {parse_mode: 'Markdown'}\n}}, null]);\n\nreturn null;",
         "outputs": 3,
@@ -932,20 +897,20 @@
         "y": 440,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ],
             [
-                "4068cb60875a78f0"
+                "713101ea015b48c5"
             ]
         ]
     },
     {
-        "id": "a130660eb9233ea2",
+        "id": "02feb0a87f2c784e",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⚡ Cache Gate",
         "func": "// Controlla se abbiamo dati in cache validi (5 minuti)\nvar cache = flow.get('gs_cache');\nvar now = Date.now();\nif (cache && (now - cache.ts) < 300000) {\n        msg.payload = {values: cache.rows};\n    return [null, msg]; // output 2: va diretto a fn_process\n}\nreturn [msg, null]; // output 1: va a gs_read",
         "outputs": 2,
@@ -953,17 +918,17 @@
         "y": 840,
         "wires": [
             [
-                "8c8cdfa7813560a6"
+                "4de1e272df2c2916"
             ],
             [
-                "efd13aff036100d8"
+                "a9684a9f85b697f3"
             ]
         ]
     },
     {
-        "id": "8c8cdfa7813560a6",
+        "id": "4de1e272df2c2916",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📊 Leggi Sheets",
         "method": "GET",
         "ret": "obj",
@@ -977,14 +942,14 @@
         "y": 840,
         "wires": [
             [
-                "c5d0db42801e298e"
+                "4ebd06b2e134274f"
             ]
         ]
     },
     {
-        "id": "c5d0db42801e298e",
+        "id": "4ebd06b2e134274f",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "💾 Cache Store",
         "func": "// Salva i dati in cache\nif (msg.payload && msg.payload.values) {\n    flow.set('gs_cache', {rows: msg.payload.values, ts: Date.now()});\n}\nreturn msg;",
         "outputs": 1,
@@ -992,14 +957,14 @@
         "y": 840,
         "wires": [
             [
-                "efd13aff036100d8"
+                "a9684a9f85b697f3"
             ]
         ]
     },
     {
-        "id": "efd13aff036100d8",
+        "id": "a9684a9f85b697f3",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⚙️ Processa Logica",
         "func": "var action=msg.action;\nvar data=msg.payload;\nvar rows=(data&&data.values)?data.values:[];\nvar userId=msg.userId;\nvar chatId=msg.chatId;\nvar adminId='858001417';\nvar BOT_TOKEN='8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI';\nvar scriptUrl='https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\nvar VIP_CHANNEL_ID=-1002950341972;\nvar VIP_CHAT_ID=-1003726114956;\nvar vipLink='https://t.me/+guGbp-byJhQ0ZmQ0';\nvar chatLink='https://t.me/+i5MvDdKIUgwyMTFk';\n\nfunction findUser(uid){\n  if(!uid) return null;\n  var search = uid.toString().replace(/^@/,'').toLowerCase().trim();\n  var found = null;\n  // Cerca per numero lista: #1, #2, ecc.\n  if(uid.toString().trim().charAt(0)==='#'){\n    var listN = parseInt(uid.toString().trim().substring(1));\n    var count = 0;\n    for(var i=1;i<rows.length;i++){\n      if(!rows[i]||!rows[i][0]) continue;\n      count++;\n      if(count===listN){ found={row:rows[i],index:i+1}; break; }\n    }\n    return found;\n  }\n  for(var i=1;i<rows.length;i++){\n    if(!rows[i]||!rows[i][0]) continue;\n    // ID numerico (colonna A)\n    if(rows[i][0].toString()===search){ found={row:rows[i],index:i+1}; break; }\n    // Username (colonna K, indice 10)\n    var rowUser=(rows[i][10]||'').toString().replace(/^@/,'').toLowerCase();\n    if(rowUser && rowUser===search){ found={row:rows[i],index:i+1}; break; }\n    // Nome completo (case insensitive)\n    var fullN=((rows[i][1]||'')+' '+(rows[i][2]||'')).trim().toLowerCase();\n    if(fullN && fullN===search){ found={row:rows[i],index:i+1}; break; }\n  }\n  return found;\n}\nfunction sendMsg(cid,text,opts){\n  return {payload:{chatId:cid,type:'message',content:text,options:opts||{parse_mode:'Markdown'}}};\n}\nfunction makeWrite(range,value){\n  return {payload:scriptUrl+'?action=update&range='+range+'&value='+encodeURIComponent(value)};\n}\nfunction makeAppend(values){\n  return {payload:scriptUrl+'?action=append&values='+encodeURIComponent(JSON.stringify(values))};\n}\n\nvar KEYBOARD={keyboard:[['👑 CANALE VIP','💬 CHAT GRUPPO VIP'],['📊 STATO/SALDO','📦 ACQUISTA'],['✅ ATTIVA / RIPRENDI','⏸ PAUSA'],['📈 BOOK','🎁 BONUS'],['🎯 METODO DI GIOCO','📊 BILANCIO'],['🆘 ASSISTENZA']],resize_keyboard:true};\nvar KEYBOARD_PAUSA={keyboard:[['✅ ATTIVA / RIPRENDI'],['📊 STATO/SALDO','📦 ACQUISTA'],['📈 BOOK','🎁 BONUS'],['🎯 METODO DI GIOCO','📊 BILANCIO'],['🆘 ASSISTENZA']],resize_keyboard:true};\n\n// ===== ACQUISTA =====\nif(action==='acquista'){\n  var uAcq = findUser(userId);\n  var isEl = uAcq && uAcq.row[5]==='SI';\n\n  // Funzione barrato Unicode (funziona con parse_mode Markdown normale)\n  function strike(s){\n    return s.toString().split('').map(function(c){return c+'\\u0336';}).join('');\n  }\n\n  var prices = [\n    {name:'SILVER', signals:50, orig:10},\n    {name:'GOLD',   signals:150, orig:20},\n    {name:'PLATINUM', signals:300, orig:35}\n  ];\n  var emojis = {SILVER:'\\ud83e\\udd48', GOLD:'\\ud83e\\udd47', PLATINUM:'\\ud83d\\udc8e'};\n\n  var lines = '\\ud83d\\udce6 *SCEGLI IL TUO PACCHETTO* \\ud83d\\udce6\\n\\n';\n  var kb = [];\n\n  for(var pi=0;pi<prices.length;pi++){\n    var pr = prices[pi];\n    var disc = parseFloat((pr.orig*0.9).toFixed(2));\n    if(isEl){\n      lines += emojis[pr.name]+' *'+pr.name+'* - '+pr.signals+' segnali VIP - '\n              +strike('\\u20ac'+pr.orig.toFixed(2))+' *\\u20ac'+disc.toFixed(2)+'*\\n';\n      kb.push([{text:emojis[pr.name]+' '+pr.name+' - '+pr.signals+' segnali \\u20ac'+disc.toFixed(2),callback_data:pr.name}]);\n    } else {\n      lines += emojis[pr.name]+' *'+pr.name+'* - '+pr.signals+' segnali VIP - *\\u20ac'+pr.orig.toFixed(2)+'*\\n';\n      kb.push([{text:emojis[pr.name]+' '+pr.name+' - '+pr.signals+' segnali \\u20ac'+pr.orig.toFixed(2),callback_data:pr.name}]);\n    }\n  }\n\n  if(isEl) lines += '\\n\\u2b50 *Sei ELITE!* Sconto 10% gi\\u00e0 applicato.';\n\n  return[sendMsg(chatId, lines, {parse_mode:'Markdown', reply_markup:{inline_keyboard:kb}}),null,null];\n}\n\n// Helper: formatta utente per messaggi admin\nfunction fmtUser(row, fallback) {\n  if (!row) return fallback || '?';\n  var n = ((row[1]||'')+' '+(row[2]||'')).trim();\n  var u = row[10] ? ' (@'+row[10]+')' : '';\n  var id = row[0] ? ' — ID: '+row[0] : '';\n  return (n || fallback) + u + id;\n}\nvar user=findUser(userId);\nvar targetUser=msg.targetUserId?findUser(msg.targetUserId):null;\n\n// ===== ATTIVA =====\nif(action==='attiva'){\n  if(user){\n    var curStatus = user.row[4] || 'attivo';\n    var curSigs = parseInt(user.row[3]) || 0;\n    if(curStatus === 'pausa' || curStatus === 'scaduto'){\n      if(curSigs <= 0){\n        // 0 segnali → non inviare link, invita ad acquistare\n        return[sendMsg(chatId,\n          '❌ *Segnali VIP esauriti*\\n\\nHai 0 segnali VIP rimanenti.\\n\\nAcquista un pacchetto per rientrare nei canali:',\n          {parse_mode:'Markdown',reply_markup:{inline_keyboard:[\n            [{text:'🥈 SILVER 50 segnali €10',callback_data:'SILVER'}],\n            [{text:'🥇 GOLD 150 segnali €20',callback_data:'GOLD'}],\n            [{text:'💎 PLATINUM 300 segnali €35',callback_data:'PLATINUM'}]\n          ]}}\n        ),null,null];\n      }\n      // Ha segnali → riattiva e manda link\n      var wma2 = makeWrite('E'+user.index,'attivo');\n      wma2._isAttiva = true;\n      wma2._activationChatId = chatId;\n      wma2._activationMsg = '▶️ *Ricezione segnali VIP RIPRESA!*\\n\\nBentornato! 🎉\\n📃 *Segnali rimasti:* '+curSigs+'\\n\\n📲 *I tuoi link personali (validi 2h):*';\n      // Messaggio benvenuto con tasto CANALE VIP\n      node.send([sendMsg(chatId,\n        '\\ud83c\\udf89 *Bot riattivato con successo!*\\n\\n\\u2705 Per poter vedere i *Segnali VIP* devi cliccare il tasto qui sotto \\ud83d\\udc47',\n        {parse_mode:'Markdown', reply_markup:{inline_keyboard:[[{text:'\\ud83d\\udc51 CANALE VIP', callback_data:'\\ud83d\\udc51 CANALE VIP'}]]}}\n      ),null,null,null,null]);\n      return[null,wma2,null];\n    }\n    // Già attivo\n    return[sendMsg(chatId,'✅ Sei già attivo!\\n\\n📃 *Segnali VIP rimasti:* '+(user.row[3]||0),{parse_mode:'Markdown',reply_markup:KEYBOARD}),null,null];\n  }\n  var today=new Date().toISOString().split('T')[0];\n  var newRow=[msg.userId.toString(),msg.firstName||'',msg.lastName||'',30,'attivo','NO','0','0',today,today,msg.username||''];\n  var wm=makeAppend(newRow);\n  wm._isAttiva=true;\n  wm._isNewUser=true;\n  wm._activationChatId=chatId;\n  // Notifica admin nuovo utente\n    // Usa _from come fallback se firstName/lastName sono vuoti\n  var _fb = msg._from || {};\n  var uFName = (msg.firstName || _fb.first_name || '').trim();\n  var uLName  = (msg.lastName  || _fb.last_name  || '').trim();\n  var uUname  = msg.username || _fb.username || '';\n  var uName   = (uFName + ' ' + uLName).trim();\n  var uUser   = uUname ? '@' + uUname : '';\n  node.send([sendMsg('858001417',\n    '\\ud83d\\udd15 *NUOVO UTENTE ATTIVATO!*\\n\\n\\ud83d\\udc64 *Nome:* '+(uName||userId)+'\\n\\ud83d\\udcf1 *Username:* '+(uUser||'nessuno')+'\\n\\ud83c\\udd94 *ID:* '+userId+'\\n\\n\\ud83c\\udf81 Ha ricevuto 30 segnali VIP gratuiti.',\n    {parse_mode:'Markdown'}\n  ),null,null,null,null]);\n  // Messaggio benvenuto con tasto CANALE VIP\n  node.send([sendMsg(chatId,\n    '\\ud83c\\udf89 *Benvenuto! Bot attivato con successo!*\\n\\n\\ud83c\\udf81 Hai ricevuto *30 segnali VIP gratuiti*!\\n\\n\\u2705 Per poter vedere i *Segnali VIP* devi cliccare il tasto qui sotto \\ud83d\\udc47',\n    {parse_mode:'Markdown', reply_markup:{inline_keyboard:[[{text:'\\ud83d\\udc51 CANALE VIP', callback_data:'\\ud83d\\udc51 CANALE VIP'}]]}}\n  ),null,null,null,null]);\n  return[null,wm,null];\n}\n\n// ===== SALDO =====\nif(action==='saldo'){\n  if(!user) return[sendMsg(chatId,'❌ Non sei registrato. Usa /start.'),null,null];\n  var sigs=parseInt(user.row[3])||0;\n  var status=user.row[4]||'attivo';\n  var isElite=user.row[5]==='SI'?'⭐ ELITE':'Standard';\n  var totalSpent=parseFloat(user.row[6])||0;\n  var spent100=parseFloat(user.row[7])||0;\n  var nextBonus=Math.max(0,100-spent100).toFixed(2);\n  var emoji=sigs>20?'🟢':sigs>5?'🟡':'🔴';\n  var warn=(sigs<=10&&sigs>0)?'\\n\\n⚠️ *Segnali VIP quasi esauriti! Rinnova subito!*':'';\n  var inlineKb=sigs<=10?{inline_keyboard:[[{text:'📦 ACQUISTA ORA',callback_data:'ACQUISTA'}]]}:{};\n  return[sendMsg(chatId,'📊 *IL TUO STATO* 📊\\n\\n'+emoji+' *Segnali VIP rimasti:* '+sigs+'\\n📌 *Status:* '+status+'\\n🏆 *Piano:* '+isElite+'\\n💸 *Spesa totale:* €'+totalSpent.toFixed(2)+'\\n🎁 *Prossimo bonus 30 segnali tra:* €'+nextBonus+warn,{parse_mode:'Markdown',reply_markup:inlineKb}),null,null];\n}\n\n// ===== BONUS =====\nif(action==='bonus'){\n  if(!user) return[sendMsg(chatId,'❌ Non sei registrato. Usa /start.'),null,null];\n  var spent100b=parseFloat(user.row[7])||0;\n  var nextBonusb=Math.max(0,100-spent100b).toFixed(2);\n  var bar='';\n  for(var p=0;p<10;p++){bar+=p<Math.round(spent100b/10)?'🟩':'⬜';}\n  return[sendMsg(chatId,'🎁 *IL TUO BONUS* 🎁\\n\\n📊 *Progressi:*\\n'+bar+'\\n💸 Speso: €'+Math.min(100,spent100b).toFixed(2)+' / €100\\n🎯 *Mancano:* €'+nextBonusb+'\\n\\n✅ Ogni 100€ = *30 segnali VIP gratuiti*!'),null,null];\n}\n\n// ===== PAUSA =====\nif(action==='pausa'){\n  if(!user) return[sendMsg(chatId,'❌ Non sei registrato.'),null,null];\n  if(user.row[4]==='pausa') return[sendMsg(chatId,'ℹ️ Sei già in pausa.\\n\\nUsa ✅ ATTIVA o ▶️ RIPRENDI per rientrare.'),null,null];\n  var wmp=makeWrite('E'+user.index,'pausa');\n  // Messaggio pausa con spiegazione canali\n  wmp.replyMsg=sendMsg(chatId,\n    '⏸ *Ricezione segnali VIP MESSA IN PAUSA*\\n\\n'\n    +'Sei stato rimosso dai canali VIP.\\n\\n'\n    +'━━━━━━━━━━━━━━━━━━━\\n'\n    +'📲 *Come rientrare:*\\n'\n    +'Quando vuoi riprendere, premi ✅ *ATTIVA* oppure ▶️ *RIPRENDI* e poi clicca sui pulsanti del canale e del gruppo che ti verranno inviati.\\n\\n'\n    +'_I link di accesso vengono generati al momento — non tenerli in sospeso!_ ⏳',\n    {parse_mode:'Markdown',reply_markup:KEYBOARD_PAUSA}\n  );\n  wmp._kickUserId = userId; // CRITICO: kick dal canale\n  return[null,wmp,null];\n}\n\n// ===== RIPRENDI =====\nif(action==='riprendi'){\n  if(!user) return[sendMsg(chatId,'❌ Non sei registrato.'),null,null];\n  if(user.row[4]==='attivo') return[sendMsg(chatId,'ℹ️ Sei già attivo!'),null,null];\n  var wmr=makeWrite('E'+user.index,'attivo');\n  wmr._isAttiva = true;\n  wmr._activationChatId = chatId;\n  wmr._activationMsg = '▶️ *Ricezione segnali VIP RIPRESA!*\\n\\nBentornato! 🎉\\n\\n📲 *I tuoi link personali (validi 2h):*';\n  return[null,wmr,null];\n}\n\n// ===== PACCHETTO =====\nif(action==='package'){\n  var pkg=msg.package;\n  var isElitePkg=user&&user.row[5]==='SI';\n  var finalPrice=isElitePkg?(pkg.price*0.9):pkg.price;\n  var discountMsg=isElitePkg?'\\n⭐ *Sconto ELITE 10%!* Risparmi €'+(pkg.price-finalPrice).toFixed(2):'';\n  var emojis={SILVER:'🥈',GOLD:'🥇',PLATINUM:'💎'};\n  var pending=flow.get('pending')||{};\n  pending[userId]={package:pkg,finalPrice:finalPrice,timestamp:Date.now()};\n  flow.set('pending',pending);\n  return[sendMsg(chatId,emojis[pkg.name]+' *PACCHETTO '+pkg.name+'*\\n\\n📊 *'+pkg.signals+' segnali VIP*\\n💶 Prezzo: *€'+finalPrice.toFixed(2)+'*'+discountMsg+'\\n\\n━━━━━━━━━━━━━━━━━━━\\n\\n💳 *PayPal*\\nInvia €'+finalPrice.toFixed(2)+' a:\\n📧 segnalidalfuturo24@gmail.com\\n\\n🏦 *Bonifico Bancario*\\nIntestato a: MARCO DELL\\'ANNA\\nIBAN: LT043250058607691191\\n\\nCausale: *'+pkg.name+'*\\n\\n━━━━━━━━━━━━━━━━━━━\\n\\n_Dopo il pagamento invia la ricevuta 👇_\\n_Attivazione entro 30 minuti_ ⏳',{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'📩 Invia Ricevuta',callback_data:'INVIA_RICEVUTA'}]]}}),null,null];\n}\n\n// ===== RICEVUTA =====\nif(action==='ricevuta'){\n  var pendingR=flow.get('pending')||{};\n  var pendingUser=pendingR[userId];\n  if(!pendingUser) return[sendMsg(chatId,'❓ Nessun pagamento in attesa.\\nSeleziona prima un pacchetto con 📦 ACQUISTA'),null,null];\n  var pkg2=pendingUser.package;\n  var waitingRec=flow.get('waiting_receipt')||{};\n  waitingRec[userId]={\n    package:pkg2,\n    finalPrice:pendingUser.finalPrice,\n    firstName: msg.firstName || '',\n    lastName: msg.lastName || '',\n    username: msg.username || ''\n  };\n  flow.set('waiting_receipt',waitingRec);\n  node.warn('RICEVUTA SET: userId=' + userId + ' pkg=' + pkg2.name);\n  node.warn('waiting_receipt ora: ' + JSON.stringify(flow.get('waiting_receipt')));\n  return[sendMsg(chatId,'📩 *Perfetto!*\\n\\nOra inviami la ricevuta del pagamento\\n(screenshot, foto o PDF) 👇\\n\\n_Attivazione entro 30 minuti_ ⏳',{parse_mode:'Markdown'}),null,null];\n}\n\n// ===== APPROVA =====\nif(action==='approva'){\n  if(!targetUser) return[sendMsg(chatId,'❌ Utente '+msg.targetUserId+' non trovato.'),null,null];\n  var pendingA=flow.get('pending')||{};\n  var pendingPay=pendingA[msg.targetUserId];\n  if(!pendingPay) return[sendMsg(chatId,'❌ Nessun pagamento pendente per '+msg.targetUserId),null,null];\n  var pkg3=pendingPay.package;\n  var curSigs=parseInt(targetUser.row[3])||0;\n  var newSigs=curSigs+pkg3.signals;\n  var curSpent=parseFloat(targetUser.row[6])||0;\n  var spentSince=parseFloat(targetUser.row[7])||0;\n  var newTotal=curSpent+pendingPay.finalPrice;\n  var newSince=spentSince+pendingPay.finalPrice;\n  var bonus=0;\n  if(newSince>=100){bonus=30;newSince=newSince-100;}\n  var finalSigs=newSigs+bonus;\n  var bonusMsg=bonus>0?'\\n\\n🎁 *BONUS:* Hai raggiunto €100! +30 segnali extra!':'';\n  delete pendingA[msg.targetUserId];\n  flow.set('pending',pendingA);\n  var wma=makeWrite('D'+targetUser.index,finalSigs);\n  wma._extraUpdates=[\n    scriptUrl+'?action=update&range=E'+targetUser.index+'&value='+encodeURIComponent('attivo'),\n    scriptUrl+'?action=update&range=G'+targetUser.index+'&value='+encodeURIComponent(newTotal),\n    scriptUrl+'?action=update&range=H'+targetUser.index+'&value='+encodeURIComponent(newSince)\n  ];\n  wma.replyMsg=sendMsg(chatId,'✅ *Pagamento approvato!*\\n\\n'+fmtUser(targetUser.row, msg.targetUserId)+'\\n\\n🎯 *+'+finalSigs+' segnali VIP*'+(bonus>0?' (+30 bonus!)':''));\n  wma._isAttiva = true;\n  wma._activationChatId = msg.targetUserId;\n  wma._activationMsg = '✅ *PAGAMENTO APPROVATO!*\\n\\n📦 *'+pkg3.name+'* — '+pkg3.signals+' segnali VIP\\n💳 *Totale segnali:* '+finalSigs+bonusMsg+'\\n\\n📲 *Clicca per entrare nei canali (link validi 2h):*';\n  return[null,wma,null];\n}\n\n// ===== RIFIUTA =====\nif(action==='rifiuta'){\n  var pendingR2=flow.get('pending')||{};\n  delete pendingR2[msg.targetUserId];\n  flow.set('pending',pendingR2);\n  node.send([null,null,sendMsg(msg.targetUserId,'❌ *Pagamento non approvato*\\n\\nContatta @marcod77.')]);\n  return[sendMsg(chatId,'✅ Rifiuto inviato a:\\n'+(targetUser?fmtUser(targetUser.row,msg.targetUserId):msg.targetUserId)),null,null];\n}\n\n// ===== ELITE =====\nif(action==='elite'){\n  if(!targetUser) return[sendMsg(chatId,'❌ Utente non trovato.'),null,null];\n  if(targetUser.row[5]==='SI') return[sendMsg(chatId,'ℹ️ Utente già ELITE!'),null,null];\n  var wme=makeWrite('F'+targetUser.index,'SI');\n  wme.replyMsg=sendMsg(chatId,'⭐ *ELITE* assegnato a:\\n'+fmtUser(targetUser.row, msg.targetUserId));\n  wme.extraMsg=sendMsg(targetUser.row[0],'⭐ *SEI DIVENTATO ELITE!*\\n\\nHai il *10% di sconto* su tutti i pacchetti! 🙏');\n  return[null,wme,null];\n}\n\n// ===== TOGLI ELITE =====\nif(action==='togli_elite'){\n  if(!targetUser) return[sendMsg(chatId,'❌ Utente non trovato.'),null,null];\n  if(targetUser.row[5]!=='SI') return[sendMsg(chatId,'ℹ️ Utente non è ELITE.'),null,null];\n  var wmte=makeWrite('F'+targetUser.index,'NO');\n  wmte.replyMsg=sendMsg(chatId,'🚫 *ELITE rimosso* per:\\n'+fmtUser(targetUser.row, msg.targetUserId));\n  wmte.extraMsg=sendMsg(targetUser.row[0],'🚫 *Status ELITE rimosso.*\\n\\nContatta @marcod77.');\n  return[null,wmte,null];\n}\n\n// ===== AGGIUNGI SEGNALI =====\nif(action==='aggiungi'){\n  var tgt=findUser(msg.targetUserId);\n  if(!tgt) return[sendMsg(chatId,'❌ Utente non trovato.'),null,null];\n  var curS=parseInt(tgt.row[3])||0;\n  var newS=curS+msg.signalsToAdd;\n  var wmg=makeWrite('D'+tgt.index,newS);\n  wmg.replyMsg=sendMsg(chatId,'✅ Aggiunti *'+msg.signalsToAdd+' segnali VIP* a:\\n'+fmtUser(tgt.row, msg.targetUserId)+'\\n\\n🎯 Totale: *'+newS+'*');\n  wmg.extraMsg=sendMsg(tgt.row[0],'🎁 *SEGNALI VIP BONUS!*\\n\\nL\\'admin ti ha aggiunto *'+msg.signalsToAdd+' segnali VIP*!\\n💳 Totale: *'+newS+'* 🍀');\n  return[null,wmg,null];\n}\n\n// ===== ADMIN LISTA =====\nif(action==='admin_lista'){\n  if(rows.length<=1) return[sendMsg(chatId,'\\ud83d\\udc65 Nessun utente registrato.'),null,null,null,null];\n  var attivi=[], inPausa=[], scaduti=[];\n  for(var u=1;u<rows.length;u++){\n    if(!rows[u]||!rows[u][0]) continue;\n    var uStatus=(rows[u][4]||'attivo').toLowerCase();\n    var uElite=rows[u][5]==='SI'?' \\u2b50':'';\n    var uSpent = parseFloat(rows[u][6])||0;\n    var uLine='\\ud83d\\udc64 '+(rows[u][1]||'')+' '+(rows[u][2]||'')+uElite+'\\n'\n             +'   \\ud83c\\udd94 '+rows[u][0]+'\\n'\n             +'   \\ud83c\\udfaf '+(rows[u][3]||0)+' segnali | \\ud83d\\udcb6 \\u20ac'+uSpent.toFixed(2)+'\\n\\n';\n    if(uStatus==='attivo') attivi.push(uLine);\n    else if(uStatus==='pausa') inPausa.push(uLine);\n    else scaduti.push(uLine);\n  }\n  function sendSection(title, items){\n    if(items.length===0){\n      node.send([sendMsg(chatId,title+'\\n\\n_Nessuno_'),null,null,null,null]);\n      return;\n    }\n    var header=title+'\\n\\n', chunk='', counter=0;\n    for(var i=0;i<items.length;i++){\n      counter++;\n      var line=counter+'. '+items[i];\n      if((header+chunk+line).length>3600){\n        node.send([sendMsg(chatId,header+chunk.trim()),null,null,null,null]);\n        header=''; chunk=line;\n      } else { chunk+=line; }\n    }\n    if(chunk) node.send([sendMsg(chatId,(header+chunk).trim()),null,null,null,null]);\n  }\n  var filter = msg._listaFilter || 'tutti';\n  if(filter==='attivo'){\n    sendSection('\\ud83d\\udfe2 *ATTIVI ('+attivi.length+')*', attivi);\n  } else if(filter==='pausa'){\n    sendSection('\\u23f8 *IN PAUSA ('+inPausa.length+')*', inPausa);\n  } else if(filter==='scaduto'){\n    sendSection('\\ud83d\\udd34 *SCADUTI ('+scaduti.length+')*', scaduti);\n  } else {\n    sendSection('\\ud83d\\udfe2 *ATTIVI ('+attivi.length+')*', attivi);\n    sendSection('\\u23f8 *IN PAUSA ('+inPausa.length+')*', inPausa);\n    sendSection('\\ud83d\\udd34 *SCADUTI ('+scaduti.length+')*', scaduti);\n  }\n  return null;\n}\n\n// ===== ADMIN STATS =====\nif(action==='admin_stats'){\n  var totU=0,totA=0,totP=0,totS=0,totE=0,totF=0;\n  for(var s=1;s<rows.length;s++){\n    if(!rows[s][0]) continue;\n    totU++;\n    if(rows[s][4]==='attivo')totA++;\n    else if(rows[s][4]==='pausa')totP++;\n    else if(rows[s][4]==='scaduto')totS++;\n    if(rows[s][5]==='SI')totE++;\n    totF+=parseFloat(rows[s][6])||0;\n  }\n  return[sendMsg(chatId,'📊 *STATISTICHE BOT* 📊\\n\\n👥 *Utenti totali:* '+totU+'\\n🟢 *Attivi:* '+totA+'\\n⏸ *In pausa:* '+totP+'\\n🔴 *Scaduti:* '+totS+'\\n⭐ *ELITE:* '+totE+'\\n💸 *Fatturato totale:* €'+totF.toFixed(2)),null,null];\n}\n\n// ===== BROADCAST TESTO =====\nif(action==='broadcast'){\n  var bMsg=msg.broadcastMsg||'Test';\n  var bFilter=msg.broadcastFilter||'attivo';\n  var fNames={'tutti':'tutti','attivo':'attivi','pausa':'in pausa','scaduto':'scaduti'};\n  var fName=fNames[bFilter]||bFilter;\n  var sent=0;\n  for(var b=1;b<rows.length;b++){\n    if(!rows[b]||!rows[b][0]) continue;\n    if(bFilter!=='tutti' && rows[b][4]!==bFilter) continue;\n    node.send([{payload:{chatId:rows[b][0].toString(),type:'message',content:'📣 *Messaggio da Segnali dal Futuro VIP:*\\n\\n'+bMsg,options:{parse_mode:'Markdown'}}},null,null]);\n    sent++;\n  }\n  return[sendMsg(chatId,'✅ Broadcast inviato a *'+sent+'* utenti '+fName+'!'),null,null];\n}\n\n// ===== BROADCAST FOTO =====\nif(action==='broadcast_foto'){\n  var bFileId=msg.broadcastFileId;\n  var bCaption=msg.broadcastCaption||'';\n  var bFilter=msg.broadcastFilter||'attivo';\n  var fNames={'tutti':'tutti','attivo':'attivi','pausa':'in pausa','scaduto':'scaduti'};\n  var fName=fNames[bFilter]||bFilter;\n  if(!bFileId) return[sendMsg(chatId,'❌ Errore: file_id mancante. Debug: '+JSON.stringify(msg).substring(0,200)),null,null,null,null];\n  var sent=0;\n  for(var b=1;b<rows.length;b++){\n    if(!rows[b]||!rows[b][0]) continue;\n    if(bFilter!=='tutti' && rows[b][4]!==bFilter) continue;\n    node.send([{payload:{chatId:rows[b][0].toString(),type:'photo',content:bFileId,options:bCaption?{caption:bCaption,parse_mode:'Markdown'}:{}}},null,null,null,null]);\n    sent++;\n  }\n  return[sendMsg(chatId,'✅ *Broadcast FOTO inviata a '+sent+' utenti '+fName+'!*',{parse_mode:'Markdown'}),null,null,null,null];\n}\n\n\n// ===== CANALE VIP =====\nif(action==='canale_vip'){\n  if(!user || parseInt(user.row[3]||0)<=0){\n    return[sendMsg(chatId,\n      '❌ *Segnali VIP esauriti*\\n\\nHai *0 segnali VIP* rimanenti.\\n\\nAcquista un pacchetto per rientrare nel canale:',\n      {parse_mode:'Markdown',reply_markup:{inline_keyboard:[\n        [{text:'🥈 SILVER 50 segnali €10',callback_data:'SILVER'}],\n        [{text:'🥇 GOLD 150 segnali €20',callback_data:'GOLD'}],\n        [{text:'💎 PLATINUM 300 segnali €35',callback_data:'PLATINUM'}]\n      ]}}\n    ),null,null,null,null];\n  }\n  var expVip=Math.floor(Date.now()/1000)+7200;\n  return[null,null,null,{\n    _chatId:chatId,\n    _activationMsg:'👑 *Entra nel Canale VIP!*\\n\\n🔗 Link *valido 2 ore*, uso singolo.\\n\\n⚠️ _Non condividere — è personale!_',\n    url:'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/createChatInviteLink',\n    method:'POST',\n    headers:{'Content-Type':'application/json'},\n    payload:JSON.stringify({chat_id:-1002950341972,member_limit:1,expire_date:expVip})\n  },null];\n}\n\n// ===== CHAT VIP =====\nif(action==='chat_vip'){\n  if(!user || parseInt(user.row[3]||0)<=0){\n    return[sendMsg(chatId,\n      '❌ *Segnali VIP esauriti*\\n\\nHai *0 segnali VIP* rimanenti.\\n\\nAcquista un pacchetto per rientrare nel gruppo:',\n      {parse_mode:'Markdown',reply_markup:{inline_keyboard:[\n        [{text:'🥈 SILVER 50 segnali €10',callback_data:'SILVER'}],\n        [{text:'🥇 GOLD 150 segnali €20',callback_data:'GOLD'}],\n        [{text:'💎 PLATINUM 300 segnali €35',callback_data:'PLATINUM'}]\n      ]}}\n    ),null,null,null,null];\n  }\n  var expChat=Math.floor(Date.now()/1000)+7200;\n  return[null,null,null,null,{\n    _chatId:chatId,\n    _activationMsg:'💬 *Entra nel Gruppo Chat VIP!*\\n\\n🔗 Link *valido 2 ore*, uso singolo.\\n\\n⚠️ _Non condividere — è personale!_',\n    url:'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/createChatInviteLink',\n    method:'POST',\n    headers:{'Content-Type':'application/json'},\n    payload:JSON.stringify({chat_id:-1003726114956,member_limit:1,expire_date:expChat})\n  }];\n}\n\nreturn[sendMsg(chatId,'❓ Usa /start per il menu.'),null,null,null,null];",
         "outputs": 5,
@@ -1007,26 +972,26 @@
         "y": 900,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "1c65a96b23da9e1c"
+                "7c7ad956310c5eca"
             ],
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "ea0d1d8356f427f3"
+                "unban_vip_pre_fn"
             ],
             [
-                "cd611048cd048538"
+                "unban_chat_pre_fn"
             ]
         ]
     },
     {
-        "id": "1c65a96b23da9e1c",
+        "id": "7c7ad956310c5eca",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔧 Prep Write",
         "func": "msg._replyMsg = msg.replyMsg || null;\nmsg._extraMsg = msg.extraMsg || null;\nmsg._extraUpdates = msg._extraUpdates || [];\nmsg._kickUserId = msg._kickUserId || null;\nmsg._isAttiva = msg._isAttiva || false;\nmsg._activationChatId = msg._activationChatId || null;\n// Invalida cache dopo qualsiasi scrittura\nflow.set('gs_cache', null);\nreturn msg;",
         "outputs": 1,
@@ -1034,14 +999,14 @@
         "y": 980,
         "wires": [
             [
-                "f7fb41cf7140f0ce"
+                "34f16c77657b9505"
             ]
         ]
     },
     {
-        "id": "f7fb41cf7140f0ce",
+        "id": "34f16c77657b9505",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Set URL Write",
         "func": "msg.url = msg.payload;\nmsg.payload = {};\nreturn msg;",
         "outputs": 1,
@@ -1049,14 +1014,14 @@
         "y": 980,
         "wires": [
             [
-                "f8df1f972b67424f"
+                "bfbd3b6e5d07140f"
             ]
         ]
     },
     {
-        "id": "f8df1f972b67424f",
+        "id": "bfbd3b6e5d07140f",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "GET Write Sheets",
         "method": "GET",
         "ret": "obj",
@@ -1070,14 +1035,14 @@
         "y": 980,
         "wires": [
             [
-                "f0d974552de71a74"
+                "2918c23af7036dcc"
             ]
         ]
     },
     {
-        "id": "f0d974552de71a74",
+        "id": "2918c23af7036dcc",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "✅ Dopo Scrittura",
         "func": "// OUTPUT 1: extra Sheets writes → http_get_write\n// OUTPUT 2: kick → fn_kick_vip\n// OUTPUT 3: messaggi Telegram → send_msg\n// OUTPUT 4: ATTIVA invite links → fn_gen_vip_invite\n\n\n// Extra aggiornamenti Sheets\nvar extras = msg._extraUpdates || [];\nfor (var i = 0; i < extras.length; i++) {\n    node.send([{url: extras[i], payload: {}}, null, null, null]);\n}\n\n// KICK - passa il campo in modo robusto\nif (msg._kickUserId) {\n    var kickId = msg._kickUserId.toString();\n    node.warn('KICK TRIGGER per userId: ' + kickId);\n    node.send([null, {_kickUserId: kickId, _userId: parseInt(kickId), userId: kickId}, null, null]);\n}\n\n// Messaggi risposta\nif (msg._replyMsg) node.send([null, null, msg._replyMsg, null]);\nif (msg._extraMsg) node.send([null, null, msg._extraMsg, null]);\n\n// ATTIVA: genera invite link monouso\nif (msg._isAttiva && msg._activationChatId) {\n    node.send([null, null, null, {\n        _activationChatId: msg._activationChatId,\n        _activationMsg: msg._activationMsg || null\n    }]);\n}\n\nreturn null;",
         "outputs": 4,
@@ -1085,23 +1050,23 @@
         "y": 980,
         "wires": [
             [
-                "f8df1f972b67424f"
+                "bfbd3b6e5d07140f"
             ],
             [
-                "d4d085f12656b848"
+                "561092da84fbda5b"
             ],
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "49774d69d00e4d02"
+                "fn_unban_vip_attiva"
             ]
         ]
     },
     {
-        "id": "bb4feb1d39d76328",
+        "id": "074a0ce3cb5e587c",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔗 Gen VIP Invite",
         "func": "// Genera link monouso per il Canale VIP\nvar expiry = Math.floor(Date.now()/1000) + 7200; // valido 2 ore\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/createChatInviteLink';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1002950341972,\n    member_limit: 1,\n    expire_date: expiry\n});\nreturn msg;",
         "outputs": 1,
@@ -1109,14 +1074,14 @@
         "y": 1060,
         "wires": [
             [
-                "fc57c6a7d0f182ab"
+                "b4fa7cddf8ef2844"
             ]
         ]
     },
     {
-        "id": "fc57c6a7d0f182ab",
+        "id": "b4fa7cddf8ef2844",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "POST VIP Invite",
         "method": "POST",
         "ret": "obj",
@@ -1130,14 +1095,14 @@
         "y": 1060,
         "wires": [
             [
-                "f430894986058a8a"
+                "1e1d47cb2a9b6743"
             ]
         ]
     },
     {
-        "id": "f430894986058a8a",
+        "id": "1e1d47cb2a9b6743",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔗 Gen Chat Invite",
         "func": "var vipLink = (msg.payload && msg.payload.result) ? msg.payload.result.invite_link : null;\nif (!vipLink) { node.warn('Errore VIP invite: ' + JSON.stringify(msg.payload)); }\nmsg._vipInviteLink = vipLink;\nnode.warn('VIP invite link: ' + vipLink);\nvar expiry = Math.floor(Date.now()/1000) + 7200;\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/createChatInviteLink';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({chat_id: -1003726114956, member_limit: 1, expire_date: expiry});\nreturn msg;",
         "outputs": 1,
@@ -1145,14 +1110,14 @@
         "y": 1060,
         "wires": [
             [
-                "a70fb90809ab6a0a"
+                "32ac9c7748f641cf"
             ]
         ]
     },
     {
-        "id": "a70fb90809ab6a0a",
+        "id": "32ac9c7748f641cf",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "POST Chat Invite",
         "method": "POST",
         "ret": "obj",
@@ -1166,14 +1131,14 @@
         "y": 1060,
         "wires": [
             [
-                "066a317d262aa106"
+                "1982b2c45fc84b4e"
             ]
         ]
     },
     {
-        "id": "066a317d262aa106",
+        "id": "1982b2c45fc84b4e",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🎉 Invia Welcome + Link",
         "func": "var chatLink = (msg.payload && msg.payload.result) ? msg.payload.result.invite_link : null;\nvar vipLink = msg._vipInviteLink || null;\nvar targetChatId = msg._activationChatId;\nvar customMsg = msg._activationMsg || null;\nnode.warn('VIP: ' + vipLink + ' Chat: ' + chatLink + ' → ' + targetChatId);\nif (!chatLink || !vipLink) {\n    msg.payload = {chatId: targetChatId, type: 'message',\n        content: '❌ Errore generazione link. Riprova tra qualche secondo.', options: {}};\n    return msg;\n}\nvar content = customMsg || '🎉 *ATTIVAZIONE COMPLETATA!* 🎉\\n\\n✅ Hai ricevuto *30 segnali VIP gratuiti*!\\n\\n💡 *Comandi disponibili:*\\n👑 CANALE VIP \\n💬 CHAT GRUPPO VIP \\n📊 STATO/SALDO \\n⏸ PAUSA \\n📦 ACQUISTA \\n📈 BOOK \\n🎁 BONUS \\n🎯 METODO DI GIOCO \\n📊 BILANCIO \\n🆘 ASSISTENZA\\n\\n📲 *I tuoi link personali (validi 2h):*';\nnode.send({payload: {chatId: targetChatId, type: 'message', content: content,\n    options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [\n        [{text: '👑 Entra nel Canale VIP', url: vipLink}],\n        [{text: '💬 Entra nel Gruppo Chat VIP', url: chatLink}]\n    ]}}}});\nnode.send({payload: {chatId: targetChatId, type: 'message', content: '🔑 *Benvenuto! Usa i pulsanti qui sotto:*',\n    options: {parse_mode: 'Markdown', reply_markup: {keyboard: [\n        ['👑 CANALE VIP','💬 CHAT GRUPPO VIP'],\n        ['📊 STATO/SALDO','📦 ACQUISTA'],\n        ['✅ ATTIVA / RIPRENDI','⏸ PAUSA'],\n        ['📈 BOOK','🎁 BONUS'],\n        ['🎯 METODO DI GIOCO','📊 BILANCIO'],\n        ['🆘 ASSISTENZA']\n    ], resize_keyboard: true}}}});\nreturn null;",
         "outputs": 1,
@@ -1181,14 +1146,14 @@
         "y": 1060,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "d4d085f12656b848",
+        "id": "561092da84fbda5b",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Kick VIP",
         "func": "var uid = parseInt(msg._kickUserId || msg._userId || msg.userId || 0);\nif (!uid || isNaN(uid)) {\n    node.warn('KICK ERRORE: uid non valido! msg=' + JSON.stringify(msg).substring(0,200));\n    return null;\n}\nmsg.payload = JSON.stringify({chat_id: -1002950341972, user_id: uid, revoke_messages: false});\nmsg.headers = {'Content-Type': 'application/json'};\nmsg._uid = uid;\nnode.warn('KICK VIP uid=' + uid);\nreturn msg;",
         "outputs": 1,
@@ -1196,14 +1161,14 @@
         "y": 1160,
         "wires": [
             [
-                "7ee54d5c87099a20"
+                "30d264775bb60585"
             ]
         ]
     },
     {
-        "id": "7ee54d5c87099a20",
+        "id": "30d264775bb60585",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Ban VIP",
         "method": "POST",
         "ret": "obj",
@@ -1217,14 +1182,14 @@
         "y": 1160,
         "wires": [
             [
-                "949022647c86022c"
+                "c96a8f07ad11efb7"
             ]
         ]
     },
     {
-        "id": "949022647c86022c",
+        "id": "c96a8f07ad11efb7",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Kick Chat",
         "func": "// Kick dal Gruppo Chat VIP\nmsg.payload = JSON.stringify({\n    chat_id: -1003726114956,\n    user_id: msg._uid,\n    revoke_messages: false\n});\nmsg.headers = {'Content-Type': 'application/json'};\nnode.warn('KICK CHAT uid=' + msg._uid);\nreturn msg;",
         "outputs": 1,
@@ -1232,14 +1197,14 @@
         "y": 1160,
         "wires": [
             [
-                "45c2fb04ef1d5dad"
+                "0a261791bd78e9c4"
             ]
         ]
     },
     {
-        "id": "45c2fb04ef1d5dad",
+        "id": "0a261791bd78e9c4",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Ban Chat",
         "method": "POST",
         "ret": "obj",
@@ -1253,14 +1218,14 @@
         "y": 1160,
         "wires": [
             [
-                "72a39847f5f7ad06"
+                "d3720f12f2052f0b"
             ]
         ]
     },
     {
-        "id": "72a39847f5f7ad06",
+        "id": "d3720f12f2052f0b",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Prep Unban",
         "func": "node.warn('Ban Chat result: ' + JSON.stringify(msg.payload));\nreturn msg;",
         "outputs": 1,
@@ -1268,14 +1233,14 @@
         "y": 1160,
         "wires": [
             [
-                "a6e3efe9637397c1"
+                "c4ec4c8de3ca8f6f"
             ]
         ]
     },
     {
-        "id": "a6e3efe9637397c1",
+        "id": "c4ec4c8de3ca8f6f",
         "type": "delay",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "3s",
         "pauseType": "delay",
         "timeout": "3",
@@ -1289,14 +1254,14 @@
         "y": 1160,
         "wires": [
             [
-                "cce37af0522fa3ea"
+                "734428e32adc0332"
             ]
         ]
     },
     {
-        "id": "cce37af0522fa3ea",
+        "id": "734428e32adc0332",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban VIP",
         "func": "var uid = msg._uid;\nmsg.payload = JSON.stringify({chat_id: -1002950341972, user_id: uid, only_if_banned: true});\nmsg.headers = {'Content-Type': 'application/json'};\nreturn msg;",
         "outputs": 1,
@@ -1304,14 +1269,14 @@
         "y": 1160,
         "wires": [
             [
-                "f5e0f67d9b324907"
+                "6dd1177bc7322687"
             ]
         ]
     },
     {
-        "id": "f5e0f67d9b324907",
+        "id": "6dd1177bc7322687",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban VIP",
         "method": "POST",
         "ret": "obj",
@@ -1325,14 +1290,14 @@
         "y": 1160,
         "wires": [
             [
-                "d355261983418d78"
+                "b0dee63be2385a4b"
             ]
         ]
     },
     {
-        "id": "d355261983418d78",
+        "id": "b0dee63be2385a4b",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban Chat",
         "func": "var uid = msg._uid;\nmsg.payload = JSON.stringify({chat_id: -1003726114956, user_id: uid, only_if_banned: true});\nmsg.headers = {'Content-Type': 'application/json'};\nreturn msg;",
         "outputs": 1,
@@ -1340,14 +1305,14 @@
         "y": 1160,
         "wires": [
             [
-                "4750ec57d5ac6808"
+                "f6c1131de754fdde"
             ]
         ]
     },
     {
-        "id": "4750ec57d5ac6808",
+        "id": "f6c1131de754fdde",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban Chat",
         "method": "POST",
         "ret": "obj",
@@ -1364,9 +1329,9 @@
         ]
     },
     {
-        "id": "ca877f7850d439c7",
+        "id": "609f6c6e49d79a7a",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "👑 Rileva Segnale VIP",
         "func": "\nvar content = '';\nvar chatId = '';\nif (msg.payload.channel_post) {\n    content = msg.payload.channel_post.text || '';\n    chatId = msg.payload.channel_post.chat ? msg.payload.channel_post.chat.id.toString() : '';\n} else {\n    content = msg.payload.content || msg.payload.text || '';\n    chatId = msg.payload.chatId ? msg.payload.chatId.toString() : '';\n}\nvar vipChannelId = '-1002950341972';\nnode.warn('📡 MSG: chatId=' + chatId + ' content=' + content.substring(0, 50));\nif (chatId !== vipChannelId) { node.warn('❌ Canale sbagliato: ' + chatId); return null; }\nif (content.indexOf('👑 SEGNALE VIP') === -1) { node.warn('⏭️ Ignorato'); return null; }\nnode.warn('✅ SEGNALE VIP rilevato! Aggiungo al contatore...');\n\n// ── Incrementa il contatore dei segnali pendenti ──\nvar pending = (flow.get('sig_pending') || 0) + 1;\nflow.set('sig_pending', pending);\nnode.warn('📊 Segnali in coda: ' + pending);\n\n// ── Debounce: annulla il timer precedente e imposta uno nuovo (3 secondi) ──\nvar existing = flow.get('sig_timer');\nif (existing) { clearTimeout(existing); }\n\nvar t = setTimeout(function () {\n    flow.set('sig_timer', null);\n    node.send(msg); // invia il msg dopo che tutti i segnali sono arrivati\n}, 3000);\nflow.set('sig_timer', t);\n\nreturn null; // non passare subito: aspetta il debounce\n",
         "outputs": 1,
@@ -1374,14 +1339,14 @@
         "y": 1500,
         "wires": [
             [
-                "1b95460dfde6697e"
+                "1f331b2d408649ff"
             ]
         ]
     },
     {
-        "id": "1b95460dfde6697e",
+        "id": "1f331b2d408649ff",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📊 Leggi per Decremento",
         "method": "GET",
         "ret": "obj",
@@ -1395,14 +1360,14 @@
         "y": 1500,
         "wires": [
             [
-                "f6806e7419d6eeca"
+                "f4c8c34121b7f3ad"
             ]
         ]
     },
     {
-        "id": "f6806e7419d6eeca",
+        "id": "f4c8c34121b7f3ad",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⬇️ Decrementa Segnali",
         "func": "\nvar data = msg.payload;\nvar rows = (data && data.values) ? data.values : [];\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\n// Invalida cache\nflow.set('gs_cache', null);\n\n// ── Leggi e azzera il contatore (quanti segnali sono arrivati in batch) ──\nvar signalCount = flow.get('sig_pending') || 1;\nflow.set('sig_pending', 0);\nnode.warn('🎯 Decremento di ' + signalCount + ' segnali per ogni utente attivo');\n\nfor (var i = 1; i < rows.length; i++) {\n    var row = rows[i];\n    if (!row || !row[0]) continue;\n    var userId = row[0].toString();\n    var signals = parseInt(row[3]) || 0;\n    var status = row[4] || 'attivo';\n    if (status !== 'attivo') continue;\n\n    var newSig = Math.max(0, signals - signalCount);\n    node.warn('Utente ' + userId + ': ' + signals + ' → ' + newSig + ' (-' + signalCount + ')');\n\n    node.send([{ url: BASE + '?action=update&range=D' + (i + 1) + '&value=' + newSig, payload: {} }, null, null]);\n\n    if (newSig <= 10 && newSig > 5 && signals > 10)\n        node.send([null, { payload: { chatId: userId, type: 'message', content: '⚠️ *Attenzione!*\\n\\nTi restano solo *' + newSig + ' segnali VIP*!\\nRinnova subito! 👇', options: { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [[{ text: '📦 ACQUISTA ORA', callback_data: 'ACQUISTA' }]] } } } }, null]);\n    if (newSig <= 5 && newSig > 1 && signals > 5)\n        node.send([null, { payload: { chatId: userId, type: 'message', content: '🔴 *ULTIMI ' + newSig + ' SEGNALI VIP!*\\n\\nRinnova subito! 👇', options: { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [[{ text: '📦 ACQUISTA ORA', callback_data: 'ACQUISTA' }]] } } } }, null]);\n    if (newSig === 1 && signals > 1)\n        node.send([null, { payload: { chatId: userId, type: 'message', content: '🚨 *ULTIMO SEGNALE VIP!*\\n\\nRinnova ADESSO! 👇', options: { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [[{ text: '📦 ACQUISTA SUBITO', callback_data: 'ACQUISTA' }]] } } } }, null]);\n    if (newSig === 0) {\n        node.send([{ url: BASE + '?action=update&range=E' + (i + 1) + '&value=scaduto', payload: {} }, null, null]);\n        node.send([null, { payload: { chatId: userId, type: 'message', content: '🔴 *Segnali VIP esauriti!*\\n\\nSei stato rimosso dai canali.\\nRinnova per rientrare! 👇', options: { parse_mode: 'Markdown', reply_markup: { inline_keyboard: [[{ text: '🥈 SILVER 50 segnali €10', callback_data: 'SILVER' }], [{ text: '🥇 GOLD 150 segnali €20', callback_data: 'GOLD' }], [{ text: '💎 PLATINUM 300 segnali €35', callback_data: 'PLATINUM' }]] } } } }, null]);\n        node.send([null, { payload: { chatId: userId, type: 'message', content: '⬇️ Quando sei pronto a ricaricare, premi *ATTIVA / RIPRENDI*.', options: { parse_mode: 'Markdown', reply_markup: {keyboard: [['✅ ATTIVA / RIPRENDI'],['📊 STATO/SALDO','📦 ACQUISTA'],['📈 BOOK','🎁 BONUS'],['🎯 METODO DI GIOCO','📊 BILANCIO'],['🆘 ASSISTENZA']], resize_keyboard: true} } } }, null]);\n        node.send([null, null, { _kickUserId: userId, _userId: parseInt(userId), userId: userId }]);\n    }\n}\nreturn null;\n",
         "outputs": 3,
@@ -1410,20 +1375,20 @@
         "y": 1500,
         "wires": [
             [
-                "9aedaa946b7edd12"
+                "delay_dec_rate"
             ],
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "d4d085f12656b848"
+                "561092da84fbda5b"
             ]
         ]
     },
     {
-        "id": "fffcd401af6731cb",
+        "id": "2161ea1c2ee6512f",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "GET Dec Sheets",
         "method": "GET",
         "ret": "txt",
@@ -1440,9 +1405,9 @@
         ]
     },
     {
-        "id": "24cc9fb80f750f18",
+        "id": "c4896aa728ebb102",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "👨‍💼 /admin",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId){msg.payload={chatId:msg.payload.chatId,type:'message',content:'❌ Non autorizzato.',options:{}};return msg;}\nvar pendingList=flow.get('pending')||{};\nvar pendingCount=Object.keys(pendingList).length;\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'👨‍💼 *PANNELLO AMMINISTRATORE*\\n\\n🔔 *Pagamenti in attesa:* '+pendingCount+'\\n\\nSeleziona un\\'azione:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'👥 Lista Utenti',callback_data:'ADMIN_LISTA'},{text:'📊 Statistiche',callback_data:'ADMIN_STATS'}],[{text:'⭐ Rendi ELITE',callback_data:'ADMIN_ELITE'},{text:'🚫 Togli ELITE',callback_data:'ADMIN_TOGLI_ELITE'}],[{text:'🎁 Aggiungi Segnali',callback_data:'ADMIN_SEGNALI'}],[{text:'✅ Approva Pagamento',callback_data:'ADMIN_APPROVA'},{text:'❌ Rifiuta Pagamento',callback_data:'ADMIN_RIFIUTA'}],[{text:'📋 Pagamenti in Attesa',callback_data:'ADMIN_PENDING'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1450,14 +1415,14 @@
         "y": 1620,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "11d79776949ed9a3",
+        "id": "bca032da0d917741",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⚙️ Admin Actions",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nvar action=msg.payload.content;\nvar chatId=msg.payload.chatId;\n\n// ── Selezione destinatari broadcast ──\nif(action.indexOf('ADMIN_BC_')===0){\n    var filter=action.replace('ADMIN_BC_','');\n    var fLabels={'tutti':'\\ud83d\\udc65 Tutti','attivo':'\\u2705 Solo Attivi','pausa':'\\u23f8 Solo in Pausa','scaduto':'\\ud83d\\udd34 Solo Scaduti'};\n    var fLabel=fLabels[filter]||filter;\n    flow.set('admin_waiting',{action:'broadcast',filter:filter,chatId:chatId});\n    msg.payload={chatId:chatId,type:'message',\n        content:'\\ud83d\\udce3 *Broadcast \\u2192 '+fLabel+'*\\n\\n\\ud83d\\udcdd Scrivi il *testo* del messaggio\\n\\ud83d\\udcf7 Oppure invia una *foto* (con caption opzionale)',\n        options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'\\u274c Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\n    return[msg,null];\n}\n\n// ── Filtro Lista Utenti ──\nif(action==='ADMIN_LISTA_ATTIVI'||action==='ADMIN_LISTA_PAUSA'||action==='ADMIN_LISTA_SCADUTI'){\n    var filterMap={'ADMIN_LISTA_ATTIVI':'attivo','ADMIN_LISTA_PAUSA':'pausa','ADMIN_LISTA_SCADUTI':'scaduto'};\n    msg.chatId=chatId; msg.userId=adminId;\n    msg.action='admin_lista'; msg._listaFilter=filterMap[action];\n    return[null,msg];\n}\nif(action==='ADMIN_LISTA'){msg.chatId=chatId;msg.userId=adminId;msg.action='admin_lista';return[null,msg];}\nif(action==='ADMIN_STATS'){msg.chatId=chatId;msg.userId=adminId;msg.action='admin_stats';return[null,msg];}\nif(action==='ADMIN_PENDING'){\n    var pending=flow.get('pending')||{};var waiting=flow.get('waiting_receipt')||{};\n    var keys=Object.keys(pending);var wkeys=Object.keys(waiting);\n    var text='📋 *PAGAMENTI IN ATTESA* 📋\\n\\n';\n    if(keys.length===0&&wkeys.length===0){text+='Nessun pagamento in attesa.';}\n    else{for(var i=0;i<keys.length;i++){var p=pending[keys[i]];text+='🕐 *Attende istruzioni*\\nID: '+keys[i]+'\\nPacchetto: '+p.package.name+' €'+p.finalPrice.toFixed(2)+'\\n\\n';}\n    for(var j=0;j<wkeys.length;j++){var w=waiting[wkeys[j]];text+='📸 *Ha inviato ricevuta*\\nID: '+wkeys[j]+'\\nPacchetto: '+w.package.name+' €'+w.finalPrice.toFixed(2)+'\\n\\n';}}\n    msg.payload={chatId:chatId,type:'message',content:text,options:{parse_mode:'Markdown'}};return[msg,null];\n}\nif(action==='ADMIN_ELITE'){flow.set('admin_waiting',{action:'elite',chatId:chatId});msg.payload={chatId:chatId,type:'message',content:'⭐ *Rendi ELITE*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};return[msg,null];}\nif(action==='ADMIN_TOGLI_ELITE'){flow.set('admin_waiting',{action:'togli_elite',chatId:chatId});msg.payload={chatId:chatId,type:'message',content:'🚫 *Togli ELITE*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};return[msg,null];}\nif(action==='ADMIN_SEGNALI'){flow.set('admin_waiting',{action:'segnali_id',chatId:chatId});msg.payload={chatId:chatId,type:'message',content:'🎁 *Aggiungi Segnali VIP*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};return[msg,null];}\nif(action==='ADMIN_APPROVA'){flow.set('admin_waiting',{action:'approva',chatId:chatId});msg.payload={chatId:chatId,type:'message',content:'✅ *Approva Pagamento*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};return[msg,null];}\nif(action==='ADMIN_RIFIUTA'){flow.set('admin_waiting',{action:'rifiuta',chatId:chatId});msg.payload={chatId:chatId,type:'message',content:'❌ *Rifiuta Pagamento*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};return[msg,null];}\nif(action==='ADMIN_ANNULLA'){flow.set('admin_waiting',null);msg.payload={chatId:chatId,type:'message',content:'❌ Operazione annullata.',options:{}};return[msg,null];}\nreturn null;",
         "outputs": 2,
@@ -1465,17 +1430,17 @@
         "y": 1680,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "59c7aac3129b4644",
+        "id": "0cf11c84cd6ed7fb",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📝 Admin Input Handler",
         "func": "var adminId = '858001417';\nif (!msg.payload || !msg.payload.from) return null;\nif (msg.payload.from.id.toString() !== adminId) return null;\n\nvar waiting = flow.get('admin_waiting');\nif (!waiting) return null;\n\nvar input = msg.payload.content;\nvar chatId = msg.payload.chatId;\n\nif (!input || input.startsWith('/')) { flow.set('admin_waiting', null); return null; }\n// Se l'admin digita un numero puro (es. 1, 2) lo trattiamo come #N della lista\n// SOLO per azioni su utenti (non per quantità segnali)\nvar isUserAction = (waiting.action === 'elite' || waiting.action === 'togli_elite'\n    || waiting.action === 'approva' || waiting.action === 'rifiuta'\n    || waiting.action === 'segnali_id');\nif (isUserAction && /^\\d+$/.test(input.trim()) && parseInt(input.trim()) < 10000) {\n    input = '#' + input.trim();\n}\n\nif (waiting.action === 'elite') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = input.trim(); msg.action = 'elite';\n    return [null, msg];\n}\nif (waiting.action === 'togli_elite') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = input.trim(); msg.action = 'togli_elite';\n    return [null, msg];\n}\nif (waiting.action === 'approva') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = input.trim(); msg.action = 'approva';\n    return [null, msg];\n}\nif (waiting.action === 'rifiuta') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = input.trim(); msg.action = 'rifiuta';\n    return [null, msg];\n}\nif (waiting.action === 'segnali_id') {\n    // Cerca utente nella cache per mostrare nome e username\n    var cache = flow.get('gs_cache');\n    var rows = (cache && cache.rows) ? cache.rows : [];\n    var searchStr = input.trim().replace(/^@/,'').toLowerCase();\n    var foundName = '', foundUser = '', foundId = '';\n    if (input.trim().charAt(0) === '#') {\n        var listN = parseInt(input.trim().substring(1));\n        var cnt = 0;\n        for (var ri=1;ri<rows.length;ri++) {\n            if (!rows[ri]||!rows[ri][0]) continue;\n            cnt++;\n            if (cnt === listN) {\n                foundName = ((rows[ri][1]||'')+' '+(rows[ri][2]||'')).trim();\n                foundUser = rows[ri][10] ? '@'+rows[ri][10] : '';\n                foundId = rows[ri][0].toString();\n                break;\n            }\n        }\n    } else {\n        for (var ri=1;ri<rows.length;ri++) {\n            if (!rows[ri]||!rows[ri][0]) continue;\n            if (rows[ri][0].toString()===searchStr) {\n                foundName=((rows[ri][1]||'')+' '+(rows[ri][2]||'')).trim();\n                foundUser=rows[ri][10]?'@'+rows[ri][10]:'';\n                foundId=rows[ri][0].toString();\n                break;\n            }\n            var ru=(rows[ri][10]||'').replace(/^@/,'').toLowerCase();\n            if (ru && ru===searchStr) {\n                foundName=((rows[ri][1]||'')+' '+(rows[ri][2]||'')).trim();\n                foundUser=rows[ri][10]?'@'+rows[ri][10]:'';\n                foundId=rows[ri][0].toString();\n                break;\n            }\n            var fn=((rows[ri][1]||'')+' '+(rows[ri][2]||'')).trim().toLowerCase();\n            if (fn && fn===searchStr) {\n                foundName=((rows[ri][1]||'')+' '+(rows[ri][2]||'')).trim();\n                foundUser=rows[ri][10]?'@'+rows[ri][10]:'';\n                foundId=rows[ri][0].toString();\n                break;\n            }\n        }\n    }\n    var userLine = foundName ? '\\n\\ud83d\\udc64 *'+foundName+'*' : '';\n    userLine += foundUser ? '  '+foundUser : '';\n    userLine += foundId ? '\\n\\ud83c\\udd94 '+foundId : '';\n    if (!foundId) userLine = '\\n\\u26a0\\ufe0f Utente non trovato in cache — verr\\u00e0 cercato al momento dell\\'operazione.';\n    flow.set('admin_waiting', {action: 'segnali_qty', chatId: chatId, targetId: input.trim()});\n    msg.payload = {\n        chatId: chatId, type: 'message',\n        content: '\\ud83c\\udf81 *Aggiungi Segnali VIP*\\n\\n\\ud83d\\udd0d Ricerca: *' + input.trim() + '*' + userLine + '\\n\\nQuanti segnali vuoi aggiungere?',\n        options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [\n            [{text: '10', callback_data: 'ADMIN_QTY_10'}, {text: '20', callback_data: 'ADMIN_QTY_20'}, {text: '30', callback_data: 'ADMIN_QTY_30'}],\n            [{text: '50', callback_data: 'ADMIN_QTY_50'}, {text: '100', callback_data: 'ADMIN_QTY_100'}, {text: '150', callback_data: 'ADMIN_QTY_150'}],\n            [{text: '\\u270f\\ufe0f Inserisci manuale', callback_data: 'ADMIN_QTY_MANUAL'}],\n            [{text: '\\u274c Annulla', callback_data: 'ADMIN_ANNULLA'}]\n        ]}}\n    };\n    return [msg, null];\n}\nif (waiting.action === 'segnali_manual') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = waiting.targetId;\n    msg.signalsToAdd = parseInt(input.trim()) || 0;\n    if (msg.signalsToAdd <= 0) {\n        msg.payload = {chatId: chatId, type: 'message', content: '\\u274c Numero non valido.', options: {}};\n        return [msg, null];\n    }\n    msg.action = 'aggiungi';\n    return [null, msg];\n}\nif (waiting.action === 'segnali_qty') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.targetUserId = waiting.targetId;\n    msg.signalsToAdd = parseInt(input.trim()) || 0;\n    if (msg.signalsToAdd <= 0) {\n        msg.payload = {chatId: chatId, type: 'message', content: '\\u274c Numero non valido.', options: {}};\n        return [msg, null];\n    }\n    msg.action = 'aggiungi';\n    return [null, msg];\n}\nif (waiting.action === 'broadcast') {\n    flow.set('admin_waiting', null);\n    msg.chatId = chatId; msg.userId = adminId;\n    msg.broadcastMsg = input;\n    msg.broadcastFilter = waiting.filter || 'attivo';\n    msg.action = 'broadcast';\n    return [null, msg];\n}\nreturn null;",
         "outputs": 2,
@@ -1483,17 +1448,17 @@
         "y": 1740,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "49183db026150fd2",
+        "id": "c25fa61e5c85bcc8",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔢 Admin Quantità",
         "func": "var adminId = '858001417';\nif (msg.payload.from.id.toString() !== adminId) return null;\nvar content = msg.payload.content;\nvar chatId = msg.payload.chatId;\n\nif (content === 'ADMIN_QTY_MANUAL') {\n    var waiting = flow.get('admin_waiting');\n    if (!waiting || waiting.action !== 'segnali_qty') return null;\n    flow.set('admin_waiting', {action: 'segnali_manual', chatId: chatId, targetId: waiting.targetId});\n    msg.payload = {\n        chatId: chatId, type: 'message',\n        content: '\\u270f\\ufe0f *Inserimento manuale*\\n\\n'\n            + '\\ud83d\\udcdd Scrivi adesso il numero di segnali VIP da aggiungere:\\n'\n            + '_Es: 75 oppure 200_',\n        options: {parse_mode: 'Markdown', reply_markup: {inline_keyboard: [[{text: '\\u274c Annulla', callback_data: 'ADMIN_ANNULLA'}]]}}\n    };\n    return [msg, null];\n}\nvar m = content.match(/ADMIN_QTY_(\\d+)/);\nif (!m) return null;\nvar waiting2 = flow.get('admin_waiting');\nif (!waiting2 || waiting2.action !== 'segnali_qty') return null;\nflow.set('admin_waiting', null);\nmsg.chatId = chatId; msg.userId = adminId;\nmsg.targetUserId = waiting2.targetId;\nmsg.signalsToAdd = parseInt(m[1]);\nmsg.action = 'aggiungi';\nreturn [null, msg];",
         "outputs": 2,
@@ -1501,17 +1466,17 @@
         "y": 1800,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ],
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "52bef690c09603c1",
+        "id": "82225afbd4174332",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "✅ Approva Btn",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nvar m=msg.payload.content.match(/APPROVA_(\\d+)/);\nif(!m) return null;\nmsg.chatId=msg.payload.chatId;msg.userId=msg.payload.from.id.toString();\nmsg.targetUserId=m[1];msg.action='approva';\nreturn msg;",
         "outputs": 1,
@@ -1519,14 +1484,14 @@
         "y": 1860,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "b86eeb44c4b524e1",
+        "id": "560e02f51066a64c",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "❌ Rifiuta Btn",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nvar m=msg.payload.content.match(/RIFIUTA_(\\d+)/);\nif(!m) return null;\nmsg.chatId=msg.payload.chatId;msg.userId=msg.payload.from.id.toString();\nmsg.targetUserId=m[1];msg.action='rifiuta';\nreturn msg;",
         "outputs": 1,
@@ -1534,14 +1499,14 @@
         "y": 1920,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "4068cb60875a78f0",
+        "id": "713101ea015b48c5",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📸 Invia Foto Admin",
         "method": "POST",
         "ret": "obj",
@@ -1558,9 +1523,9 @@
         ]
     },
     {
-        "id": "12ae269958eb77cf",
+        "id": "9312d87bbfadfc3e",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "👥 Lista KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nvar chatId = msg.payload.chatId;\n// Mostra 3 tasti per scegliere quale gruppo vedere\nmsg.payload = {\n    chatId: chatId,\n    type: 'message',\n    content: '\\ud83d\\udc65 *LISTA UTENTI*\\n\\nQuale gruppo vuoi visualizzare?',\n    options: {\n        parse_mode: 'Markdown',\n        reply_markup: {inline_keyboard: [\n            [\n                {text: '\\ud83d\\udfe2 Attivi', callback_data: 'ADMIN_LISTA_ATTIVI'},\n                {text: '\\u23f8 In Pausa', callback_data: 'ADMIN_LISTA_PAUSA'},\n                {text: '\\ud83d\\udd34 Scaduti', callback_data: 'ADMIN_LISTA_SCADUTI'}\n            ]\n        ]}\n    }\n};\nreturn msg;",
         "outputs": 1,
@@ -1568,14 +1533,14 @@
         "y": 1980,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "421cc28b36ce2c90",
+        "id": "d2901b08dd7fce04",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📊 Stats KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nmsg.chatId=msg.payload.chatId;msg.userId=adminId;msg.action='admin_stats';\nreturn msg;",
         "outputs": 1,
@@ -1583,14 +1548,14 @@
         "y": 2040,
         "wires": [
             [
-                "a130660eb9233ea2"
+                "02feb0a87f2c784e"
             ]
         ]
     },
     {
-        "id": "24d458f6b5a083cf",
+        "id": "376a2f3d29919776",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⭐ Elite KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'elite',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'⭐ *Rendi ELITE*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1598,14 +1563,14 @@
         "y": 2100,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "ec3e1f4936e91c0c",
+        "id": "0e6377465601bdda",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🚫 Togli Elite KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'togli_elite',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'🚫 *Togli ELITE*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1613,14 +1578,14 @@
         "y": 2160,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "cc7b1d51a0b0c43d",
+        "id": "f33635ef635e072e",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🎁 Segnali KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'segnali_id',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'🎁 *Aggiungi Segnali VIP*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1628,14 +1593,14 @@
         "y": 2220,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "f70e44d477f8099b",
+        "id": "720199256e0f69d0",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "✅ Approva KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'approva',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'✅ *Approva Pagamento*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1643,14 +1608,14 @@
         "y": 2280,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "c45641102932f422",
+        "id": "8abd85139418abb0",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "❌ Rifiuta KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'rifiuta',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:'❌ *Rifiuta Pagamento*\\n\\nInviami l\\'ID, @username, nome o #N:',options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'❌ Annulla',callback_data:'ADMIN_ANNULLA'}]]}}};\nreturn msg;",
         "outputs": 1,
@@ -1658,14 +1623,14 @@
         "y": 2340,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "c8106fbf3d45573a",
+        "id": "7a3df07bbecbf4aa",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📋 Pending KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nvar pending=flow.get('pending')||{};\nvar waiting=flow.get('waiting_receipt')||{};\nvar keys=Object.keys(pending);var wkeys=Object.keys(waiting);\nvar text='📋 *PAGAMENTI IN ATTESA* 📋\\n\\n';\nif(keys.length===0&&wkeys.length===0){text+='Nessun pagamento in attesa.';}\nelse{for(var i=0;i<keys.length;i++){var p=pending[keys[i]];text+='🕐 *Attende istruzioni*\\nID: '+keys[i]+'\\nPacchetto: '+p.package.name+' €'+p.finalPrice.toFixed(2)+'\\n\\n';}\nfor(var j=0;j<wkeys.length;j++){var w=waiting[wkeys[j]];text+='📸 *Ha inviato ricevuta*\\nID: '+wkeys[j]+'\\nPacchetto: '+w.package.name+' €'+w.finalPrice.toFixed(2)+'\\n\\n';}}\nmsg.payload={chatId:msg.payload.chatId,type:'message',content:text,options:{parse_mode:'Markdown'}};\nreturn msg;",
         "outputs": 1,
@@ -1673,14 +1638,14 @@
         "y": 2400,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "1c29aba23591c6e6",
+        "id": "bf8adc745333471c",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📣 Broadcast KB",
         "func": "var adminId='858001417';\nif(msg.payload.from.id.toString()!==adminId) return null;\nflow.set('admin_waiting',{action:'broadcast_target',chatId:msg.payload.chatId});\nmsg.payload={chatId:msg.payload.chatId,type:'message',\n    content:'\\ud83d\\udce3 *Broadcast*\\n\\nA chi vuoi inviare il messaggio?',\n    options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[\n        [{text:'\\ud83d\\udc65 TUTTI (attivi + pausa + scaduti)',callback_data:'ADMIN_BC_tutti'}],\n        [{text:'\\u2705 Solo ATTIVI',callback_data:'ADMIN_BC_attivo'}],\n        [{text:'\\u23f8 Solo in PAUSA',callback_data:'ADMIN_BC_pausa'}],\n        [{text:'\\ud83d\\udd34 Solo SCADUTI',callback_data:'ADMIN_BC_scaduto'}],\n        [{text:'\\u274c Annulla',callback_data:'ADMIN_ANNULLA'}]\n    ]}}};\nreturn msg;",
         "outputs": 1,
@@ -1688,14 +1653,14 @@
         "y": 2460,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "ef0d1ba5319ae3ce",
+        "id": "6fe64afb679256f6",
         "type": "telegram sender",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📤 Invia Messaggio",
         "bot": "tg_bot_cfg",
         "haserroroutput": true,
@@ -1705,14 +1670,14 @@
         "wires": [
             [],
             [
-                "72718e51422449b2"
+                "cecb3aca9cbfcf5b"
             ]
         ]
     },
     {
-        "id": "72718e51422449b2",
+        "id": "cecb3aca9cbfcf5b",
         "type": "debug",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🐛 Errori Telegram",
         "active": true,
         "tosidebar": true,
@@ -1725,9 +1690,9 @@
         "wires": []
     },
     {
-        "id": "9aedaa946b7edd12",
+        "id": "delay_dec_rate",
         "type": "delay",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⏱ Rate 2/s Sheets",
         "pauseType": "rate",
         "timeout": "1",
@@ -1741,14 +1706,14 @@
         "y": 1500,
         "wires": [
             [
-                "fffcd401af6731cb"
+                "2161ea1c2ee6512f"
             ]
         ]
     },
     {
-        "id": "2356750d403aab95",
+        "id": "http_vip_post_btn",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🌐 POST Crea Link VIP",
         "method": "POST",
         "ret": "obj",
@@ -1762,14 +1727,14 @@
         "y": 180,
         "wires": [
             [
-                "996005842e49d90d"
+                "fn_vip_btn_resp"
             ]
         ]
     },
     {
-        "id": "996005842e49d90d",
+        "id": "fn_vip_btn_resp",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔗 Risposta Link VIP Btn",
         "func": "var chatId=msg._chatId;var link=(msg.payload&&msg.payload.result)?msg.payload.result.invite_link:null;var txt=msg._activationMsg||'👑 *Entra nel Canale VIP!*';if(!link){msg.payload={chatId:chatId,type:'message',content:'❌ Errore link. Riprova.',options:{}};return msg;}msg.payload={chatId:chatId,type:'message',content:txt,options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'👑 Entra nel Canale VIP',url:link}]]}}};return msg;",
         "outputs": 1,
@@ -1777,14 +1742,14 @@
         "y": 180,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "3a18ec0d6e8db619",
+        "id": "http_chat_post_btn",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🌐 POST Crea Link Chat",
         "method": "POST",
         "ret": "obj",
@@ -1798,14 +1763,14 @@
         "y": 240,
         "wires": [
             [
-                "b2306d69f2accdcd"
+                "fn_chat_btn_resp"
             ]
         ]
     },
     {
-        "id": "b2306d69f2accdcd",
+        "id": "fn_chat_btn_resp",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔗 Risposta Link Chat Btn",
         "func": "var chatId=msg._chatId;var link=(msg.payload&&msg.payload.result)?msg.payload.result.invite_link:null;var txt=msg._activationMsg||'💬 *Entra nel Gruppo Chat VIP!*';if(!link){msg.payload={chatId:chatId,type:'message',content:'❌ Errore link. Riprova.',options:{}};return msg;}msg.payload={chatId:chatId,type:'message',content:txt,options:{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'💬 Entra nel Gruppo Chat VIP',url:link}]]}}};return msg;",
         "outputs": 1,
@@ -1813,14 +1778,14 @@
         "y": 240,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
     },
     {
-        "id": "ea0d1d8356f427f3",
+        "id": "unban_vip_pre_fn",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔓 Prep Unban VIP",
         "func": "// Salva i dati per la generazione del link\nmsg._linkData = {\n    url: msg.url,\n    method: msg.method,\n    headers: msg.headers,\n    payload: msg.payload,\n    _activationMsg: msg._activationMsg,\n    _chatId: msg._chatId\n};\n// Prepara la chiamata unban sul Canale VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1002950341972,\n    user_id: parseInt(msg._chatId),\n    only_if_banned: true\n});\nreturn msg;",
         "outputs": 1,
@@ -1828,14 +1793,14 @@
         "y": 0,
         "wires": [
             [
-                "f1f70322dc63c263"
+                "unban_vip_pre_http"
             ]
         ]
     },
     {
-        "id": "f1f70322dc63c263",
+        "id": "unban_vip_pre_http",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban VIP (pre-link)",
         "method": "POST",
         "ret": "obj",
@@ -1844,14 +1809,14 @@
         "y": 0,
         "wires": [
             [
-                "7f0594e81dc44999"
+                "restore_vip_link_fn"
             ]
         ]
     },
     {
-        "id": "7f0594e81dc44999",
+        "id": "restore_vip_link_fn",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔁 Restore VIP Link",
         "func": "var d = msg._linkData;\nmsg.url = d.url;\nmsg.method = d.method;\nmsg.headers = d.headers;\nmsg.payload = d.payload;\nmsg._activationMsg = d._activationMsg;\nmsg._chatId = d._chatId;\nreturn msg;",
         "outputs": 1,
@@ -1859,14 +1824,14 @@
         "y": 0,
         "wires": [
             [
-                "2356750d403aab95"
+                "http_vip_post_btn"
             ]
         ]
     },
     {
-        "id": "cd611048cd048538",
+        "id": "unban_chat_pre_fn",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔓 Prep Unban Chat",
         "func": "// Salva i dati per la generazione del link\nmsg._linkData = {\n    url: msg.url,\n    method: msg.method,\n    headers: msg.headers,\n    payload: msg.payload,\n    _activationMsg: msg._activationMsg,\n    _chatId: msg._chatId\n};\n// Prepara la chiamata unban sul Gruppo Chat VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1003726114956,\n    user_id: parseInt(msg._chatId),\n    only_if_banned: true\n});\nreturn msg;",
         "outputs": 1,
@@ -1874,14 +1839,14 @@
         "y": 0,
         "wires": [
             [
-                "1c7467a8b7779acd"
+                "unban_chat_pre_http"
             ]
         ]
     },
     {
-        "id": "1c7467a8b7779acd",
+        "id": "unban_chat_pre_http",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban Chat (pre-link)",
         "method": "POST",
         "ret": "obj",
@@ -1890,14 +1855,14 @@
         "y": 0,
         "wires": [
             [
-                "b05fea9898923d89"
+                "restore_chat_link_fn"
             ]
         ]
     },
     {
-        "id": "b05fea9898923d89",
+        "id": "restore_chat_link_fn",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔁 Restore Chat Link",
         "func": "var d = msg._linkData;\nmsg.url = d.url;\nmsg.method = d.method;\nmsg.headers = d.headers;\nmsg.payload = d.payload;\nmsg._activationMsg = d._activationMsg;\nmsg._chatId = d._chatId;\nreturn msg;",
         "outputs": 1,
@@ -1905,14 +1870,14 @@
         "y": 0,
         "wires": [
             [
-                "3a18ec0d6e8db619"
+                "http_chat_post_btn"
             ]
         ]
     },
     {
-        "id": "49774d69d00e4d02",
+        "id": "fn_unban_vip_attiva",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔓 Unban VIP (attiva)",
         "func": "// Salva i dati di attivazione\nmsg._attiva = {\n    _activationChatId: msg._activationChatId,\n    _activationMsg: msg._activationMsg\n};\n// Unban dal Canale VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1002950341972,\n    user_id: parseInt(msg._activationChatId),\n    only_if_banned: true\n});\nreturn msg;",
         "outputs": 1,
@@ -1920,14 +1885,14 @@
         "y": 0,
         "wires": [
             [
-                "0dc3981bf1ae97ab"
+                "http_unban_vip_attiva"
             ]
         ]
     },
     {
-        "id": "0dc3981bf1ae97ab",
+        "id": "http_unban_vip_attiva",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban VIP (attiva)",
         "method": "POST",
         "ret": "obj",
@@ -1936,14 +1901,14 @@
         "y": 0,
         "wires": [
             [
-                "c6f9a74dea2a2233"
+                "fn_unban_chat_attiva"
             ]
         ]
     },
     {
-        "id": "c6f9a74dea2a2233",
+        "id": "fn_unban_chat_attiva",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔓 Unban Chat (attiva)",
         "func": "// Unban dal Gruppo Chat VIP\nmsg.url = 'https://api.telegram.org/bot8632260663:AAHIi2HjAHsfUYpsHOvviwX9fVUCdIdUIUI/unbanChatMember';\nmsg.method = 'POST';\nmsg.headers = {'Content-Type': 'application/json'};\nmsg.payload = JSON.stringify({\n    chat_id: -1003726114956,\n    user_id: parseInt(msg._attiva._activationChatId),\n    only_if_banned: true\n});\nreturn msg;",
         "outputs": 1,
@@ -1951,14 +1916,14 @@
         "y": 0,
         "wires": [
             [
-                "c03607ede6aeaa03"
+                "http_unban_chat_attiva"
             ]
         ]
     },
     {
-        "id": "c03607ede6aeaa03",
+        "id": "http_unban_chat_attiva",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "Unban Chat (attiva)",
         "method": "POST",
         "ret": "obj",
@@ -1967,14 +1932,14 @@
         "y": 0,
         "wires": [
             [
-                "02508925f6beca60"
+                "fn_restore_attiva"
             ]
         ]
     },
     {
-        "id": "02508925f6beca60",
+        "id": "fn_restore_attiva",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔁 Restore Attiva",
         "func": "// Ripristina i dati di attivazione per generare i link\nmsg._activationChatId = msg._attiva._activationChatId;\nmsg._activationMsg = msg._attiva._activationMsg;\ndelete msg._attiva;\ndelete msg.url;\ndelete msg.method;\ndelete msg.headers;\ndelete msg.payload;\nreturn msg;",
         "outputs": 1,
@@ -1982,14 +1947,14 @@
         "y": 0,
         "wires": [
             [
-                "bb4feb1d39d76328"
+                "074a0ce3cb5e587c"
             ]
         ]
     },
     {
-        "id": "f045451fc926e92f",
+        "id": "warmup_inject_01",
         "type": "inject",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔄 Warm-up Cache (4 min)",
         "props": [
             {
@@ -2007,14 +1972,14 @@
         "y": 960,
         "wires": [
             [
-                "23ded562106d538c"
+                "warmup_fn_01"
             ]
         ]
     },
     {
-        "id": "23ded562106d538c",
+        "id": "warmup_fn_01",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "⚙️ Prep Warm-up",
         "func": "// Pre-riscalda la cache chiamando GAS in background\nmsg.payload = {};\nmsg._warmup = true;\nreturn msg;",
         "outputs": 1,
@@ -2022,14 +1987,14 @@
         "y": 960,
         "wires": [
             [
-                "00a703ceecd283e4"
+                "warmup_gas_01"
             ]
         ]
     },
     {
-        "id": "00a703ceecd283e4",
+        "id": "warmup_gas_01",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📡 GAS Warm-up Read",
         "method": "GET",
         "ret": "obj",
@@ -2043,14 +2008,14 @@
         "y": 960,
         "wires": [
             [
-                "1fb253bda7eeb0f2"
+                "warmup_store_01"
             ]
         ]
     },
     {
-        "id": "1fb253bda7eeb0f2",
+        "id": "warmup_store_01",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "💾 Warm-up Cache Store",
         "func": "// Aggiorna la cache solo se la risposta è valida\nif (msg.payload && msg.payload.values) {\n    flow.set('gs_cache', {rows: msg.payload.values, ts: Date.now()});\n    node.log('✅ Cache GS aggiornata dal warm-up: ' + msg.payload.values.length + ' righe');\n}\nreturn null; // non proseguire il flusso",
         "outputs": 1,
@@ -2061,9 +2026,17 @@
         ]
     },
     {
-        "id": "331a89cf0c48b580",
+        "id": "9f2ab88e9ab75638",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-telegrambot": "17.1.3"
+        }
+    },
+    {
+        "id": "http_getchat_newuser",
         "type": "http request",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "🔍 getChat Nuovo Utente",
         "method": "GET",
         "ret": "obj",
@@ -2077,14 +2050,14 @@
         "y": 250,
         "wires": [
             [
-                "bd3fa3e8aa709079"
+                "fn_newuser_notif"
             ]
         ]
     },
     {
-        "id": "bd3fa3e8aa709079",
+        "id": "fn_newuser_notif",
         "type": "function",
-        "z": "da956154f9a1526c",
+        "z": "52af9f6200d53beb",
         "name": "📣 Notifica Admin Nuovo Utente",
         "func": "// Processa risposta getChat e manda notifica admin\nvar result = msg.payload;\nvar chatId  = msg._newUserChatId;\nvar adminId = msg._adminId;\n\nfunction esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }\n\nvar info = (result && result.ok && result.result) ? result.result : {};\nvar fn  = esc((info.first_name || '').trim());\nvar ln  = esc((info.last_name  || '').trim());\nvar raw = (info.username || '').trim();\n\nvar fullName    = (fn + ' ' + ln).trim();\nvar displayName = fullName || '\\u26a0\\ufe0f Anonimo';\nvar profileLink = raw\n    ? '<a href=\"https://t.me/' + raw + '\">@' + esc(raw) + '</a>'\n    : '<a href=\"tg://user?id=' + chatId + '\">apri profilo</a>';\n\nnode.warn('getChat result: ' + JSON.stringify(info));\n\nreturn {payload: {\n    chatId: adminId,\n    type: 'message',\n    content: '\\ud83d\\udd14 <b>NUOVO UTENTE - /start</b>\\n\\n'\n           + '\\ud83d\\udc64 <b>Nome:</b> ' + displayName + '\\n'\n           + '\\ud83d\\udcf1 <b>Username:</b> ' + profileLink + '\\n'\n           + '\\ud83c\\udd94 <b>ID:</b> <code>' + chatId + '</code>',\n    options: {parse_mode: 'HTML'}\n}};",
         "outputs": 1,
@@ -2092,16 +2065,8 @@
         "y": 250,
         "wires": [
             [
-                "ef0d1ba5319ae3ce"
+                "6fe64afb679256f6"
             ]
         ]
-    },
-    {
-        "id": "d3856b36da587722",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-contrib-telegrambot": "17.1.3"
-        }
     }
 ]
