@@ -7,7 +7,7 @@ module.exports = {
     uiHost: "0.0.0.0",
 
     // Directory dati runtime (volume persistente su Railway o /app/data)
-    userDir: "/data",
+    userDir: "/app/data",
 
     // File del flow da caricare all'avvio
     flowFile: "flows.json",
