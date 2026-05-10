@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-DATA_DIR="/app/data"
+DATA_DIR="/data"
 CRED_FILE="$DATA_DIR/flows_cred.json"
 FLOW_SRC="/app/flow_VIP_v44_FIXED.json"
 FLOW_DST="$DATA_DIR/flows.json"
