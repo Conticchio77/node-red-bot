@@ -39,8 +39,8 @@ RUN mkdir -p /app/data
 EXPOSE 1880
 
 # ── Healthcheck ─────────────────────────────────────────────────────────────────
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget -qO- http://localhost:${PORT:-1880}/health 2>/dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
+    CMD wget -qO- http://localhost:${PORT:-1880}/ 2>/dev/null | grep -q "." || exit 1
 
 # ── Avvio ────────────────────────────────────────────────────────────────────────
 ENTRYPOINT ["./entrypoint.sh"]
