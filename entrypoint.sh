@@ -18,6 +18,13 @@ if [ -z "$BOT_TOKEN" ]; then
     exit 1
 fi
 
+# Verifica che il flow sorgente esista nell'immagine
+if [ ! -f "$FLOW_SRC" ]; then
+    echo "❌ ERRORE: flow sorgente non trovato: $FLOW_SRC"
+    echo "   Assicurati che il file sia committato nel repo e copiato nel Dockerfile"
+    exit 1
+fi
+
 # ✅ Pulizia configurazione Projects dal volume (causa la modal "flow file not found")
 echo "🧹 Pulizia configurazione Projects..."
 rm -rf "$DATA_DIR/projects"
