@@ -7,7 +7,7 @@ module.exports = {
     uiHost: "0.0.0.0",
 
     // Directory dati runtime (volume persistente su Railway o /app/data)
-    userDir: "/data",
+    userDir: "/app/data",
 
     // File del flow da caricare all'avvio
     flowFile: "flows.json",
@@ -26,10 +26,6 @@ module.exports = {
         enabled: false
     },
 
-    // ✅ Healthcheck endpoint per Railway
-    httpNodeRoot: "/api",
-    httpStatic: false,
-
     // Log
     logging: {
         console: {
@@ -39,10 +35,10 @@ module.exports = {
         }
     },
 
-    // Contesto: memoria (non disco) → nessun problema con filesystem effimero
+    // Contesto: salva su file così sopravvive ai restart
     contextStorage: {
         default: {
-            module: "memory"
+            module: "localfilesystem"
         }
     },
 
