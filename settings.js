@@ -26,6 +26,10 @@ module.exports = {
         enabled: false
     },
 
+    // ✅ Healthcheck endpoint per Railway
+    httpNodeRoot: "/api",
+    httpStatic: false,
+
     // Log
     logging: {
         console: {
@@ -35,10 +39,10 @@ module.exports = {
         }
     },
 
-    // Contesto: salva su file così sopravvive ai restart
+    // Contesto: memoria (non disco) → nessun problema con filesystem effimero
     contextStorage: {
         default: {
-            module: "localfilesystem"
+            module: "memory"
         }
     },
 
