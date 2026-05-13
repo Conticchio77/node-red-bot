@@ -54,7 +54,4 @@ echo "🟢 Avvio Node-RED su porta ${PORT:-1880}..."
 exec node-red \
     --userDir "$DATA_DIR" \
     --port "${PORT:-1880}" \
-    -s "$DATA_DIR/settings.js" 2>&1 || \
-exec node-red \
-    --userDir "$DATA_DIR" \
-    --port "${PORT:-1880}" 2>&1
+    -s /app/settings.js 2>&1
