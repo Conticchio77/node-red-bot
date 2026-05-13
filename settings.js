@@ -3,10 +3,10 @@ module.exports = {
     // Porta da env (Railway la imposta automaticamente)
     uiPort: process.env.PORT || 1880,
 
-    // Nessun binding fisso: Railway usa il suo proxy
+    // Binding su tutte le interfacce: necessario per Railway
     uiHost: "0.0.0.0",
 
-    // Directory dati runtime (volume persistente su Railway o /app/data)
+    // Directory dati runtime (volume persistente su Railway)
     userDir: "/app/data",
 
     // File del flow da caricare all'avvio
@@ -21,10 +21,20 @@ module.exports = {
     // Editor visuale abilitato
     disableEditor: false,
 
-    // ✅ Projects DISABILITATI — va qui a livello root, non in editorTheme!
+    // ✅ Projects DISABILITATI
     projects: {
         enabled: false
     },
+
+    // Autenticazione editor (usa le variabili Railway)
+    adminAuth: process.env.NODE_RED_USERNAME ? {
+        type: "credentials",
+        users: [{
+            username: process.env.NODE_RED_USERNAME,
+            password: process.env.NODE_RED_PASSWORD,
+            permissions: "*"
+        }]
+    } : undefined,
 
     // Log
     logging: {
@@ -48,10 +58,10 @@ module.exports = {
     // Timeout HTTP request nodes (ms)
     httpRequestTimeout: 30000,
 
-    // Ottimizzazione per container
+    // Moduli esterni nei function node (disabilitato per sicurezza)
     functionExternalModules: false,
 
-    // Evita warning su nodi deprecati
+    // Tema editor
     editorTheme: {
         tours: false
     }
