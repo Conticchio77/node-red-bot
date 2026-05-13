@@ -1026,7 +1026,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "⚡ Cache Gate",
-    "func": "// Controlla se abbiamo dati in cache validi (5 minuti)\nvar cache = flow.get('gs_cache');\nvar now = Date.now();\nif (cache && (now - cache.ts) < 300000) {\n        msg.payload = {values: cache.rows};\n    return [null, msg]; // output 2: va diretto a fn_process\n}\nreturn [msg, null]; // output 1: va a gs_read",
+    "func": "// Controlla se abbiamo dati in cache validi (5 minuti)\nvar cache = flow.get('gs_cache');\nvar now = Date.now();\n// ATTIVA: bypass cache → lettura fresca da Sheets (gestisce utenti cancellati dal foglio)\nif (msg.action === 'attiva') {\n    return [msg, null]; // output 1: forza lettura fresca\n}\nif (cache && (now - cache.ts) < 300000) {\n    msg.payload = {values: cache.rows};\n    return [null, msg]; // output 2: va diretto a fn_process\n}\nreturn [msg, null]; // output 1: va a gs_read",
     "outputs": 2,
     "x": 1080,
     "y": 840,
