@@ -42,7 +42,7 @@ echo "✅ Flow copiato: $FLOW_DST"
 # ID nodo bot Telegram nel flow: tg_bot_cfg
 cat > "$CRED_FILE" << CREDENTIALS
 {
-  "tg_bot_cfg": {
+  "e005a4bf2c9f8546": {
     "token": "${BOT_TOKEN}"
   }
 }
