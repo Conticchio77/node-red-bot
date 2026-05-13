@@ -1,16 +1,18 @@
 {
-  "name": "node-red-vip-bot",
+  "name": "vip-signals-bot",
   "version": "1.0.0",
-  "description": "Node-RED VIP Telegram Bot",
-  "main": "index.js",
+  "description": "Node-RED VIP Telegram Signals Bot",
+  "main": "node_modules/.bin/node-red",
   "scripts": {
     "start": "node-red --settings /app/settings.js --userDir /app/data"
   },
   "dependencies": {
-    "node-red": "^3.1.9",
-    "node-red-contrib-telegrambot": "^15.4.0"
+    "node-red": "3.1.9",
+    "node-red-contrib-telegrambot": "^14.5.0"
   },
   "engines": {
-    "node": ">=18.0.0"
-  }
+    "node": ">=18"
+  },
+  "author": "Conticchio77",
+  "license": "MIT"
 }
