@@ -1,93 +1,51 @@
-# node-red-bot 🤖
+# 🤖 VIP Signals Bot — Node-RED su Railway
 
-Bot Telegram VIP segnali — Node-RED su Railway.
-
----
-
-## 📁 File del progetto
-
-| File | Descrizione |
-|------|-------------|
-| `Dockerfile` | Build container per Railway |
-| `package.json` | Dipendenze Node-RED + plugin Telegram |
-| `settings.js` | Configurazione Node-RED (porta, credenziali, log) |
-| `entrypoint.sh` | Script avvio: inietta `BOT_TOKEN` nelle credenziali |
-| `flow_VIP_v44_FIXED.json` | Flow Node-RED con tutte le logiche bot |
+Bot Telegram per segnali VIP, basato su Node-RED e deployato su Railway.
 
 ---
 
-## 🚀 Deploy su Railway — Passo per passo
-
-### 1. Push su GitHub
-
-```bash
-git add .
-git commit -m "Update flow_VIP_v44_FIXED.json"
-git push origin main
-```
-
-### 2. Crea il servizio su Railway
-
-1. Vai su [railway.app](https://railway.app) → **New Project**
-2. Seleziona **Deploy from GitHub repo**
-3. Scegli il repo `node-red-bot`
-4. Railway rileverà automaticamente il `Dockerfile`
-
-### 3. Imposta le variabili d'ambiente (OBBLIGATORIO)
-
-Vai su **railway.app → il tuo servizio → Variables** e aggiungi:
-
-| Variabile | Valore | Obbligatorio |
-|-----------|--------|-------------|
-| `BOT_TOKEN` | `8632260663:AAHIi2HjAH...` | ✅ Sì |
-
-> **⚠️ Importante:** Non mettere mai il token nel codice o nel flow JSON.  
-> Railway gestisce le variabili in modo sicuro.
-
-### 4. Deploy
-
-Railway parte automaticamente dopo il push. Controlla i log dal pannello Railway per confermare:
+## 📁 Struttura del repository
 
 ```
-✅ Flow copiato in /app/data/flows.json
-✅ Credenziali Telegram iniettate
-🟢 Avvio Node-RED...
+node-red-bot/
+├── Dockerfile          ← build del container
+├── entrypoint.sh       ← script di avvio (inietta il token)
+├── settings.js         ← configurazione Node-RED
+├── package.json        ← dipendenze npm
+├── flow_VIP.json       ← il flow Node-RED (aggiornare ad ogni modifica)
+├── .gitignore          ← esclude segreti e file temporanei
+└── README.md           ← questo file
 ```
 
 ---
 
-## 🔧 Fix v44 — Notifica nuovo utente
+## 🔐 Variabili d'ambiente (Railway → Variables)
 
-**Problema vecchia versione:** quando un nuovo utente attivava il bot, l'admin riceveva solo l'ID.
+| Variabile | Descrizione |
+|---|---|
+| `BOT_TOKEN` | Token del bot Telegram (da @BotFather) |
+| `NODE_RED_USERNAME` | Username per accedere all'editor Node-RED |
+| `NODE_RED_PASSWORD` | Password per l'editor Node-RED (hash bcrypt) |
+| `NODE_RED_CREDENTIAL_SECRET` | Chiave per cifrare le credenziali |
 
-**Fix applicato in v44:** il nodo `✅ ATTIVA` ora salva sempre nome, cognome e username in `msg._from`, e il nodo `⚙️ Processa Logica` li include nella notifica admin:
-
-```
-🔔 NUOVO UTENTE ATTIVATO!
-
-👤 Nome: Mario Rossi
-📱 Username: @mariorossi
-🆔 ID: 123456789
-
-🎁 Ha ricevuto 30 segnali VIP gratuiti.
-```
+> ⚠️ **Non mettere MAI questi valori nel codice o su GitHub!**
 
 ---
 
-## 📦 Aggiornare il flow
+## 🔄 Come aggiornare il flow
 
-1. Esporta il flow da Node-RED come `flow_VIP_vXX_FIXED.json`
-2. Rinomina/sostituisci il file nel repo
-3. Aggiorna il nome in `entrypoint.sh` se cambi il filename
-4. `git push` → Railway rideploya automaticamente
+1. Modifica il flow nell'editor Node-RED
+2. Menu ☰ → **Export** → **All flows** → Download JSON
+3. Rinomina il file scaricato in **`flow_VIP.json`**
+4. Sostituisci il file nel repository
+5. Fai `git add flow_VIP.json && git commit -m "Update flow" && git push`
+6. Railway fa il rebuild automaticamente ✅
 
 ---
 
-## 🛟 Troubleshooting
+## 🚀 Deploy su Railway
 
-| Problema | Soluzione |
-|----------|-----------|
-| Bot non risponde | Controlla che `BOT_TOKEN` sia corretto nelle Variables |
-| Credenziali non trovate | Verifica i log: `❌ ERRORE: variabile BOT_TOKEN non impostata` |
-| Flow non si carica | Controlla che `flow_VIP_v44_FIXED.json` sia nel repo |
-| Porta non risponde | Railway assegna la porta via `PORT` env var — già gestita |
+Railway è collegato a questo repository GitHub e fa il build automatico ad ogni push.
+
+Per collegarlo:
+- Railway → Settings → Source → seleziona questo repository
