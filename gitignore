@@ -1,0 +1,22 @@
+# ── Credenziali e segreti — MAI su GitHub ───────────────────────────────────────
+flows_cred.json
+.env
+*.env
+.env.*
+
+# ── Dati runtime Node-RED (sono sul volume Railway) ─────────────────────────────
+/app/data/
+data/
+.node-red/
+
+# ── Dipendenze (vengono reinstallate dal Dockerfile) ────────────────────────────
+node_modules/
+
+# ── File temporanei e di sistema ─────────────────────────────────────────────────
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# ── Context storage Node-RED ─────────────────────────────────────────────────────
+context/
