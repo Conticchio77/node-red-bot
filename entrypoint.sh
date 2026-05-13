@@ -3,7 +3,7 @@ set -e
 
 DATA_DIR="/app/data"
 CRED_FILE="$DATA_DIR/flows_cred.json"
-FLOW_SRC="/app/flow_VIP_v45_FIXED.json"
+FLOW_SRC="/app/flow_VIP.json"
 FLOW_DST="$DATA_DIR/flows.json"
 
 echo "🚀 Avvio VIP Bot..."
@@ -18,7 +18,13 @@ if [ -z "$BOT_TOKEN" ]; then
     exit 1
 fi
 
-# ✅ Pulizia configurazione Projects dal volume (causa la modal "flow file not found")
+# Verifica che il file flow esista
+if [ ! -f "$FLOW_SRC" ]; then
+    echo "❌ ERRORE: file flow non trovato: $FLOW_SRC"
+    exit 1
+fi
+
+# ✅ Pulizia configurazione Projects dal volume (evita la modal "flow file not found")
 echo "🧹 Pulizia configurazione Projects..."
 rm -rf "$DATA_DIR/projects"
 rm -f "$DATA_DIR/.config.projects.json"
@@ -26,11 +32,11 @@ rm -f "$DATA_DIR/.config.nodes.json"
 rm -f "$DATA_DIR/.config.runtime.json"
 echo "✅ Pulizia completata"
 
-# Copia il flow nella directory dati (sovrascrive sempre con la versione aggiornata)
+# Copia il flow nella directory dati (sovrascrive sempre con la versione da GitHub)
 cp "$FLOW_SRC" "$FLOW_DST"
 echo "✅ Flow copiato in $FLOW_DST"
 
-# Genera il file delle credenziali con il token dal env
+# Genera il file delle credenziali con il token dall'env
 # L'ID del nodo telegram bot è: tg_bot_cfg
 cat > "$CRED_FILE" << CREDENTIALS
 {
@@ -41,7 +47,7 @@ cat > "$CRED_FILE" << CREDENTIALS
 CREDENTIALS
 
 echo "✅ Credenziali Telegram iniettate"
+echo "🟢 Avvio Node-RED..."
 
 # Avvia Node-RED
-echo "🟢 Avvio Node-RED..."
 exec node-red --settings /app/settings.js --userDir "$DATA_DIR"
