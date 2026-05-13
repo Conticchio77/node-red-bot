@@ -17,15 +17,8 @@ module.exports = {
     httpAdminRoot: "/",
     disableEditor: false,
 
-    // Autenticazione editor (usa le variabili Railway)
-    adminAuth: process.env.NODE_RED_USERNAME ? {
-        type: "credentials",
-        users: [{
-            username: process.env.NODE_RED_USERNAME,
-            password: process.env.NODE_RED_PASSWORD,
-            permissions: "*"
-        }]
-    } : undefined,
+    // Autenticazione editor DISABILITATA (accesso libero all'editor)
+    // adminAuth: { ... },  ← decommentare se si vuole proteggere l'editor
 
     // ── Projects DISABILITATI ─────────────────────────────────────────────────────
     projects: {
