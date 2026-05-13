@@ -12,6 +12,8 @@ RUN npm install --prefix /usr/src/node-red \
     && npm cache clean --force
 
 # ── Copia i file dell'applicazione ───────────────────────────────────────────────
+# settings.js va in /app/ — NON in /data/ che viene sovrascritto dal volume Railway!
+COPY --chown=node-red:node-red settings.js   /app/settings.js
 COPY --chown=node-red:node-red flow_VIP.json /app/flow_VIP.json
 COPY --chown=node-red:node-red entrypoint.sh /entrypoint.sh
 
