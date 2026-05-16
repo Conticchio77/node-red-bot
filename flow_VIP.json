@@ -608,7 +608,7 @@
     "y": 60,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "652a309af5a2e752"
@@ -626,7 +626,7 @@
     "y": 120,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -671,7 +671,7 @@
     "y": 300,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -686,7 +686,7 @@
     "y": 360,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -701,7 +701,7 @@
     "y": 420,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -716,7 +716,7 @@
     "y": 480,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -746,7 +746,7 @@
     "y": 600,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -764,7 +764,7 @@
     "y": 660,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -782,7 +782,7 @@
     "y": 720,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -800,7 +800,7 @@
     "y": 780,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -818,7 +818,7 @@
     "y": 840,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -836,7 +836,7 @@
     "y": 900,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -854,7 +854,7 @@
     "y": 960,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -872,7 +872,7 @@
     "y": 1020,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -890,7 +890,7 @@
     "y": 1080,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -908,7 +908,7 @@
     "y": 1140,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -926,7 +926,7 @@
     "y": 1200,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -944,7 +944,7 @@
     "y": 1260,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -962,7 +962,7 @@
     "y": 1320,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -980,7 +980,7 @@
     "y": 1380,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -1001,7 +1001,7 @@
         "f4a1386c33b6c07f"
       ],
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "c075513c8ba1d445"
@@ -1019,7 +1019,7 @@
     "y": 440,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -1094,13 +1094,13 @@
     "y": 900,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "a2f73e426d56f473"
       ],
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "46bb69df134f4f9f"
@@ -1181,7 +1181,7 @@
         "e516a6397433b1c3"
       ],
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "9de387394f84e789"
@@ -1271,7 +1271,7 @@
     "y": 1060,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1503,7 +1503,7 @@
         "1eeab8b2bba3b84c"
       ],
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "e516a6397433b1c3"
@@ -1540,7 +1540,7 @@
     "y": 1620,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1555,7 +1555,7 @@
     "y": 1680,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -1573,7 +1573,7 @@
     "y": 1740,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -1591,7 +1591,7 @@
     "y": 1800,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ],
       [
         "5fcf87c454954f6d"
@@ -1658,7 +1658,7 @@
     "y": 1980,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1688,7 +1688,7 @@
     "y": 2100,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1703,7 +1703,7 @@
     "y": 2160,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1718,7 +1718,7 @@
     "y": 2220,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1733,7 +1733,7 @@
     "y": 2280,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1748,7 +1748,7 @@
     "y": 2340,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1763,7 +1763,7 @@
     "y": 2400,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1778,7 +1778,7 @@
     "y": 2460,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1867,7 +1867,7 @@
     "y": 180,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -1903,7 +1903,7 @@
     "y": 240,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -2182,7 +2182,7 @@
     "y": 250,
     "wires": [
       [
-        "1263251632a175fa"
+        "f5e6d7c8b9a01234"
       ]
     ]
   },
@@ -2258,6 +2258,21 @@
     "outputs": 1,
     "x": 820,
     "y": 2140,
+    "wires": [
+      [
+        "f5e6d7c8b9a01234"
+      ]
+    ]
+  },
+  {
+    "id": "f5e6d7c8b9a01234",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🔑 Admin Keyboard Guard",
+    "func": "var ADMIN = '858001417';\nvar chatId = (msg.payload && msg.payload.chatId) ? msg.payload.chatId.toString() : '';\nif (!chatId) return msg;\n\nvar opts = msg.payload.options;\nif (!opts) { msg.payload.options = {}; opts = msg.payload.options; }\n\nvar rm = opts.reply_markup;\n// Se c'è già inline_keyboard o keyboard esplicita non toccare\nif (rm && (rm.inline_keyboard || rm.keyboard)) return msg;\n\nvar kb = chatId === ADMIN\n    ? [[\"\\ud83d\\udc65 Lista Utenti\", \"\\ud83d\\udcca Statistiche\"], [\"\\u2b50 Rendi ELITE\", \"\\ud83d\\udeab Togli ELITE\"], [\"\\ud83c\\udf81 Aggiungi Segnali\", \"\\u2705 Approva Pagamento\"], [\"\\u274c Rifiuta Pagamento\", \"\\ud83d\\udccb Pagamenti in Attesa\"], [\"\\ud83d\\udce3 Broadcast\"]]\n    : [[\"\\ud83d\\udc51 CANALE VIP\", \"\\ud83d\\udcac CHAT GRUPPO VIP\"], [\"\\ud83d\\udcca STATO/SALDO\", \"\\ud83d\\udce6 ACQUISTA\"], [\"\\u2705 ATTIVA oppure \\u25b6\\ufe0f RIPRENDI SEGNALI VIP\"], [\"\\u23f8 PAUSA RICEZIONE SEGNALI VIP\"], [\"\\ud83c\\udfaf METODO DI GIOCO\", \"\\ud83d\\udcca BILANCIO\"], [\"\\ud83d\\udcc8 BOOK\", \"\\ud83c\\udf81 BONUS\", \"\\ud83c\\udd98 ASSISTENZA\"]];\n\nopts.reply_markup = { keyboard: kb, resize_keyboard: true };\nreturn msg;",
+    "outputs": 1,
+    "x": 3700,
+    "y": 300,
     "wires": [
       [
         "1263251632a175fa"
