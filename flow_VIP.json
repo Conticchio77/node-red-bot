@@ -205,8 +205,8 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔧 Fix Callback",
-    "func": "// ── Bot in manutenzione: avvisa utenti (non admin) ──\nvar _userId = (msg.payload.from && msg.payload.from.id) ? msg.payload.from.id.toString() : (msg.payload.chatId ? msg.payload.chatId.toString() : '');\nvar _adminId = '858001417';\nif (flow.get('manutenzione') && _userId !== _adminId) {\n    node.send([null, {payload: {\n        chatId: msg.payload.chatId,\n        type: 'message',\n        content: '\\ud83d\\udd27 *Bot in manutenzione*\\n\\nStiamo lavorando per migliorare il servizio.\\n\\nVerrai re-invitato nel canale VIP automaticamente al ripristino. \\ud83d\\ude4f',\n        options: {parse_mode: 'Markdown'}\n    }}]);\n    return null;\n}\nvar chatType = msg.payload.chat ? msg.payload.chat.type : '';\nvar chatId = msg.payload.chatId || (msg.payload.chat && msg.payload.chat.id) || 0;\nif (chatType === 'group' || chatType === 'supergroup' || chatType === 'channel') return null;\nif (parseInt(chatId) < 0) return null;\nvar msgType = msg.payload.type || '';\nif (msgType === 'photo' || msgType === 'document' || msgType === 'sticker' || msgType === 'image') return null;\nif (!msg.payload.from) {\n    msg.payload.from = {id: msg.payload.chatId, first_name: 'Utente', username: ''};\n}\nif (msg.payload.from) {\n    var f = msg.payload.from;\n    msg._from = { id: f.id || msg.payload.chatId, first_name: f.first_name || '', last_name: f.last_name || '', username: f.username || '' };\n}\nnode.warn('TYPE: ' + msg.payload.type + ' | CONTENT: ' + msg.payload.content);\nreturn msg;",
-    "outputs": 2,
+    "func": "// ── Bot in manutenzione: gestione per tipo di chat ──\nvar _userId   = (msg.payload.from && msg.payload.from.id) ? msg.payload.from.id.toString() : (msg.payload.chatId ? msg.payload.chatId.toString() : '');\nvar _adminId  = '858001457';  // placeholder sostituito sotto\n_adminId = '858001417';\nvar chatType  = msg.payload.chat  ? msg.payload.chat.type : (msg.payload.chatId && parseInt(msg.payload.chatId) < 0 ? 'group' : 'private');\nvar chatId    = msg.payload.chatId || (msg.payload.chat && msg.payload.chat.id) || 0;\nvar isGroup   = (chatType === 'group' || chatType === 'supergroup');\n\nif (flow.get('manutenzione')) {\n    if (isGroup) {\n        // ── Bridge: forwarda messaggio gruppo VIP → gruppo chat ──\n        node.send([null, null, msg]);\n        return null;\n    }\n    if (_userId !== _adminId) {\n        // ── Avvisa utenti privati ──\n        node.send([null, {payload: {\n            chatId: msg.payload.chatId,\n            type: 'message',\n            content: '🔧 *Bot in manutenzione*\\n\\nCi scusiamo per il disagio, stiamo lavorando per migliorare il servizio! 💪\\n\\n📨 *Non perderti nessun segnale!*\\nNel frattempo tutti i messaggi vengono inoltrati nel *Gruppo Chat VIP* — entra tramite l'apposito tasto qui sotto 👇\\n\\n🔒 *Saldo al sicuro:* durante la manutenzione non verrà scalato nessun segnale.\\n\\n✅ Verrai re-invitato automaticamente nel canale VIP al ripristino. 🙏',\n            options: {parse_mode: 'Markdown'}\n        }}, null]);\n        return null;\n    }\n}\n\n// ── Filtri chat non-private (dopo manutenzione) ──\nif (isGroup || parseInt(chatId) < 0) return null;\n\nvar msgType = msg.payload.type || '';\nif (msgType === 'photo' || msgType === 'document' || msgType === 'sticker' || msgType === 'image') return null;\n\nif (!msg.payload.from) {\n    msg.payload.from = {id: msg.payload.chatId, first_name: 'Utente', username: ''};\n}\nif (msg.payload.from) {\n    var f = msg.payload.from;\n    msg._from = { id: f.id || msg.payload.chatId, first_name: f.first_name || '', last_name: f.last_name || '', username: f.username || '' };\n}\nnode.warn('TYPE: ' + msg.payload.type + ' | CONTENT: ' + msg.payload.content);\nreturn msg;\n",
+    "outputs": 3,
     "x": 360,
     "y": 300,
     "wires": [
@@ -215,6 +215,9 @@
       ],
       [
         "f5e6d7c8b9a01234"
+      ],
+      [
+        "cc99dd00ee11ff22"
       ]
     ]
   },
@@ -2294,7 +2297,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔑 Admin Keyboard Guard",
-    "func": "var ADMIN = '858001417';\nvar chatId = (msg.payload && msg.payload.chatId) ? msg.payload.chatId.toString() : '';\nif (!chatId) return msg;\n\nvar opts = msg.payload.options;\nif (!opts) { msg.payload.options = {}; opts = msg.payload.options; }\n\nvar rm = opts.reply_markup;\n\nvar kb = chatId === ADMIN\n    ? [[\"\\ud83d\\udc65 Lista Utenti\", \"\\ud83d\\udcca Statistiche\"], [\"\\u2b50 Rendi ELITE\", \"\\ud83d\\udeab Togli ELITE\"], [\"\\ud83c\\udf81 Aggiungi Segnali\", \"\\u2705 Approva Pagamento\"], [\"\\u274c Rifiuta Pagamento\", \"\\ud83d\\udccb Pagamenti in Attesa\"], [\"\\ud83d\\udcac Comunicazioni\", \"\\ud83d\\udce3 Broadcast\"], [\"\\ud83c\\udf89 Messaggio di Benvenuto\"],[\"\\ud83d\\udd27 Manutenzione\"]]\n    : [[\"\\ud83d\\udc51 CANALE VIP\", \"\\ud83d\\udcac CHAT GRUPPO VIP\"], [\"\\ud83d\\udcca STATO/SALDO\", \"\\ud83d\\udce6 ACQUISTA\"], [\"\\u2705 ATTIVA oppure \\u25b6\\ufe0f RIPRENDI SEGNALI VIP\"], [\"\\u23f8 PAUSA RICEZIONE SEGNALI VIP\"], [\"\\ud83c\\udfaf METODO DI GIOCO\", \"\\ud83d\\udcca BILANCIO\"], [\"\\ud83d\\udcc8 BOOK\", \"\\ud83c\\udf81 BONUS\", \"\\ud83c\\udd98 ASSISTENZA\"]];\n\n// Messaggi con inline_keyboard: li lascia passare intatti senza toccare la reply keyboard\nif (rm && rm.inline_keyboard) {\n    return msg;\n}\n\n// Keyboard già impostata: rimuove is_persistent\nif (rm && rm.keyboard) {\n    delete rm.is_persistent;\n    rm.resize_keyboard = true;\n    return msg;\n}\n\n// Nessuna keyboard: inietta quella giusta\nopts.reply_markup = {keyboard: kb, resize_keyboard: true};\nreturn msg;",
+    "func": "var ADMIN = '858001417';\nvar chatId = (msg.payload && msg.payload.chatId) ? msg.payload.chatId.toString() : '';\nif (!chatId) return msg;\n\n// ── Non inviare mai keyboard/pannello in un gruppo ──\nif (parseInt(chatId) < 0) return msg;  // lascia passare senza keyboard\n\nvar opts = msg.payload.options;\nif (!opts) { msg.payload.options = {}; opts = msg.payload.options; }\n\nvar rm = opts.reply_markup;\n\nvar kb = chatId === ADMIN\n    ? [[\"\\ud83d\\udc65 Lista Utenti\", \"\\ud83d\\udcca Statistiche\"], [\"\\u2b50 Rendi ELITE\", \"\\ud83d\\udeab Togli ELITE\"], [\"\\ud83c\\udf81 Aggiungi Segnali\", \"\\u2705 Approva Pagamento\"], [\"\\u274c Rifiuta Pagamento\", \"\\ud83d\\udccb Pagamenti in Attesa\"], [\"\\ud83d\\udcac Comunicazioni\", \"\\ud83d\\udce3 Broadcast\"], [\"\\ud83c\\udf89 Messaggio di Benvenuto\"],[\"\\ud83d\\udd27 Manutenzione\"]]\n    : [[\"\\ud83d\\udc51 CANALE VIP\", \"\\ud83d\\udcac CHAT GRUPPO VIP\"], [\"\\ud83d\\udcca STATO/SALDO\", \"\\ud83d\\udce6 ACQUISTA\"], [\"\\u2705 ATTIVA oppure \\u25b6\\ufe0f RIPRENDI SEGNALI VIP\"], [\"\\u23f8 PAUSA RICEZIONE SEGNALI VIP\"], [\"\\ud83c\\udfaf METODO DI GIOCO\", \"\\ud83d\\udcca BILANCIO\"], [\"\\ud83d\\udcc8 BOOK\", \"\\ud83c\\udf81 BONUS\", \"\\ud83c\\udd98 ASSISTENZA\"]];\n\n// Messaggi con inline_keyboard: li lascia passare intatti senza toccare la reply keyboard\nif (rm && rm.inline_keyboard) {\n    return msg;\n}\n\n// Keyboard già impostata: rimuove is_persistent\nif (rm && rm.keyboard) {\n    delete rm.is_persistent;\n    rm.resize_keyboard = true;\n    return msg;\n}\n\n// Nessuna keyboard: inietta quella giusta\nopts.reply_markup = {keyboard: kb, resize_keyboard: true};\nreturn msg;\n",
     "outputs": 1,
     "x": 3700,
     "y": 300,
@@ -2447,6 +2450,38 @@
       [
         "f5e6d7c8b9a01234"
       ]
+    ]
+  },
+  {
+    "id": "cc99dd00ee11ff22",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🌉 Bridge Gruppo → Chat",
+    "func": "// ── Bridge messaggi Gruppo VIP → Gruppo Chat durante manutenzione ──\nvar VIP_CHAT_ID = -1003726114956;  // Gruppo Chat VIP\n\nvar from = msg.payload.from || {};\nvar firstName = from.first_name || '';\nvar lastName  = from.last_name  || '';\nvar username  = from.username   ? ('@' + from.username) : '';\nvar sender    = [firstName, lastName].filter(Boolean).join(' ');\nif (username) sender += ' ' + username;\nif (!sender.trim()) sender = 'Utente sconosciuto';\n\nvar text = msg.payload.content || msg.payload.text || '';\nvar msgType = msg.payload.type || '';\n\n// Tipi non testuali: segnala nel chat con nota\nif (msgType === 'photo' || msgType === 'sticker' || msgType === 'document') {\n    text = '[' + msgType.toUpperCase() + ']';\n}\n\nif (!text.trim()) return null;  // niente da inviare\n\nmsg.payload = {\n    chatId: VIP_CHAT_ID.toString(),\n    type: 'message',\n    content: '\\ud83d\\udd0a <b>' + sender + '</b>:\\n' + text,\n    options: { parse_mode: 'HTML' }\n};\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "x": 560,
+    "y": 420,
+    "wires": [
+      [
+        "dd00ee11ff22aa33"
+      ]
+    ]
+  },
+  {
+    "id": "dd00ee11ff22aa33",
+    "type": "telegram sender",
+    "z": "3b1ba02266387c24",
+    "name": "📤 Invia Bridge Chat",
+    "bot": "e005a4bf2c9f8546",
+    "haserroroutput": false,
+    "outputs": 1,
+    "x": 780,
+    "y": 420,
+    "wires": [
+      []
     ]
   }
 ]
