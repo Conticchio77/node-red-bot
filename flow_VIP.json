@@ -1489,13 +1489,16 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "👑 Rileva Segnale VIP",
-    "func": "\nvar content = '';\nvar chatId = '';\nif (msg.payload.channel_post) {\n    content = msg.payload.channel_post.text || '';\n    chatId = msg.payload.channel_post.chat ? msg.payload.channel_post.chat.id.toString() : '';\n} else {\n    content = msg.payload.content || msg.payload.text || '';\n    chatId = msg.payload.chatId ? msg.payload.chatId.toString() : '';\n}\nvar vipChannelId = '-1002950341972';\nnode.warn('📡 MSG: chatId=' + chatId + ' content=' + content.substring(0, 50));\nif (chatId !== vipChannelId) { node.warn('❌ Canale sbagliato: ' + chatId); return null; }\nif (content.indexOf('👑 SEGNALE VIP') === -1) { node.warn('⏭️ Ignorato'); return null; }\nnode.warn('✅ SEGNALE VIP rilevato! Aggiungo al contatore...');\n// ── Ignora segnali durante manutenzione ──\nif (flow.get('manutenzione')) { node.warn('\\ud83d\\udd27 Segnale ignorato: bot in manutenzione'); return null; }\n\n\n// ── Incrementa il contatore dei segnali pendenti ──\nvar pending = (flow.get('sig_pending') || 0) + 1;\nflow.set('sig_pending', pending);\nnode.warn('📊 Segnali in coda: ' + pending);\n\n// ── Debounce: annulla il timer precedente e imposta uno nuovo (3 secondi) ──\nvar existing = flow.get('sig_timer');\nif (existing) { clearTimeout(existing); }\n\nvar t = setTimeout(function () {\n    flow.set('sig_timer', null);\n    node.send(msg); // invia il msg dopo che tutti i segnali sono arrivati\n}, 3000);\nflow.set('sig_timer', t);\n\nreturn null; // non passare subito: aspetta il debounce\n",
-    "outputs": 1,
+    "func": "\nvar content = '';\nvar chatId = '';\nif (msg.payload.channel_post) {\n    content = msg.payload.channel_post.text || '';\n    chatId = msg.payload.channel_post.chat ? msg.payload.channel_post.chat.id.toString() : '';\n} else {\n    content = msg.payload.content || msg.payload.text || '';\n    chatId = msg.payload.chatId ? msg.payload.chatId.toString() : '';\n}\nvar vipChannelId = '-1002950341972';\nnode.warn('📡 MSG: chatId=' + chatId + ' content=' + content.substring(0, 50));\nif (chatId !== vipChannelId) { node.warn('❌ Canale sbagliato: ' + chatId); return null; }\nif (content.indexOf('👑 SEGNALE VIP') === -1) { node.warn('⏭️ Ignorato'); return null; }\nnode.warn('✅ SEGNALE VIP rilevato!');\n\n// ── Durante manutenzione: inoltra nel Gruppo Chat VIP ──\nif (flow.get('manutenzione')) {\n    node.warn('📡 Manutenzione attiva: bridge segnale → Gruppo Chat');\n    node.send([null, {payload: {\n        chatId: '-1003726114956',\n        type: 'message',\n        content: '📡 <b>Segnali dal Futuro VIP</b>:\\n' + content,\n        options: { parse_mode: 'HTML' }\n    }}]);\n    return null;\n}\n\n// ── Normale: incrementa contatore e debounce ──\nvar pending = (flow.get('sig_pending') || 0) + 1;\nflow.set('sig_pending', pending);\nnode.warn('📊 Segnali in coda: ' + pending);\n\nvar existing = flow.get('sig_timer');\nif (existing) { clearTimeout(existing); }\n\nvar t = setTimeout(function () {\n    flow.set('sig_timer', null);\n    node.send([msg, null]);\n}, 3000);\nflow.set('sig_timer', t);\n\nreturn null;\n",
+    "outputs": 2,
     "x": 400,
     "y": 1500,
     "wires": [
       [
         "fa35dccbc0152cd0"
+      ],
+      [
+        "dd00ee11ff22aa33"
       ]
     ]
   },
