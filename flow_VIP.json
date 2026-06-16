@@ -431,7 +431,7 @@
       },
       {
         "t": "eq",
-        "v": "📣 Broadcast",
+        "v": "📢 Broadcast",
         "vt": "str"
       },
       {
@@ -441,7 +441,7 @@
       },
       {
         "t": "eq",
-        "v": "💬 Comunicazioni",
+        "v": "📣 Comunicazioni",
         "vt": "str"
       },
       {
