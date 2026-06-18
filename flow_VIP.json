@@ -441,7 +441,7 @@
       },
       {
         "t": "eq",
-        "v": "💬 Comunicazioni",
+        "v": "📣 Comunicazioni",
         "vt": "str"
       },
       {
@@ -461,6 +461,16 @@
       },
       {
         "t": "eq",
+        "v": "📈 Bilancio",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "💬 Comunicazioni",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
         "v": "📊 Bilancio",
         "vt": "str"
       },
@@ -470,7 +480,7 @@
     ],
     "checkall": "false",
     "repair": false,
-    "outputs": 46,
+    "outputs": 50,
     "x": 580,
     "y": 300,
     "wires": [
@@ -611,6 +621,12 @@
       ],
       [
         "1557f5297245108e"
+      ],
+      [
+        "1557f5297245108e"
+      ],
+      [
+        "cc33dd44ee55ff66"
       ],
       [
         "1557f5297245108e"
