@@ -3487,39 +3487,17 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🆓 Click Menu Free (Callback)",
-    "func": "var BOT_TOKEN = env.get('BOT_TOKEN');\nvar BOT_USERNAME = 'vip_segnali_bot';\nvar content = msg.payload.content || '';\nvar param = content.replace('FREEQ_', '');\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : '';\n\n// Utente \"conosciuto\" = puo' gia' ricevere messaggi privati dal bot\n// (registrato nel foglio, oppure ha gia' cliccato un link info in passato).\nvar _cache = flow.get('gs_cache');\nvar _rows = (_cache && _cache.rows) ? _cache.rows : [];\nvar _isKnown = false;\nfor (var _i = 1; _i < _rows.length; _i++) {\n    if (_rows[_i] && _rows[_i][0] && _rows[_i][0].toString() === userId) { _isKnown = true; break; }\n}\nif (!_isKnown) {\n    var _welcomedMap = flow.get('freeInfoWelcomed') || {};\n    _isKnown = !!_welcomedMap[userId];\n}\n\n// ID della callback query, serve solo per il redirect \"prima volta\".\n// NB: percorso non ancora verificato in produzione con questa libreria - se il redirect\n// non parte, controllare qui prima di tutto.\nvar cbId = null;\ntry { cbId = msg.originalMessage.callback_query.id; } catch (e) { cbId = null; }\n\nif (!_isKnown) {\n    node.warn('🆓 Click menu free da utente mai visto (' + userId + '), redirect verso /start ' + param);\n    if (!cbId) {\n        node.warn('⚠️ callback_query_id non trovato in msg.originalMessage.callback_query.id: redirect saltato.');\n        return null;\n    }\n    msg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/answerCallbackQuery';\n    msg.method = 'POST';\n    msg.headers = {'Content-Type': 'application/json'};\n    msg.payload = JSON.stringify({\n        callback_query_id: cbId,\n        url: 'https://t.me/' + BOT_USERNAME + '?start=' + param\n    });\n    return [msg, null];\n}\n\n// Utente gia' conosciuto: rispondi in privato SUBITO, senza aprire nulla (niente /start visibile).\n// Riusa la logica gia' esistente per i parametri di /start (Start con Parametro),\n// simulando lo stesso messaggio che quel nodo si aspetta in ingresso.\nnode.warn('🆓 Click menu free da utente conosciuto (' + userId + '), rispondo in privato per param=' + param);\nmsg.payload = {\n    chatId: userId,\n    content: '/start ' + param,\n    from: msg.payload.from,\n    type: 'message'\n};\nreturn [null, msg];\n",
+    "func": "var BOT_USERNAME = 'vip_segnali_bot';\nvar content = msg.payload.content || '';\nvar param = content.replace('FREEQ_', '');\nvar userId = msg.payload.from ? msg.payload.from.id.toString() : '';\n\n// Utente \"conosciuto\" = puo' gia' ricevere messaggi privati dal bot\n// (registrato nel foglio, oppure ha gia' cliccato un link info in passato).\nvar _cache = flow.get('gs_cache');\nvar _rows = (_cache && _cache.rows) ? _cache.rows : [];\nvar _isKnown = false;\nfor (var _i = 1; _i < _rows.length; _i++) {\n    if (_rows[_i] && _rows[_i][0] && _rows[_i][0].toString() === userId) { _isKnown = true; break; }\n}\nif (!_isKnown) {\n    var _welcomedMap = flow.get('freeInfoWelcomed') || {};\n    _isKnown = !!_welcomedMap[userId];\n}\n\nif (!_isKnown) {\n    // Prima volta assoluta: rispondi alla callback query con un redirect verso il bot\n    // (Telegram apre un popup con un tasto; il nodo sender gestisce da solo l'id della query).\n    node.warn('🆓 Click menu free da utente mai visto (' + userId + '), redirect verso /start ' + param);\n    msg.payload.type = 'answerCallbackQuery';\n    msg.payload.options = {\n        url: 'https://t.me/' + BOT_USERNAME + '?start=' + param\n    };\n    return [msg, null];\n}\n\n// Utente gia' conosciuto: rispondi in privato SUBITO, senza aprire nulla (niente /start visibile).\n// Riusa la logica gia' esistente per i parametri di /start (Start con Parametro),\n// simulando lo stesso messaggio che quel nodo si aspetta in ingresso.\nnode.warn('🆓 Click menu free da utente conosciuto (' + userId + '), rispondo in privato per param=' + param);\nmsg.payload = {\n    chatId: userId,\n    content: '/start ' + param,\n    from: msg.payload.from,\n    type: 'message'\n};\nreturn [null, msg];\n",
     "outputs": 2,
     "x": 1350,
     "y": 1400,
     "wires": [
       [
-        "httpAnswerCbFree01"
+        "1263251632a175fa"
       ],
       [
         "startParamHandler01"
       ]
-    ]
-  },
-  {
-    "id": "httpAnswerCbFree01",
-    "type": "http request",
-    "z": "3b1ba02266387c24",
-    "name": "🌐 Answer Callback (redirect)",
-    "method": "use",
-    "ret": "obj",
-    "paytoqs": "ignore",
-    "url": "",
-    "tls": "",
-    "persist": false,
-    "proxy": "",
-    "insecureHTTPParser": false,
-    "authType": "",
-    "senderr": false,
-    "headers": [],
-    "x": 1620,
-    "y": 1380,
-    "wires": [
-      []
     ]
   }
 ]
