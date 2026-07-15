@@ -2773,7 +2773,7 @@
         "type": "function",
         "z": "3b1ba02266387c24",
         "name": "🔍 Prep GetChatMember",
-        "func": "var uid = msg.userId;\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar VIP_CHANNEL_ID = -1002950341972;\nmsg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getChatMember?chat_id=' + VIP_CHANNEL_ID + '&user_id=' + uid;\nreturn msg;\n",
+        "func": "var uid = msg.userId;\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar VIP_CHANNEL_ID = -1002950341972;\nmsg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getChatMember?chat_id=' + VIP_CHANNEL_ID + '&user_id=' + uid;\nmsg.requestTimeout = 12000; // 12s: evita che una singola richiesta bloccata fermi tutto il ciclo\nreturn msg;\n",
         "outputs": 1,
         "x": 1360,
         "y": 2000,
@@ -3013,7 +3013,7 @@
         "type": "function",
         "z": "3b1ba02266387c24",
         "name": "🔍 Prep GetChatMember (Gruppo)",
-        "func": "// Salva il risultato del Canale VIP appena ricevuto, poi prepara la stessa verifica per la Chat Gruppo VIP\nmsg._canaleResult = msg.payload;\nvar uid = msg.userId;\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar GRUPPO_CHAT_ID = -1003726114956;\nmsg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getChatMember?chat_id=' + GRUPPO_CHAT_ID + '&user_id=' + uid;\nreturn msg;\n",
+        "func": "// Salva il risultato del Canale VIP appena ricevuto, poi prepara la stessa verifica per la Chat Gruppo VIP\nmsg._canaleResult = msg.payload;\nvar uid = msg.userId;\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar GRUPPO_CHAT_ID = -1003726114956;\nmsg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getChatMember?chat_id=' + GRUPPO_CHAT_ID + '&user_id=' + uid;\nmsg.requestTimeout = 12000; // 12s: evita che una singola richiesta bloccata fermi tutto il ciclo\nreturn msg;\n",
         "outputs": 1,
         "x": 1720,
         "y": 2050,
@@ -3472,6 +3472,78 @@
         "y": 1260,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "ri11catchcanale",
+        "type": "catch",
+        "z": "3b1ba02266387c24",
+        "name": "🧯 Catch Timeout Canale",
+        "scope": [
+            "ri06getchatmember"
+        ],
+        "uncaught": false,
+        "x": 1620,
+        "y": 2150,
+        "wires": [
+            [
+                "ri12canaletimeoutfix"
+            ]
+        ]
+    },
+    {
+        "id": "ri12canaletimeoutfix",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "🧯 Forza Errore Canale e Continua",
+        "func": "// Il nodo GetChatMember (Canale) e' andato in timeout: non blocchiamo il ciclo,\n// segnamo il Canale come 'errore' e proseguiamo comunque al controllo del Gruppo per lo stesso utente.\nmsg.payload = {ok: false, description: 'timeout richiesta Canale VIP'};\nnode.warn('⏱️ Timeout GetChatMember Canale per uid=' + msg.userId + ', proseguo con il Gruppo');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1620,
+        "y": 2200,
+        "wires": [
+            [
+                "ri06bprepgruppo"
+            ]
+        ]
+    },
+    {
+        "id": "ri13catchgruppo",
+        "type": "catch",
+        "z": "3b1ba02266387c24",
+        "name": "🧯 Catch Timeout Gruppo",
+        "scope": [
+            "ri06cgetgruppo"
+        ],
+        "uncaught": false,
+        "x": 1850,
+        "y": 2150,
+        "wires": [
+            [
+                "ri14gruppotimeoutfix"
+            ]
+        ]
+    },
+    {
+        "id": "ri14gruppotimeoutfix",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "🧯 Forza Errore Gruppo e Continua",
+        "func": "// Il nodo GetChatMember (Gruppo) e' andato in timeout: non blocchiamo il ciclo,\n// segnamo il Gruppo come 'errore' (il Canale e' gia' stato salvato in msg._canaleResult prima di questa richiesta) e proseguiamo al confronto/prossimo utente.\nmsg.payload = {ok: false, description: 'timeout richiesta Gruppo VIP'};\nnode.warn('⏱️ Timeout GetChatMember Gruppo per uid=' + msg.userId + ', proseguo al prossimo utente');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1850,
+        "y": 2200,
+        "wires": [
+            [
+                "ri07confronta"
+            ]
         ]
     }
 ]
