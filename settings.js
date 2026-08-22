@@ -35,9 +35,15 @@ module.exports = {
     },
 
     // ── Context storage (sopravvive ai restart) ───────────────────────────────────
+    // flushInterval abbassato da 30s (default) a 5s: riduce la finestra in cui un
+    // flow.set() non ancora scritto su disco può perdersi se il container viene
+    // riavviato proprio in quel momento (es. blocco anti-doppione del menu free).
     contextStorage: {
         default: {
-            module: "localfilesystem"
+            module: "localfilesystem",
+            config: {
+                flushInterval: 5
+            }
         }
     },
 
