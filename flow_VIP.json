@@ -3158,32 +3158,6 @@
         ]
     },
     {
-        "id": "grpFreeMenuInject01",
-        "type": "inject",
-        "z": "3b1ba02266387c24",
-        "name": "🔘 (OLD, disattivato) Invia Menu Gruppo Free — crontab fisso",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "0 8,10,12,14,16,18,20,22 * * *",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 1150,
-        "y": 620,
-        "wires": [
-            [
-                "grpFreeMenuMsg01"
-            ]
-        ],
-        "disabled": true
-    },
-    {
         "id": "startParamHandler01",
         "type": "function",
         "z": "3b1ba02266387c24",
@@ -3269,7 +3243,7 @@
         "type": "function",
         "z": "3b1ba02266387c24",
         "name": "📌 Salva ID & Unpin Vecchio Menu",
-        "func": "var result = msg.payload;\nif (!result || !result.ok || !result.result) {\n    node.warn('Invio menu gruppo free fallito: ' + JSON.stringify(result));\n    return null;\n}\nvar messageId = result.result.message_id;\nvar oldMessageId = flow.get('freeGroupMenuMsgId'); // ID del vecchio messaggio menu (prima di sovrascriverlo)\nflow.set('freeGroupMenuMsgId', messageId);\n\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar FREE_GROUP_ID = '-1002520876408';\nmsg._pinMessageId = messageId; // serve al passo successivo, dopo l'unpin\n\nif (oldMessageId) {\n    node.warn('📌 Menu gruppo free inviato (ID ' + messageId + '), rimuovo il pin SOLO del vecchio menu (ID ' + oldMessageId + ')... [pid:' + process.pid + ' uptime:' + Math.round(process.uptime()) + 's]');\n    msg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/unpinChatMessage?chat_id=' + FREE_GROUP_ID + '&message_id=' + oldMessageId;\n} else {\n    node.warn('📌 Menu gruppo free inviato (ID ' + messageId + '), nessun vecchio menu noto da spinnare.');\n    msg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getMe';\n}\nreturn msg;\n",
+        "func": "var result = msg.payload;\nif (!result || !result.ok || !result.result) {\n    node.warn('Invio menu gruppo free fallito: ' + JSON.stringify(result));\n    return null;\n}\nvar messageId = result.result.message_id;\nvar oldMessageId = flow.get('freeGroupMenuMsgId'); // ID del vecchio messaggio menu (prima di sovrascriverlo)\nflow.set('freeGroupMenuMsgId', messageId);\n\nvar BOT_TOKEN = env.get('BOT_TOKEN');\nvar FREE_GROUP_ID = '-1002520876408';\nmsg._pinMessageId = messageId; // serve al passo successivo, dopo l'unpin\n\nif (oldMessageId) {\n    node.warn('📌 Menu gruppo free inviato (ID ' + messageId + '), rimuovo il pin SOLO del vecchio menu (ID ' + oldMessageId + ')...');\n    msg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/unpinChatMessage?chat_id=' + FREE_GROUP_ID + '&message_id=' + oldMessageId;\n} else {\n    node.warn('📌 Menu gruppo free inviato (ID ' + messageId + '), nessun vecchio menu noto da spinnare.');\n    msg.url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getMe';\n}\nreturn msg;\n",
         "outputs": 1,
         "x": 2150,
         "y": 620,
@@ -3882,7 +3856,7 @@
         "type": "function",
         "z": "3b1ba02266387c24",
         "name": "⏰ Valuta Invio Menu Free",
-        "func": "var enabled = flow.get('free_menu_auto_enabled') !== false;\nif (!enabled) return null;\n\nvar interval = flow.get('free_menu_interval_hours');\nif (interval === undefined || interval === null || interval < 1) interval = 2;\nvar startH = flow.get('free_menu_start_hour');\nif (startH === undefined || startH === null) startH = 8;\nvar endH = flow.get('free_menu_end_hour');\nif (endH === undefined || endH === null) endH = 22;\n\nvar rome = new Date(new Date().toLocaleString('en-US', {timeZone: 'Europe/Rome'}));\nvar h = rome.getHours();\nvar dayKey = rome.getFullYear() + '-' + (rome.getMonth() + 1) + '-' + rome.getDate();\n\nif (h < startH || h > endH) return null;\nif (((h - startH) % interval) !== 0) return null;\n\nvar thisKey = dayKey + '-' + h;\nif (flow.get('free_menu_last_sent_key') === thisKey) return null; // già inviato in questo slot orario\n\n// Rete di sicurezza extra: blocca comunque se un invio è già partito negli ultimi 5 minuti\n// (copre il caso di un riavvio del container proprio a ridosso dell'orario programmato)\nvar lastSentTs = flow.get('free_menu_last_sent_ts') || 0;\nif (Date.now() - lastSentTs < 5 * 60 * 1000) return null;\n\nflow.set('free_menu_last_sent_key', thisKey);\nflow.set('free_menu_last_sent_ts', Date.now());\nnode.warn('⏰ Invio automatico menu gruppo free — ore ' + h + ':00 (ogni ' + interval + 'h, ' + startH + '-' + endH + ') [pid:' + process.pid + ' uptime:' + Math.round(process.uptime()) + 's]');\nreturn msg;\n",
+        "func": "var enabled = flow.get('free_menu_auto_enabled') !== false;\nif (!enabled) return null;\n\nvar interval = flow.get('free_menu_interval_hours');\nif (interval === undefined || interval === null || interval < 1) interval = 2;\nvar startH = flow.get('free_menu_start_hour');\nif (startH === undefined || startH === null) startH = 8;\nvar endH = flow.get('free_menu_end_hour');\nif (endH === undefined || endH === null) endH = 22;\n\nvar rome = new Date(new Date().toLocaleString('en-US', {timeZone: 'Europe/Rome'}));\nvar h = rome.getHours();\nvar dayKey = rome.getFullYear() + '-' + (rome.getMonth() + 1) + '-' + rome.getDate();\n\nif (h < startH || h > endH) return null;\nif (((h - startH) % interval) !== 0) return null;\n\nvar thisKey = dayKey + '-' + h;\nif (flow.get('free_menu_last_sent_key') === thisKey) return null; // già inviato in questo slot orario\n\n// Rete di sicurezza extra: blocca comunque se un invio è già partito negli ultimi 5 minuti\n// (copre il caso di un riavvio del container proprio a ridosso dell'orario programmato)\nvar lastSentTs = flow.get('free_menu_last_sent_ts') || 0;\nif (Date.now() - lastSentTs < 5 * 60 * 1000) return null;\n\nflow.set('free_menu_last_sent_key', thisKey);\nflow.set('free_menu_last_sent_ts', Date.now());\nnode.warn('⏰ Invio automatico menu gruppo free — ore ' + h + ':00 (ogni ' + interval + 'h, ' + startH + '-' + endH + ')');\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
