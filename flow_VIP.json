@@ -4176,5 +4176,77 @@
         "f5e6d7c8b9a01234"
       ]
     ]
+  },
+  {
+    "id": "relayHttpIn01",
+    "type": "http in",
+    "z": "3b1ba02266387c24",
+    "name": "🌐 POST /relay-segnale-esterno",
+    "url": "/relay-segnale-esterno",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 300,
+    "y": 2900,
+    "wires": [
+      [
+        "relayAuthCheck01"
+      ]
+    ]
+  },
+  {
+    "id": "relayAuthCheck01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🔐 Verifica Chiave Relay Esterno",
+    "func": "// Endpoint per i bot esterni (PingPong, Bilanciovip, Inoltro) che non possono essere\n// letti da Telegram (Telegram non consegna mai ai bot i messaggi scritti da altri bot).\n// Autenticazione tramite header X-Relay-Key.\nvar RELAY_SECRET = env.get('RELAY_SECRET_KEY') || 'xUp_WW4mUaGCIZNoWkSWXx3c6BpNDaZy';\nvar key = msg.req.headers['x-relay-key'];\nif (key !== RELAY_SECRET) {\n    msg.statusCode = 401;\n    msg.payload = {ok: false, error: 'Chiave non valida'};\n    return [null, msg];\n}\nvar body = msg.payload || {};\nvar category = body.category;\nvar text = body.text || body.content;\nif (!category || !text || ['ping_signal', 'broadcast_all'].indexOf(category) === -1) {\n    msg.statusCode = 400;\n    msg.payload = {ok: false, error: \"Campi mancanti o category non valida (usa 'ping_signal' o 'broadcast_all')\"};\n    return [null, msg];\n}\nmsg._relayText = text;\nmsg._relayCategoryExt = category;\nmsg._relayParseMode = body.parse_mode || null;\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 560,
+    "y": 2900,
+    "wires": [
+      [
+        "relayExternalSend01"
+      ],
+      [
+        "relayHttpResp01"
+      ]
+    ]
+  },
+  {
+    "id": "relayExternalSend01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "📡 Inoltra Relay Esterno",
+    "func": "var BOT_TOKEN = env.get('BOT_TOKEN');\nvar cache = flow.get('gs_cache');\nvar rows = (cache && cache.rows) ? cache.rows : [];\nvar category = msg._relayCategoryExt;\nvar text = msg._relayText;\nvar parseMode = msg._relayParseMode;\n\nif (!rows.length) {\n    node.warn('⚠️ Relay esterno: cache utenti vuota, impossibile inoltrare');\n    msg.statusCode = 200;\n    msg.payload = {ok: true, inviati: 0, warning: 'cache vuota'};\n    return [null, msg];\n}\n\nvar pingOptIn = flow.get('ping_signal_optin') || {};\nvar options = parseMode ? {parse_mode: parseMode} : {};\n\nvar inviati = 0;\nfor (var i = 1; i < rows.length; i++) {\n    var row = rows[i];\n    if (!row || !row[0]) continue;\n    var userId = row[0].toString();\n    var status = (row[4] || 'attivo').toLowerCase().trim();\n    var signals = parseInt(row[3]) || 0;\n\n    var invia = false;\n    if (category === 'broadcast_all') {\n        invia = true; // a tutti: attivi, pausa, scaduti\n    } else if (category === 'ping_signal') {\n        invia = (status === 'attivo' && signals >= 1 && pingOptIn[userId] === true);\n    }\n\n    if (invia) {\n        inviati++;\n        node.send([{\n            payload: {chatId: userId, type: 'message', content: text, options: options}\n        }, null]);\n    }\n}\nnode.warn('📡 Relay esterno \"' + category + '\": inoltrato a ' + inviati + ' utenti');\nmsg.statusCode = 200;\nmsg.payload = {ok: true, inviati: inviati};\nreturn [null, msg];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 810,
+    "y": 2900,
+    "wires": [
+      [
+        "f5e6d7c8b9a01234"
+      ],
+      [
+        "relayHttpResp01"
+      ]
+    ]
+  },
+  {
+    "id": "relayHttpResp01",
+    "type": "http response",
+    "z": "3b1ba02266387c24",
+    "name": "↩️ Risposta HTTP",
+    "statusCode": "",
+    "headers": {},
+    "x": 1070,
+    "y": 2900,
+    "wires": []
   }
 ]
