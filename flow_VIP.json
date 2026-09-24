@@ -2086,7 +2086,8 @@
     "wires": [
       [],
       [
-        "0de5d988475f3d91"
+        "0de5d988475f3d91",
+        "checkInvioGenericoAutoPause01"
       ]
     ]
   },
@@ -2099,7 +2100,7 @@
     "tosidebar": true,
     "console": true,
     "tostatus": false,
-    "complete": "true",
+    "complete": "error",
     "targetType": "msg",
     "x": 2300,
     "y": 360,
@@ -2531,7 +2532,9 @@
     "x": 1300,
     "y": 2060,
     "wires": [
-      []
+      [
+        "checkSendPromoPhotoAutoPause01"
+      ]
     ]
   },
   {
@@ -2756,12 +2759,15 @@
     "z": "3b1ba02266387c24",
     "name": "📤 Invia Bridge Chat",
     "bot": "e005a4bf2c9f8546",
-    "haserroroutput": false,
-    "outputs": 1,
+    "haserroroutput": true,
+    "outputs": 2,
     "x": 780,
     "y": 420,
     "wires": [
-      []
+      [],
+      [
+        "bridgeChatErrorDebug01"
+      ]
     ]
   },
   {
@@ -2923,7 +2929,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "▶️ Costruisci Coda Riallineamento",
-    "func": "var data = msg.payload;\n\n// Se un ciclo è già in corso, non ne avviamo un secondo in parallelo...\n// ...A MENO CHE non risulti bloccato da troppo tempo (es. il bot si e' riavviato a meta' corsa\n// e non ha mai potuto segnare il ciclo come concluso): in quel caso lo consideriamo \"morto\" e ripartiamo.\nvar STALE_MS = 10 * 60 * 1000; // 10 minuti\nif (flow.get('realign_running') === true) {\n    var _runSince = (flow.get('realign_stats') || {}).startedAt;\n    var _isStale = !_runSince || (Date.now() - _runSince) > STALE_MS;\n    if (!_isStale) {\n        if (msg._silentCheck) {\n            node.warn('Controllo orario saltato: un riallineamento è già in corso');\n        } else {\n            node.warn('Riallineamento saltato: un ciclo è già in corso');\n        }\n        return null;\n    }\n    node.warn('⚠️ Il ciclo precedente risultava ancora \"in corso\" da oltre 10 minuti (probabile riavvio del bot a meta\\' corsa): lo considero bloccato e riparto.');\n}\n\nvar rows = (data && data.values) ? data.values : [];\nvar queue = [];\nfor (var i = 1; i < rows.length; i++) {\n    if (!rows[i] || !rows[i][0]) continue;\n    var uid = rows[i][0].toString();\n    var status = (rows[i][4] || 'attivo').toLowerCase().trim();\n    var name = ((rows[i][1] || '') + ' ' + (rows[i][2] || '')).trim();\n    var signals = parseInt(rows[i][3]) || 0;\n    queue.push({userId: uid, status: status, name: name, row: i + 1, signals: signals});\n}\nif (queue.length === 0) {\n    var _retryCount = msg._sheetRetryCount || 0;\n    var _MAX_RETRY = 2;\n    if (_retryCount < _MAX_RETRY) {\n        // Probabile \"cold start\" di Google Apps Script: aspetta e riprova da solo prima di arrenderti\n        node.warn('Riallineamento: lettura Google Sheets vuota, riprovo tra 8 secondi (tentativo ' + (_retryCount + 1) + '/' + _MAX_RETRY + ')...');\n        var retryMsg = {\n            _sheetRetryCount: _retryCount + 1,\n            _dailyTrigger: msg._dailyTrigger,\n            _manualTrigger: msg._manualTrigger,\n            _silentCheck: msg._silentCheck\n        };\n        return [null, null, retryMsg];\n    }\n    node.warn('Riallineamento: nessun utente da controllare dopo ' + _MAX_RETRY + ' tentativi, lettura fallita');\n    flow.set('realign_running', false);\n    flow.set('realign_last_run', {\n        startedAt: Date.now(), finishedAt: Date.now(), total: 0, checked: 0,\n        rikickati: [], assentiCanale: [], errori: 0, ok: false,\n        aborted: true, abortReason: 'Nessun utente trovato nel foglio dopo ' + _MAX_RETRY + ' tentativi (lettura Google Sheets fallita)'\n    });\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '⚠️ *Riallineamento saltato*\\n\\nNessun utente trovato nel foglio dopo ' + _MAX_RETRY + ' tentativi automatici: probabile problema nella lettura di Google Sheets (controlla che lo script risponda correttamente).',\n        options: {parse_mode: 'Markdown'}}}, null];\n}\n\nflow.set('realign_queue', queue);\nflow.set('realign_running', true);\nvar _runId = Date.now() + '_' + Math.floor(Math.random() * 100000);\nfunction _todayRomeStr(){\n    // YYYY-MM-DD nel fuso orario di Roma, usato per sapere se e' gia' partito un report oggi\n    return new Date().toLocaleDateString('en-CA', {timeZone: 'Europe/Rome'});\n}\nvar _todayStr = _todayRomeStr();\nvar _lastPingDate = flow.get('realign_daily_ping_date');\nvar _isFirstDailyRun = !msg._manualTrigger && (_lastPingDate !== _todayStr); // vale per qualsiasi trigger automatico, non solo quello delle 7\nflow.set('realign_stats', {total: queue.length, checked: 0, rikickati: [], rikickatiLines: [], assentiCanale: [], errori: 0, startedAt: Date.now(), silentCheck: !!msg._silentCheck, manualTrigger: !!msg._manualTrigger, forceReport: !msg._silentCheck && _isFirstDailyRun, runId: _runId}); // il controllo orario silenzioso non deve mai forzare la notifica: solo haProblemi puo' farlo\nnode.warn('🔎 Riallineamento avviato: ' + queue.length + ' utenti da controllare (1 al secondo)' + (msg._silentCheck ? ' [controllo orario]' : ''));\n\nif (msg._silentCheck) {\n    // Controllo orario: nessun messaggio di avvio, si parla solo se ci sono problemi\n    return [{_tick: true, _silentCheck: true, _runId: _runId}, null];\n}\n\n// Messaggio immediato di conferma avvio:\n// - trigger manuale -> sempre\n// - trigger giornaliero -> solo la prima volta su questo deploy, poi resta silenzioso\nvar _shouldPing = true;\nif (!msg._manualTrigger) {\n    _shouldPing = _isFirstDailyRun;\n    flow.set('realign_daily_ping_date', _todayStr);\n}\nvar startMsg = null;\nif (_shouldPing) {\n    startMsg = {payload: {chatId: '858001417', type: 'message',\n        content: '🔎 Riallineamento avviato: sto controllando ' + queue.length + ' utenti (circa ' + Math.ceil(queue.length / 60) + ' min).',\n        options: {parse_mode: 'Markdown'}}};\n}\n\n// Avvia il ciclo: manda un primo \"tick\" al nodo che estrae il prossimo utente dalla coda\nreturn [{_tick: true, _runId: _runId}, startMsg];\n",
+    "func": "var data = msg.payload;\n\n// Il Gruppo VIP ora serve solo durante la manutenzione: fuori da quella\n// finestra il gruppo e' vuoto e non ha senso controllare 90 utenti ogni\n// ora/giorno contro Telegram (era la causa dell'errore \"Errori durante\n// il controllo\" ricorrente). Saltiamo tutto tranne il trigger manuale admin.\nif (flow.get('manutenzione') !== true && !msg._manualTrigger) {\n    if (msg._silentCheck) {\n        node.warn('Controllo riallineamento saltato: manutenzione non attiva');\n    }\n    return null;\n}\n\n\n// Se un ciclo è già in corso, non ne avviamo un secondo in parallelo...\n// ...A MENO CHE non risulti bloccato da troppo tempo (es. il bot si e' riavviato a meta' corsa\n// e non ha mai potuto segnare il ciclo come concluso): in quel caso lo consideriamo \"morto\" e ripartiamo.\nvar STALE_MS = 10 * 60 * 1000; // 10 minuti\nif (flow.get('realign_running') === true) {\n    var _runSince = (flow.get('realign_stats') || {}).startedAt;\n    var _isStale = !_runSince || (Date.now() - _runSince) > STALE_MS;\n    if (!_isStale) {\n        if (msg._silentCheck) {\n            node.warn('Controllo orario saltato: un riallineamento è già in corso');\n        } else {\n            node.warn('Riallineamento saltato: un ciclo è già in corso');\n        }\n        return null;\n    }\n    node.warn('⚠️ Il ciclo precedente risultava ancora \"in corso\" da oltre 10 minuti (probabile riavvio del bot a meta\\' corsa): lo considero bloccato e riparto.');\n}\n\nvar rows = (data && data.values) ? data.values : [];\nvar queue = [];\nfor (var i = 1; i < rows.length; i++) {\n    if (!rows[i] || !rows[i][0]) continue;\n    var uid = rows[i][0].toString();\n    var status = (rows[i][4] || 'attivo').toLowerCase().trim();\n    var name = ((rows[i][1] || '') + ' ' + (rows[i][2] || '')).trim();\n    var signals = parseInt(rows[i][3]) || 0;\n    queue.push({userId: uid, status: status, name: name, row: i + 1, signals: signals});\n}\nif (queue.length === 0) {\n    var _retryCount = msg._sheetRetryCount || 0;\n    var _MAX_RETRY = 2;\n    if (_retryCount < _MAX_RETRY) {\n        // Probabile \"cold start\" di Google Apps Script: aspetta e riprova da solo prima di arrenderti\n        node.warn('Riallineamento: lettura Google Sheets vuota, riprovo tra 8 secondi (tentativo ' + (_retryCount + 1) + '/' + _MAX_RETRY + ')...');\n        var retryMsg = {\n            _sheetRetryCount: _retryCount + 1,\n            _dailyTrigger: msg._dailyTrigger,\n            _manualTrigger: msg._manualTrigger,\n            _silentCheck: msg._silentCheck\n        };\n        return [null, null, retryMsg];\n    }\n    node.warn('Riallineamento: nessun utente da controllare dopo ' + _MAX_RETRY + ' tentativi, lettura fallita');\n    flow.set('realign_running', false);\n    flow.set('realign_last_run', {\n        startedAt: Date.now(), finishedAt: Date.now(), total: 0, checked: 0,\n        rikickati: [], assentiCanale: [], errori: 0, ok: false,\n        aborted: true, abortReason: 'Nessun utente trovato nel foglio dopo ' + _MAX_RETRY + ' tentativi (lettura Google Sheets fallita)'\n    });\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '⚠️ *Riallineamento saltato*\\n\\nNessun utente trovato nel foglio dopo ' + _MAX_RETRY + ' tentativi automatici: probabile problema nella lettura di Google Sheets (controlla che lo script risponda correttamente).',\n        options: {parse_mode: 'Markdown'}}}, null];\n}\n\nflow.set('realign_queue', queue);\nflow.set('realign_running', true);\nvar _runId = Date.now() + '_' + Math.floor(Math.random() * 100000);\nfunction _todayRomeStr(){\n    // YYYY-MM-DD nel fuso orario di Roma, usato per sapere se e' gia' partito un report oggi\n    return new Date().toLocaleDateString('en-CA', {timeZone: 'Europe/Rome'});\n}\nvar _todayStr = _todayRomeStr();\nvar _lastPingDate = flow.get('realign_daily_ping_date');\nvar _isFirstDailyRun = !msg._manualTrigger && (_lastPingDate !== _todayStr); // vale per qualsiasi trigger automatico, non solo quello delle 7\nflow.set('realign_stats', {total: queue.length, checked: 0, rikickati: [], rikickatiLines: [], assentiCanale: [], errori: 0, startedAt: Date.now(), silentCheck: !!msg._silentCheck, manualTrigger: !!msg._manualTrigger, forceReport: !msg._silentCheck && _isFirstDailyRun, runId: _runId}); // il controllo orario silenzioso non deve mai forzare la notifica: solo haProblemi puo' farlo\nnode.warn('🔎 Riallineamento avviato: ' + queue.length + ' utenti da controllare (1 al secondo)' + (msg._silentCheck ? ' [controllo orario]' : ''));\n\nif (msg._silentCheck) {\n    // Controllo orario: nessun messaggio di avvio, si parla solo se ci sono problemi\n    return [{_tick: true, _silentCheck: true, _runId: _runId}, null];\n}\n\n// Messaggio immediato di conferma avvio:\n// - trigger manuale -> sempre\n// - trigger giornaliero -> solo la prima volta su questo deploy, poi resta silenzioso\nvar _shouldPing = true;\nif (!msg._manualTrigger) {\n    _shouldPing = _isFirstDailyRun;\n    flow.set('realign_daily_ping_date', _todayStr);\n}\nvar startMsg = null;\nif (_shouldPing) {\n    startMsg = {payload: {chatId: '858001417', type: 'message',\n        content: '🔎 Riallineamento avviato: sto controllando ' + queue.length + ' utenti (circa ' + Math.ceil(queue.length / 60) + ' min).',\n        options: {parse_mode: 'Markdown'}}};\n}\n\n// Avvia il ciclo: manda un primo \"tick\" al nodo che estrae il prossimo utente dalla coda\nreturn [{_tick: true, _runId: _runId}, startMsg];\n",
     "outputs": 3,
     "x": 830,
     "y": 2000,
@@ -4432,7 +4438,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔒 Applica Auto-Pausa",
-    "func": "// Trova la riga dell'utente, lo mette in pausa (colonna E) e, se richiesto,\n// riaccredita 1 segnale (colonna D) per il segnale scalato ma non consegnato.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar userId = msg._autoPauseUserId;\nvar reason = msg._autoPauseReason || '';\nvar doRefund = msg._autoPauseRefund === true;\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nvar rowIdx = -1, curSaldo = 0, curStatus = '';\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0] && rows[i][0].toString() === userId) {\n        rowIdx = i; curSaldo = parseInt(rows[i][3]) || 0; curStatus = (rows[i][4] || '').toLowerCase().trim();\n        break;\n    }\n}\nif (rowIdx === -1) {\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa fallita per `' + userId + '`: utente non trovato nel foglio.',\n        options: {parse_mode: 'Markdown'}}}];\n}\nif (curStatus === 'pausa') return null; // gia' in pausa, niente da fare\n\nvar newSaldo = doRefund ? curSaldo + 1 : curSaldo;\nvar gasCalls = [{url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=pausa', payload: {}}];\nif (doRefund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n\nflow.set('gs_cache', null);\nvar confirmMsg = {payload: {chatId: '858001417', type: 'message',\n    content: '\\u23f8 *Auto-pausa applicata*\\n\\nUtente `' + userId + '` (' + reason + ') messo in pausa' + (doRefund ? ' e riaccreditato di 1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : '') + '.',\n    options: {parse_mode: 'Markdown'}}};\nreturn [gasCalls, confirmMsg];\n",
+    "func": "// Trova la riga dell'utente, lo mette in pausa (colonna E) e, se richiesto,\n// riaccredita 1 segnale (colonna D) per il segnale scalato ma non consegnato.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar userId = msg._autoPauseUserId;\nvar reason = msg._autoPauseReason || '';\nvar doRefund = msg._autoPauseRefund === true;\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nvar rowIdx = -1, curSaldo = 0, curStatus = '';\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0] && rows[i][0].toString() === userId) {\n        rowIdx = i; curSaldo = parseInt(rows[i][3]) || 0; curStatus = (rows[i][4] || '').toLowerCase().trim();\n        break;\n    }\n}\nif (rowIdx === -1) {\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa fallita per `' + userId + '`: utente non trovato nel foglio.',\n        options: {parse_mode: 'Markdown'}}}];\n}\nif (curStatus === 'pausa') return null; // gia' in pausa, niente da fare\n\n// Traccia questa pausa per la verifica di coerenza oraria: se la scrittura\n// su Sheets qui sotto fallisse silenziosamente, il controllo orario la\n// ritentera' e ti avvisera' se resta bloccata.\nvar _pv = flow.get('pause_pending_verify') || [];\n_pv.push({userId: userId, attempts: 0, reason: reason});\nflow.set('pause_pending_verify', _pv);\n\n\nvar newSaldo = doRefund ? curSaldo + 1 : curSaldo;\nvar gasCalls = [{url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=pausa', payload: {}}];\nif (doRefund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n\nflow.set('gs_cache', null);\nvar confirmMsg = {payload: {chatId: '858001417', type: 'message',\n    content: '\\u23f8 *Auto-pausa applicata*\\n\\nUtente `' + userId + '` (' + reason + ') messo in pausa' + (doRefund ? ' e riaccreditato di 1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : '') + '.',\n    options: {parse_mode: 'Markdown'}}};\nreturn [gasCalls, confirmMsg];\n",
     "outputs": 2,
     "noerr": 0,
     "initialize": "",
@@ -4569,5 +4575,120 @@
     "x": 1090,
     "y": 3040,
     "wires": []
+  },
+  {
+    "id": "checkInvioGenericoAutoPause01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🔒 Verifica Esito Invio Generico",
+    "func": "// Controlla l'esito dell'invio generico (\"Invia Messaggio\").\n// Se l'utente ha bloccato il bot, lo mette in pausa automaticamente\n// cosi' non riceve piu' tentativi di invio nei broadcast/menu successivi.\nvar errStr = (msg.error || '').toString();\nvar chatId = (msg.payload && msg.payload.chatId) ? msg.payload.chatId.toString() : null;\n\nif (errStr.indexOf('blocked by the user') !== -1 && chatId) {\n    node.warn('\\ud83d\\udd12 Auto-pausa (invio generico): utente ' + chatId + ' ha bloccato il bot');\n    return {\n        url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec' + '?action=read',\n        _autoPauseUserId: chatId,\n        _autoPauseReason: 'ha bloccato il bot',\n        _autoPauseRefund: false\n    };\n}\nreturn null;\n",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "x": 2450,
+    "y": 460,
+    "wires": [
+      [
+        "autoPauseReadHttp01"
+      ]
+    ]
+  },
+  {
+    "id": "checkSendPromoPhotoAutoPause01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🔒 Verifica Esito Promo Foto",
+    "func": "// Controlla l'esito dell'invio della foto promo (\"Send Promo Photo\").\n// Se l'utente ha bloccato il bot, lo mette in pausa automaticamente.\nvar res = msg.payload;\nvar chatId = msg._promoChatId ? msg._promoChatId.toString() : null;\n\nif (res && res.ok === false) {\n    var descr = res.description || '';\n    node.warn('\\u274c PROMO FOTO FALLITA per utente ' + chatId + ': ' + descr);\n    var isBlocked = descr.indexOf('blocked by the user') !== -1;\n    if (isBlocked && chatId) {\n        return {\n            url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec' + '?action=read',\n            _autoPauseUserId: chatId,\n            _autoPauseReason: 'ha bloccato il bot (promo)',\n            _autoPauseRefund: false\n        };\n    }\n}\nreturn null;\n",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "x": 1520,
+    "y": 2060,
+    "wires": [
+      [
+        "autoPauseReadHttp01"
+      ]
+    ]
+  },
+  {
+    "id": "bridgeChatErrorDebug01",
+    "type": "debug",
+    "z": "3b1ba02266387c24",
+    "name": "🐛 Errore Bridge Chat",
+    "active": true,
+    "tosidebar": true,
+    "console": true,
+    "tostatus": false,
+    "complete": "error",
+    "targetType": "msg",
+    "x": 1000,
+    "y": 460,
+    "wires": []
+  },
+  {
+    "id": "coerPausaTrigger01",
+    "type": "inject",
+    "z": "3b1ba02266387c24",
+    "name": "🕐 Verifica Coerenza Pausa (ogni ora)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "3600",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "150",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 300,
+    "y": 1780,
+    "wires": [
+      [
+        "coerPausaReadSheet01"
+      ]
+    ]
+  },
+  {
+    "id": "coerPausaReadSheet01",
+    "type": "http request",
+    "z": "3b1ba02266387c24",
+    "name": "📊 Leggi Sheets (Coerenza Pausa)",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec?action=read",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "authType": "",
+    "x": 560,
+    "y": 1780,
+    "wires": [
+      [
+        "coerPausaCheck01"
+      ]
+    ]
+  },
+  {
+    "id": "coerPausaCheck01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🔁 Verifica Coerenza Pausa",
+    "func": "var pending = flow.get('pause_pending_verify') || [];\nif (pending.length === 0) {\n    return null; // niente da verificare, resta silenzioso\n}\n\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar stillPending = [];\nvar corrected = [];\nvar confirmed = [];\nvar stuck = [];\nvar writes = [];\nvar GAS = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nfor (var p = 0; p < pending.length; p++) {\n    var entry = pending[p];\n    var rowIdx = -1;\n    for (var i = 1; i < rows.length; i++) {\n        if (rows[i] && rows[i][0] && rows[i][0].toString() === entry.userId) { rowIdx = i; break; }\n    }\n    if (rowIdx === -1) continue; // riga non trovata (rimossa/cambiata): lascia perdere\n\n    var status = (rows[rowIdx][4] || '').toLowerCase().trim();\n    if (status === 'pausa') { confirmed.push(entry.userId); continue; } // tutto ok, esce dalla lista\n\n    var attempts = (entry.attempts || 0) + 1;\n    if (attempts > 3) {\n        stuck.push(entry.userId + ' (risulta \\'' + (status || 'vuoto') + '\\')');\n        continue; // troppi tentativi: segnala e molla la presa, evita loop infinito\n    }\n    writes.push({url: GAS + '?action=update&range=E' + (rowIdx + 1) + '&value=pausa', payload: {}});\n    corrected.push(entry.userId);\n    stillPending.push({userId: entry.userId, attempts: attempts, reason: entry.reason});\n}\n\nflow.set('pause_pending_verify', stillPending);\nflow.set('gs_cache', null); // forza refresh cache dopo la verifica\n\nif (corrected.length === 0 && stuck.length === 0) {\n    return null; // tutto confermato allineato: silenzioso\n}\n\nvar lines = [];\nif (corrected.length) lines.push('\\ud83d\\udd27 Corretti (' + corrected.length + '): ' + corrected.join(', '));\nif (stuck.length) lines.push('\\u26a0\\ufe0f Bloccati dopo 3 tentativi, controlla a mano (' + stuck.length + '): ' + stuck.join(', '));\n\nvar alert = {payload: {chatId: '858001417', type: 'message',\n    content: '\\ud83d\\udd01 *Verifica coerenza pausa*\\n\\n' + lines.join('\\n'),\n    options: {parse_mode: 'Markdown'}}};\n\nreturn [writes.length ? writes : null, alert];\n",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "x": 810,
+    "y": 1780,
+    "wires": [
+      [
+        "1eeab8b2bba3b84c"
+      ],
+      [
+        "f5e6d7c8b9a01234"
+      ]
+    ]
   }
 ]
