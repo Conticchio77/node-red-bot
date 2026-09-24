@@ -4166,7 +4166,7 @@
         "f5e6d7c8b9a01234"
       ],
       [
-        "autoPauseReadHttp01"
+        "pauseGate01"
       ]
     ]
   },
@@ -4188,7 +4188,7 @@
         "f5e6d7c8b9a01234"
       ],
       [
-        "autoPauseReadHttp01"
+        "pauseGate01"
       ]
     ]
   },
@@ -4441,7 +4441,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔒 Applica Auto-Pausa",
-    "func": "// Trova la riga dell'utente, lo mette in pausa (colonna E) e, se richiesto,\n// riaccredita 1 segnale (colonna D) per il segnale scalato ma non consegnato.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar userId = msg._autoPauseUserId;\nvar reason = msg._autoPauseReason || '';\nvar doRefund = msg._autoPauseRefund === true;\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nvar rowIdx = -1, curSaldo = 0, curStatus = '';\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0] && rows[i][0].toString() === userId) {\n        rowIdx = i; curSaldo = parseInt(rows[i][3]) || 0; curStatus = (rows[i][4] || '').toLowerCase().trim();\n        break;\n    }\n}\nif (rowIdx === -1) {\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa fallita per `' + userId + '`: utente non trovato nel foglio.',\n        options: {parse_mode: 'Markdown'}}}];\n}\nif (curStatus === 'pausa') return null; // gia' in pausa, niente da fare\n\n// Traccia questa pausa per la verifica di coerenza oraria: se la scrittura\n// su Sheets qui sotto fallisse silenziosamente, il controllo orario la\n// ritentera' e ti avvisera' se resta bloccata.\nvar _pv = flow.get('pause_pending_verify') || [];\n_pv.push({userId: userId, attempts: 0, reason: reason, expectedStatus: 'pausa'});\nflow.set('pause_pending_verify', _pv);\n\n\nvar newSaldo = doRefund ? curSaldo + 1 : curSaldo;\nvar gasCalls = [{url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=pausa', payload: {}}];\nif (doRefund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n\nflow.set('gs_cache', null);\nvar confirmMsg = {payload: {chatId: '858001417', type: 'message',\n    content: '\\u23f8 *Auto-pausa applicata*\\n\\nUtente `' + userId + '` (' + reason + ') messo in pausa' + (doRefund ? ' e riaccreditato di 1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : '') + '.',\n    options: {parse_mode: 'Markdown'}}};\nreturn [gasCalls, confirmMsg];\n",
+    "func": "// Trova la riga dell'utente, lo mette in pausa (colonna E) e, se richiesto,\n// riaccredita 1 segnale (colonna D) per il segnale scalato ma non consegnato.\n// Le notifiche non partono una per una: si accodano e vengono mandate come\n// un unico riepilogo dopo un breve periodo di silenzio (vedi in fondo),\n// cosi' un picco di utenti bloccati tutti insieme (es. un broadcast, o il\n// riallineamento) produce un solo messaggio invece di una raffica.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar userId = msg._autoPauseUserId;\nvar reason = msg._autoPauseReason || '';\nvar doRefund = msg._autoPauseRefund === true;\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nfunction releaseLock() {\n    var inflight = flow.get('pause_inflight') || {};\n    delete inflight[userId];\n    flow.set('pause_inflight', inflight);\n}\n\nfunction queueDigest(line) {\n    var buf = flow.get('pause_notify_buffer') || [];\n    buf.push(line);\n    flow.set('pause_notify_buffer', buf);\n\n    var timer = flow.get('pause_notify_timer');\n    if (timer) clearTimeout(timer);\n    timer = setTimeout(function () {\n        var list = flow.get('pause_notify_buffer') || [];\n        flow.set('pause_notify_buffer', []);\n        flow.set('pause_notify_timer', null);\n        if (list.length === 0) return;\n        var content = list.length === 1\n            ? ('\\u23f8 *Auto-pausa applicata*\\n\\n' + list[0])\n            : ('\\u23f8 *Auto-pausa applicata (' + list.length + ' utenti)*\\n\\n' + list.join('\\n'));\n        node.send({payload: {chatId: '858001417', type: 'message',\n            content: content, options: {parse_mode: 'Markdown'}}});\n    }, 8000); // 8s di silenzio prima di mandare il riepilogo: assorbe i picchi\n    flow.set('pause_notify_timer', timer);\n}\n\nvar rowIdx = -1, curSaldo = 0, curStatus = '';\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0] && rows[i][0].toString() === userId) {\n        rowIdx = i; curSaldo = parseInt(rows[i][3]) || 0; curStatus = (rows[i][4] || '').toLowerCase().trim();\n        break;\n    }\n}\nif (rowIdx === -1) {\n    releaseLock();\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa fallita per `' + userId + '`: utente non trovato nel foglio.',\n        options: {parse_mode: 'Markdown'}}}];\n}\nif (curStatus === 'pausa') { releaseLock(); return null; } // gia' in pausa, niente da fare\n\n// Traccia questa pausa per la verifica di coerenza oraria: se la scrittura\n// su Sheets qui sotto fallisse silenziosamente, il controllo orario la\n// ritentera' e ti avvisera' se resta bloccata.\nvar _pv = flow.get('pause_pending_verify') || [];\n_pv.push({userId: userId, attempts: 0, reason: reason, expectedStatus: 'pausa'});\nflow.set('pause_pending_verify', _pv);\n\nvar newSaldo = doRefund ? curSaldo + 1 : curSaldo;\nvar gasCalls = [{url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=pausa', payload: {}}];\nif (doRefund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n\nflow.set('gs_cache', null);\nreleaseLock();\nqueueDigest('Utente `' + userId + '` (' + reason + ')' + (doRefund ? ' \\u2014 +1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : ''));\n\nreturn [gasCalls, null];\n",
     "outputs": 2,
     "noerr": 0,
     "initialize": "",
@@ -4592,7 +4592,7 @@
     "y": 460,
     "wires": [
       [
-        "autoPauseReadHttp01"
+        "pauseGate01"
       ]
     ]
   },
@@ -4609,7 +4609,7 @@
     "y": 2060,
     "wires": [
       [
-        "autoPauseReadHttp01"
+        "pauseGate01"
       ]
     ]
   },
@@ -4691,6 +4691,25 @@
       ],
       [
         "f5e6d7c8b9a01234"
+      ]
+    ]
+  },
+  {
+    "id": "pauseGate01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🚦 Gate Auto-Pausa (anti-duplicati)",
+    "func": "// Con piu' punti che possono rilevare un blocco per lo stesso utente\n// quasi in contemporanea (segnale VIP, relay, promo foto, invio generico),\n// senza questo gate ognuno partirebbe per conto suo con la propria lettura\n// del foglio: entrambi vedrebbero ancora \"attivo\" e produrrebbero due\n// scritture + due notifiche duplicate per la stessa pausa.\n// Qui si accoda solo il primo tentativo per ogni utente; gli altri, finche'\n// quello e' ancora in corso, vengono scartati.\nvar userId = msg._autoPauseUserId;\nif (!userId) return null;\n\nvar inflight = flow.get('pause_inflight') || {};\nvar now = Date.now();\nObject.keys(inflight).forEach(function (k) {\n    if (now - inflight[k] > 120000) delete inflight[k]; // pulizia di sicurezza, max 2 min\n});\n\nif (inflight[userId]) {\n    node.warn('\\u23ed\\ufe0f Auto-pausa gia\\' in corso per ' + userId + ', scarto il duplicato.');\n    return null;\n}\ninflight[userId] = now;\nflow.set('pause_inflight', inflight);\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2350,
+    "y": 1580,
+    "wires": [
+      [
+        "autoPauseReadHttp01"
       ]
     ]
   }
