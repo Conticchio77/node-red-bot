@@ -4742,7 +4742,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔍 Correggi Pausa=0 Segnali",
-    "func": "var rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar GAS = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\nvar writes = [];\nvar fixed = [];\n\nfor (var i = 1; i < rows.length; i++) {\n    var row = rows[i];\n    if (!row || !row[0]) continue;\n    var status = (row[4] || '').toLowerCase().trim();\n    var saldo = parseInt(row[3]) || 0;\n    if (status === 'pausa' && saldo <= 0) {\n        var userId = row[0].toString();\n        var fullName = ((row[1] || '') + ' ' + (row[2] || '')).trim();\n        writes.push({url: GAS + '?action=update&range=E' + (i + 1) + '&value=scaduto', payload: {}});\n        fixed.push(userId + (fullName ? ' (' + fullName + ')' : ''));\n    }\n}\n\nflow.set('gs_cache', null);\n\nvar reportMsg = {payload: {chatId: '858001417', type: 'message',\n    content: fixed.length\n        ? ('🔍 *Correzione pausa=0 completata*\\n\\n🔧 Corretti a \\'scaduto\\' (' + fixed.length + '): ' + fixed.join(', '))\n        : '🔍 *Correzione pausa=0 completata*\\n\\n✅ Nessun utente da correggere.',\n    options: {parse_mode: 'Markdown'}}};\n\nreturn [writes.length ? writes : null, reportMsg];\n",
+    "func": "var rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar GAS = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\nvar writes = [];\nvar fixed = [];\n\nfor (var i = 1; i < rows.length; i++) {\n    var row = rows[i];\n    if (!row || !row[0]) continue;\n    var status = (row[4] || '').toLowerCase().trim();\n    var saldo = parseInt(row[3]) || 0;\n    if (status === 'pausa' && saldo <= 0) {\n        var userId = row[0].toString();\n        var fullName = ((row[1] || '') + ' ' + (row[2] || '')).trim();\n        writes.push({url: GAS + '?action=update&range=E' + (i + 1) + '&value=scaduto', payload: {}});\n        fixed.push(userId + (fullName ? ' (' + fullName + ')' : ''));\n    }\n}\n\nflow.set('gs_cache', null);\n\nvar isManual = !!msg._manualTrigger;\nif (fixed.length === 0) {\n    if (!isManual) return null; // automatico e niente da correggere: resta silenzioso\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '🔍 *Correzione pausa=0 completata*\\n\\n✅ Nessun utente da correggere.',\n        options: {parse_mode: 'Markdown'}}}];\n}\n\nvar reportMsg = {payload: {chatId: '858001417', type: 'message',\n    content: '🔍 *Correzione pausa=0 completata*\\n\\n🔧 Corretti a \\'scaduto\\' (' + fixed.length + '): ' + fixed.join(', '),\n    options: {parse_mode: 'Markdown'}}};\n\nreturn [writes, reportMsg];\n",
     "outputs": 2,
     "timeout": 0,
     "noerr": 0,
@@ -4754,6 +4754,31 @@
       ],
       [
         "f5e6d7c8b9a01234"
+      ]
+    ]
+  },
+  {
+    "id": "fixZeroTrigger01",
+    "type": "inject",
+    "z": "3b1ba02266387c24",
+    "name": "🕗 Correggi Pausa=0 (2 volte/giorno)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "0 8,20 * * *",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 330,
+    "y": 1900,
+    "wires": [
+      [
+        "fixZeroReadSheet01"
       ]
     ]
   }
