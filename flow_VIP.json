@@ -2101,12 +2101,12 @@
     "id": "0de5d988475f3d91",
     "type": "debug",
     "z": "3b1ba02266387c24",
-    "name": "🐛 Errori Telegram (msg completo su console)",
+    "name": "🐛 Errori Telegram (solo messaggio)",
     "active": true,
     "tosidebar": true,
     "console": true,
     "tostatus": false,
-    "complete": "error",
+    "complete": "error.message",
     "targetType": "msg",
     "x": 2300,
     "y": 360,
@@ -4444,7 +4444,7 @@
     "type": "function",
     "z": "3b1ba02266387c24",
     "name": "🔒 Applica Auto-Pausa",
-    "func": "// Trova la riga dell'utente, lo mette in pausa (colonna E) e, se richiesto,\n// riaccredita 1 segnale (colonna D) per il segnale scalato ma non consegnato.\n// Le notifiche non partono una per una: si accodano e vengono mandate come\n// un unico riepilogo dopo un breve periodo di silenzio (vedi in fondo),\n// cosi' un picco di utenti bloccati tutti insieme (es. un broadcast, o il\n// riallineamento) produce un solo messaggio invece di una raffica.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar userId = msg._autoPauseUserId;\nvar reason = msg._autoPauseReason || '';\nvar doRefund = msg._autoPauseRefund === true;\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nfunction releaseLock() {\n    var inflight = flow.get('pause_inflight') || {};\n    delete inflight[userId];\n    flow.set('pause_inflight', inflight);\n}\n\nfunction queueDigest(line) {\n    var buf = flow.get('pause_notify_buffer') || [];\n    buf.push(line);\n    flow.set('pause_notify_buffer', buf);\n\n    var timer = flow.get('pause_notify_timer');\n    if (timer) clearTimeout(timer);\n    timer = setTimeout(function () {\n        var list = flow.get('pause_notify_buffer') || [];\n        flow.set('pause_notify_buffer', []);\n        flow.set('pause_notify_timer', null);\n        if (list.length === 0) return;\n        var content = list.length === 1\n            ? ('\\ud83d\\udd04 *Aggiornamento stato automatico*\\n\\n' + list[0])\n            : ('\\ud83d\\udd04 *Aggiornamento stato automatico (' + list.length + ' utenti)*\\n\\n' + list.join('\\n'));\n        node.send({payload: {chatId: '858001417', type: 'message',\n            content: content, options: {parse_mode: 'Markdown'}}});\n    }, 8000); // 8s di silenzio prima di mandare il riepilogo: assorbe i picchi\n    flow.set('pause_notify_timer', timer);\n}\n\nvar rowIdx = -1, curSaldo = 0, curStatus = '';\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0] && rows[i][0].toString() === userId) {\n        rowIdx = i; curSaldo = parseInt(rows[i][3]) || 0; curStatus = (rows[i][4] || '').toLowerCase().trim();\n        break;\n    }\n}\nif (rowIdx === -1) {\n    releaseLock();\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa fallita per `' + userId + '`: utente non trovato nel foglio.',\n        options: {parse_mode: 'Markdown'}}}];\n}\nif (curStatus === 'pausa' || curStatus === 'scaduto') { releaseLock(); return null; } // gia' pausa/scaduto, niente da fare\n\nvar newSaldo = doRefund ? curSaldo + 1 : curSaldo;\n// Se il saldo (post riaccredito) e' 0, l'utente va segnato 'scaduto' e non 'pausa':\n// altrimenti un blocco sull'ultimo segnale restava erroneamente 'pausa' invece che 'scaduto'.\nvar targetStatus = newSaldo <= 0 ? 'scaduto' : 'pausa';\n\n// Traccia questo aggiornamento per la verifica di coerenza oraria: se la scrittura\n// su Sheets qui sotto fallisse silenziosamente, il controllo orario la\n// ritentera' e ti avvisera' se resta bloccata.\nvar _pv = flow.get('pause_pending_verify') || [];\n_pv.push({userId: userId, attempts: 0, reason: reason, expectedStatus: targetStatus});\nflow.set('pause_pending_verify', _pv);\n\nvar gasCalls = [{url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=' + targetStatus, payload: {}}];\nif (doRefund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n\nflow.set('gs_cache', null);\nreleaseLock();\nqueueDigest('Utente `' + userId + '` (' + reason + ') \\u2192 *' + targetStatus + '*' + (doRefund ? ' \\u2014 +1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : ''));\n\nreturn [gasCalls, null];\n",
+    "func": "// Riceve UNA lettura del foglio per un gruppo (batch) di utenti bloccati: per ognuno\n// trova la riga, lo mette in pausa (colonna E) e, se richiesto, riaccredita\n// 1 segnale (colonna D) per il segnale scalato ma non consegnato.\n// Le notifiche non partono una per una: si accodano e vengono mandate come\n// un unico riepilogo dopo un breve periodo di silenzio (vedi in fondo),\n// cosi' un picco di utenti bloccati tutti insieme (es. un broadcast, o il\n// riallineamento) produce un solo messaggio invece di una raffica.\nvar rows = (msg.payload && msg.payload.values) ? msg.payload.values : [];\nvar batch = msg._autoPauseBatch || [];\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\n\nfunction releaseLocks() {\n    var inflight = flow.get('pause_inflight') || {};\n    batch.forEach(function (e) { delete inflight[e.userId]; });\n    flow.set('pause_inflight', inflight);\n}\n\nfunction scheduleFlush() {\n    var timer = flow.get('pause_notify_timer');\n    if (timer) clearTimeout(timer);\n    timer = setTimeout(function () {\n        var list = flow.get('pause_notify_buffer') || [];\n        var nf = flow.get('pause_notfound_buffer') || [];\n        flow.set('pause_notify_buffer', []);\n        flow.set('pause_notfound_buffer', []);\n        flow.set('pause_notify_timer', null);\n        if (list.length === 0 && nf.length === 0) return;\n        var parts = [];\n        if (list.length > 0) {\n            var head = list.length === 1\n                ? '\\ud83d\\udd04 *Aggiornamento stato automatico*'\n                : '\\ud83d\\udd04 *Aggiornamento stato automatico (' + list.length + ' utenti)*';\n            parts.push(head + '\\n\\n' + list.slice(0, 30).join('\\n') + (list.length > 30 ? '\\n... e altri ' + (list.length - 30) : ''));\n        }\n        if (nf.length > 0) {\n            // Bloccano il bot ma non sono nel foglio abbonati (es. utenti free/start): niente da mettere in pausa\n            parts.push('\\u2139\\ufe0f ' + nf.length + ' ' + (nf.length === 1 ? 'utente ha' : 'utenti hanno') +\n                ' bloccato il bot ma ' + (nf.length === 1 ? 'non \\u00e8' : 'non sono') + ' nel foglio (nessuna pausa necessaria)' +\n                (nf.length <= 10 ? ':\\n' + nf.map(function (u) { return '`' + u + '`'; }).join(', ') : '.'));\n        }\n        // Uscita 2 = Telegram (l'uscita 1 va ai Sheets): prima il riepilogo finiva sull'uscita sbagliata\n        node.send([null, {payload: {chatId: '858001417', type: 'message',\n            content: parts.join('\\n\\n'), options: {parse_mode: 'Markdown'}}}]);\n    }, 8000); // 8s di silenzio prima di mandare il riepilogo: assorbe i picchi\n    flow.set('pause_notify_timer', timer);\n}\n\nfunction queueDigest(line) {\n    var buf = flow.get('pause_notify_buffer') || [];\n    buf.push(line);\n    flow.set('pause_notify_buffer', buf);\n    scheduleFlush();\n}\n\nfunction queueNotFound(id) {\n    var buf = flow.get('pause_notfound_buffer') || [];\n    if (buf.indexOf(id) === -1) buf.push(id);\n    flow.set('pause_notfound_buffer', buf);\n    scheduleFlush();\n}\n\nif (batch.length === 0) return null;\n\n// Lettura del foglio fallita (nessuna riga): un solo avviso per tutto il gruppo\nif (rows.length === 0) {\n    releaseLocks();\n    var ids = batch.map(function (e) { return '`' + e.userId + '`'; });\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f Auto-pausa: lettura del foglio fallita, ' + batch.length + ' utent' + (batch.length === 1 ? 'e' : 'i') +\n            ' non aggiornat' + (batch.length === 1 ? 'o' : 'i') + (batch.length <= 10 ? ':\\n' + ids.join(', ') : '.'),\n        options: {parse_mode: 'Markdown'}}}];\n}\n\n// Indice riga per utente (una sola scansione del foglio)\nvar index = {};\nfor (var i = 1; i < rows.length; i++) {\n    if (rows[i] && rows[i][0]) index[rows[i][0].toString()] = i;\n}\n\nvar gasCalls = [];\nvar pv = flow.get('pause_pending_verify') || [];\nbatch.forEach(function (e) {\n    var rowIdx = index[e.userId];\n    if (rowIdx === undefined) { queueNotFound(e.userId); return; } // non e' nel foglio: niente da mettere in pausa\n    var curSaldo = parseInt(rows[rowIdx][3]) || 0;\n    var curStatus = (rows[rowIdx][4] || '').toLowerCase().trim();\n    if (curStatus === 'pausa' || curStatus === 'scaduto') return; // gia' pausa/scaduto, niente da fare\n\n    var newSaldo = e.refund ? curSaldo + 1 : curSaldo;\n    // Se il saldo (post riaccredito) e' 0, l'utente va segnato 'scaduto' e non 'pausa'\n    var targetStatus = newSaldo <= 0 ? 'scaduto' : 'pausa';\n\n    // Traccia per la verifica di coerenza oraria (ritenta se la scrittura su Sheets fallisce)\n    pv.push({userId: e.userId, attempts: 0, reason: e.reason, expectedStatus: targetStatus});\n\n    gasCalls.push({url: BASE + '?action=update&range=E' + (rowIdx + 1) + '&value=' + targetStatus, payload: {}});\n    if (e.refund) gasCalls.push({url: BASE + '?action=update&range=D' + (rowIdx + 1) + '&value=' + newSaldo, payload: {}});\n    queueDigest('Utente `' + e.userId + '` (' + e.reason + ') \\u2192 *' + targetStatus + '*' + (e.refund ? ' \\u2014 +1 segnale (saldo: ' + curSaldo + ' \\u2192 ' + newSaldo + ')' : ''));\n});\nflow.set('pause_pending_verify', pv);\nflow.set('gs_cache', null);\nreleaseLocks();\n\nreturn [gasCalls.length ? gasCalls : null, null];\n",
     "outputs": 2,
     "noerr": 0,
     "initialize": "",
@@ -4620,12 +4620,12 @@
     "id": "bridgeChatErrorDebug01",
     "type": "debug",
     "z": "3b1ba02266387c24",
-    "name": "🐛 Errore Bridge Chat",
+    "name": "🐛 Errore Bridge Chat (solo messaggio)",
     "active": true,
     "tosidebar": true,
     "console": true,
     "tostatus": false,
-    "complete": "error",
+    "complete": "error.message",
     "targetType": "msg",
     "x": 1000,
     "y": 460,
@@ -4701,8 +4701,8 @@
     "id": "pauseGate01",
     "type": "function",
     "z": "3b1ba02266387c24",
-    "name": "🚦 Gate Auto-Pausa (anti-duplicati)",
-    "func": "// Con piu' punti che possono rilevare un blocco per lo stesso utente\n// quasi in contemporanea (segnale VIP, relay, promo foto, invio generico),\n// senza questo gate ognuno partirebbe per conto suo con la propria lettura\n// del foglio: entrambi vedrebbero ancora \"attivo\" e produrrebbero due\n// scritture + due notifiche duplicate per la stessa pausa.\n// Qui si accoda solo il primo tentativo per ogni utente; gli altri, finche'\n// quello e' ancora in corso, vengono scartati.\nvar userId = msg._autoPauseUserId;\nif (!userId) return null;\n\nvar inflight = flow.get('pause_inflight') || {};\nvar now = Date.now();\nObject.keys(inflight).forEach(function (k) {\n    if (now - inflight[k] > 120000) delete inflight[k]; // pulizia di sicurezza, max 2 min\n});\n\nif (inflight[userId]) {\n    node.warn('\\u23ed\\ufe0f Auto-pausa gia\\' in corso per ' + userId + ', scarto il duplicato.');\n    return null;\n}\ninflight[userId] = now;\nflow.set('pause_inflight', inflight);\nreturn msg;\n",
+    "name": "🚦 Gate Auto-Pausa (batch + anti-duplicati)",
+    "func": "// Gate Auto-Pausa con RACCOLTA A BATCH.\n// Piu' punti possono rilevare un utente che ha bloccato il bot (segnale VIP,\n// relay, promo foto, invio generico). Invece di leggere il foglio una volta\n// per ogni utente, qui si raccolgono gli utenti per 3 secondi e si fa UNA sola\n// lettura fresca del foglio per tutto il gruppo (poi ci pensa \"Applica Auto-Pausa\").\n// - Lo stesso utente non entra due volte (anti-duplicati); se una delle\n//   segnalazioni chiede il riaccredito, il riaccredito resta attivo.\n// - Ogni utente ha un lock (pause_inflight) finche' \"Applica\" non ha finito.\nvar BASE = 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec';\nvar WINDOW_MS = 3000;\nvar userId = msg._autoPauseUserId;\nif (!userId) return null;\nuserId = userId.toString();\n\nvar inflight = flow.get('pause_inflight') || {};\nvar now = Date.now();\nObject.keys(inflight).forEach(function (k) {\n    if (now - inflight[k] > 120000) delete inflight[k]; // pulizia di sicurezza, max 2 min\n});\n\nvar batch = flow.get('pause_batch') || {};\nif (batch[userId]) {\n    // gia' in coda in questo batch: unisco (il riaccredito vince)\n    if (msg._autoPauseRefund === true) batch[userId].refund = true;\n    flow.set('pause_batch', batch);\n    return null;\n}\nif (inflight[userId]) {\n    node.warn('\\u23ed\\ufe0f Auto-pausa gia\\' in corso per ' + userId + ', scarto il duplicato.');\n    return null;\n}\ninflight[userId] = now;\nflow.set('pause_inflight', inflight);\nbatch[userId] = {userId: userId, reason: msg._autoPauseReason || '', refund: msg._autoPauseRefund === true};\nflow.set('pause_batch', batch);\n\nif (!flow.get('pause_batch_timer')) {\n    var timer = setTimeout(function () {\n        var b = flow.get('pause_batch') || {};\n        flow.set('pause_batch', {});\n        flow.set('pause_batch_timer', null);\n        var list = Object.keys(b).map(function (k) { return b[k]; });\n        if (list.length === 0) return;\n        node.send({url: BASE + '?action=read', _autoPauseBatch: list});\n    }, WINDOW_MS);\n    flow.set('pause_batch_timer', timer);\n}\nreturn null;\n",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
@@ -4779,6 +4779,51 @@
     "wires": [
       [
         "fixZeroReadSheet01"
+      ]
+    ]
+  },
+  {
+    "id": "testAutoPauseFn01",
+    "type": "function",
+    "z": "3b1ba02266387c24",
+    "name": "🧪 TEST Auto-Pausa: 40 utenti finti",
+    "func": "// TEST AUTO-PAUSA: simula un picco di utenti che bloccano il bot.\n// 40 ID FINTI (inesistenti nel foglio) + 5 duplicati per provare l'anti-duplicati.\n// Non scrive nulla sul foglio e non manda messaggi agli utenti.\n// Atteso: 40 letture del foglio -> 1 sola lettura, e UN solo messaggio admin\n// \"40 utenti hanno bloccato il bot ma non sono nel foglio\".\nvar out = [];\nfor (var i = 0; i < 40; i++) {\n    out.push({_autoPauseUserId: '9000000' + (i < 10 ? '0' + i : i), _autoPauseReason: 'test', _autoPauseRefund: false});\n}\nfor (var j = 0; j < 5; j++) {\n    out.push({_autoPauseUserId: '900000000', _autoPauseReason: 'test', _autoPauseRefund: false});\n}\nreturn [out];\n",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2090,
+    "y": 1640,
+    "wires": [
+      [
+        "pauseGate01"
+      ]
+    ]
+  },
+  {
+    "id": "testAutoPauseInj01",
+    "type": "inject",
+    "z": "3b1ba02266387c24",
+    "name": "🧪 TEST Auto-Pausa (clic)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 1870,
+    "y": 1640,
+    "wires": [
+      [
+        "testAutoPauseFn01"
       ]
     ]
   }
