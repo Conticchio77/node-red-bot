@@ -4186,8 +4186,8 @@
         "type": "function",
         "z": "3b1ba02266387c24",
         "name": "🔍 Verifica Esito Inoltro VIP",
-        "func": "// Controlla l'esito dell'inoltro privato del segnale VIP (copyMessage).\n// Su fallimento: avvisa l'admin e, se e' un blocco definitivo (Forbidden: bot\n// bloccato) o il 3 fallimento di fila per lo stesso utente, lo mette in pausa\n// in automatico e riaccredita il segnale scalato ma mai consegnato.\n// Su successo: registra il destinatario nel log usato dal sistema di rimborso\n// automatico (serie di segnali persi consecutivi).\nvar res = msg.payload;\nvar userId = msg._forwardUserId || '?';\nvar messageId = msg._forwardMessageId || null;\n\nif (res && res.ok === false) {\n    var descr = res.description || '';\n    node.warn('\\u274c INOLTRO SEGNALE VIP FALLITO per utente ' + userId + ': ' + (descr || JSON.stringify(res)));\n\n    var isBlocked = descr.indexOf('blocked by the user') !== -1;\n    var failCounts = flow.get('vip_forward_fail_counts') || {};\n    if (!isBlocked) failCounts[userId] = (failCounts[userId] || 0) + 1;\n    var shouldPause = isBlocked || (failCounts[userId] || 0) >= 3;\n    if (shouldPause) delete failCounts[userId];\n    flow.set('vip_forward_fail_counts', failCounts);\n\n    var alertMsg = {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f *Inoltro segnale VIP fallito*\\n\\nUtente: `' + userId + '`\\nErrore Telegram: ' + (descr || 'sconosciuto') + '\\n\\nIl saldo \\u00e8 stato comunque scalato: controlla se l\\'utente ha bloccato il bot o serve un aggiustamento manuale.' + (shouldPause ? '\\n\\n\\u23f8 Metto in pausa automaticamente e riaccredito il segnale...' : ''),\n        options: {parse_mode: 'Markdown'}}};\n\n    var pauseReq = shouldPause ? {\n        url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec' + '?action=read',\n        _autoPauseUserId: userId,\n        _autoPauseReason: isBlocked ? 'ha bloccato il bot' : '3 invii falliti di fila',\n        _autoPauseRefund: true\n    } : null;\n\n    return [alertMsg, pauseReq];\n}\n\n// Successo: registra il destinatario per il sistema di rimborso automatico\nif (messageId) {\n    var log = global.get('vip_recipient_log') || [];\n    var entry = null;\n    for (var i = 0; i < log.length; i++) { if (log[i].messageId === messageId) { entry = log[i]; break; } }\n    if (!entry) { entry = {messageId: messageId, ts: Date.now(), userIds: []}; log.push(entry); }\n    if (entry.userIds.indexOf(userId) === -1) entry.userIds.push(userId);\n    while (log.length > 20) log.shift();\n    global.set('vip_recipient_log', log);\n\n    var fc = flow.get('vip_forward_fail_counts') || {};\n    if (fc[userId]) { delete fc[userId]; flow.set('vip_forward_fail_counts', fc); }\n}\nreturn null;\n",
-        "outputs": 2,
+        "func": "// Controlla l'esito dell'inoltro privato del segnale VIP (copyMessage).\n// Su fallimento: avvisa l'admin e, se e' un blocco definitivo (Forbidden: bot\n// bloccato) o il 3 fallimento di fila per lo stesso utente, lo mette in pausa\n// in automatico e riaccredita il segnale scalato ma mai consegnato.\n// Su successo: registra il destinatario nel log usato dal sistema di rimborso\n// automatico (serie di segnali persi consecutivi).\nvar res = msg.payload;\nvar userId = msg._forwardUserId || '?';\nvar messageId = msg._forwardMessageId || null;\n\nif (res && res.ok === false) {\n    var descr = res.description || '';\n    node.warn('\\u274c INOLTRO SEGNALE VIP FALLITO per utente ' + userId + ': ' + (descr || JSON.stringify(res)));\n\n    var isBlocked = descr.indexOf('blocked by the user') !== -1;\n    var failCounts = flow.get('vip_forward_fail_counts') || {};\n    if (!isBlocked) failCounts[userId] = (failCounts[userId] || 0) + 1;\n    var shouldPause = isBlocked || (failCounts[userId] || 0) >= 3;\n    if (shouldPause) delete failCounts[userId];\n    flow.set('vip_forward_fail_counts', failCounts);\n\n    var alertMsg = {payload: {chatId: '858001417', type: 'message',\n        content: '\\u26a0\\ufe0f *Inoltro segnale VIP fallito*\\n\\nUtente: `' + userId + '`\\nErrore Telegram: ' + (descr || 'sconosciuto') + '\\n\\nIl saldo \\u00e8 stato comunque scalato: controlla se l\\'utente ha bloccato il bot o serve un aggiustamento manuale.' + (shouldPause ? '\\n\\n\\u23f8 Metto in pausa automaticamente e riaccredito il segnale...' : ''),\n        options: {parse_mode: 'Markdown'}}};\n\n    var pauseReq = shouldPause ? {\n        url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec' + '?action=read',\n        _autoPauseUserId: userId,\n        _autoPauseReason: isBlocked ? 'ha bloccato il bot' : '3 invii falliti di fila',\n        _autoPauseRefund: true\n    } : null;\n\n    return [alertMsg, pauseReq];\n}\n\n// Successo: registra il destinatario per il sistema di rimborso automatico\nif (messageId) {\n    var log = global.get('vip_recipient_log') || [];\n    var entry = null;\n    for (var i = 0; i < log.length; i++) { if (log[i].messageId === messageId) { entry = log[i]; break; } }\n    if (!entry) { entry = {messageId: messageId, ts: Date.now(), userIds: []}; log.push(entry); }\n    if (entry.userIds.indexOf(userId) === -1) entry.userIds.push(userId);\n    while (log.length > 20) log.shift();\n    global.set('vip_recipient_log', log);\n\n    // Salvataggio su Google Sheet (debounce 20s: un solo invio per segnale, dopo l'ultimo destinatario),\n    // cosi' lo storico sopravvive a riavvii e deploy.\n    var _rt = flow.get('rlog_timers') || {};\n    if (_rt[messageId]) clearTimeout(_rt[messageId]);\n    _rt[messageId] = setTimeout(function () {\n        var _lg = global.get('vip_recipient_log') || [];\n        var _e = null;\n        for (var q = 0; q < _lg.length; q++) { if (String(_lg[q].messageId) === String(messageId)) { _e = _lg[q]; break; } }\n        if (!_e) return;\n        node.send([null, null, {\n            url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec?action=rlogSet&m=' + encodeURIComponent(String(messageId)) + '&u=' + encodeURIComponent(_e.userIds.join(',')) + '&t=' + _e.ts\n        }]);\n    }, 20000);\n    flow.set('rlog_timers', _rt);\n\n    var fc = flow.get('vip_forward_fail_counts') || {};\n    if (fc[userId]) { delete fc[userId]; flow.set('vip_forward_fail_counts', fc); }\n}\nreturn null;\n",
+        "outputs": 3,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -4200,6 +4200,9 @@
             ],
             [
                 "pauseGate01"
+            ],
+            [
+                "rlogSaveHttp01"
             ]
         ]
     },
@@ -5328,5 +5331,122 @@
         "x": 1370,
         "y": 3210,
         "wires": []
+    },
+    {
+        "id": "rlogSaveHttp01",
+        "type": "http request",
+        "z": "3b1ba02266387c24",
+        "name": "💾 Salva Storico Destinatari (Sheet)",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 1700,
+        "y": 1500,
+        "wires": [
+            [
+                "rlogSaveCheck01"
+            ]
+        ]
+    },
+    {
+        "id": "rlogSaveCheck01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "✔️ Verifica Salvataggio Storico",
+        "func": "var p = msg.payload;\nif (!p || p.ok !== true) {\n    node.warn('\\u26a0\\ufe0f Salvataggio storico destinatari su Sheet fallito: ' + JSON.stringify(p));\n}\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1990,
+        "y": 1500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "rlogInject01",
+        "type": "inject",
+        "z": "3b1ba02266387c24",
+        "name": "📥 Carica storico destinatari (all'avvio)",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "8",
+        "topic": "",
+        "x": 1200,
+        "y": 1580,
+        "wires": [
+            [
+                "rlogLoadReq01"
+            ]
+        ]
+    },
+    {
+        "id": "rlogLoadReq01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Prepara lettura storico",
+        "func": "return {url: 'https://script.google.com/macros/s/AKfycbyzgymm1zPeO5WED_g_kLBYIXQUcPhI8O6H9BEQGt6oKNFpgpaq1_9d2iqb_qhCzTZmeA/exec?action=rlogRead'};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1470,
+        "y": 1580,
+        "wires": [
+            [
+                "rlogLoadHttp01"
+            ]
+        ]
+    },
+    {
+        "id": "rlogLoadHttp01",
+        "type": "http request",
+        "z": "3b1ba02266387c24",
+        "name": "📥 Leggi Storico Destinatari (Sheet)",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 1730,
+        "y": 1580,
+        "wires": [
+            [
+                "rlogLoad01"
+            ]
+        ]
+    },
+    {
+        "id": "rlogLoad01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Ricostruisci Storico Destinatari",
+        "func": "// Ricostruisce vip_recipient_log dallo Sheet dopo un riavvio/deploy.\n// Non sovrascrive: unisce con quanto gia' presente in memoria.\nvar p = msg.payload;\nif (!p || p.ok !== true || !Array.isArray(p.rows)) {\n    node.warn('\\u26a0\\ufe0f Caricamento storico destinatari fallito: ' + JSON.stringify(p));\n    return null;\n}\nvar log = global.get('vip_recipient_log') || [];\nvar byId = {};\nlog.forEach(function (e) { byId[String(e.messageId)] = e; });\nvar added = 0;\np.rows.forEach(function (r) {\n    var ids = String(r.u || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);\n    var e = byId[String(r.m)];\n    if (!e) {\n        e = {messageId: String(r.m), ts: r.t || Date.now(), userIds: []};\n        log.push(e); byId[String(r.m)] = e; added++;\n    }\n    ids.forEach(function (id) { if (e.userIds.indexOf(id) === -1) e.userIds.push(id); });\n});\nlog.sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });\nwhile (log.length > 20) log.shift();\nglobal.set('vip_recipient_log', log);\nnode.warn('\\ud83d\\udce5 Storico destinatari ricaricato dallo Sheet: ' + added + ' segnali aggiunti (totale ' + log.length + ')');\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2010,
+        "y": 1580,
+        "wires": [
+            []
+        ]
     }
 ]
