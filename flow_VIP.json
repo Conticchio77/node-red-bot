@@ -5604,5 +5604,217 @@
         "x": 820,
         "y": 3600,
         "wires": []
+    },
+    {
+        "id": "wdPollInject01",
+        "type": "inject",
+        "z": "3b1ba02266387c24",
+        "name": "🐕 Controllo ascolto Telegram (ogni 2 min)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 90,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 900,
+        "y": 3750,
+        "wires": [
+            [
+                "wdPollPrep01"
+            ]
+        ]
+    },
+    {
+        "id": "wdPollPrep01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Prepara getWebhookInfo",
+        "func": "// Ogni 2 minuti chiede a Telegram quanti messaggi sono \"in attesa di consegna\" per questo bot.\n// Se il bot ascolta normalmente il numero è sempre 0 (li prende subito).\nmsg.url = 'https://api.telegram.org/bot' + env.get('BOT_TOKEN') + '/getWebhookInfo';\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 3750,
+        "wires": [
+            [
+                "wdPollHttp01"
+            ]
+        ]
+    },
+    {
+        "id": "wdPollHttp01",
+        "type": "http request",
+        "z": "3b1ba02266387c24",
+        "name": "Telegram: messaggi in attesa",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1450,
+        "y": 3750,
+        "wires": [
+            [
+                "wdPollEval01"
+            ]
+        ]
+    },
+    {
+        "id": "wdPollEval01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Bot sordo? (2 controlli di fila)",
+        "func": "// Esce 1 = riavvia i flussi (dopo 3 s)   |   Esce 2 = avviso all'admin\n// Il bot è considerato \"sordo\" solo se, a DUE controlli di fila (circa 2 minuti):\n//   - Telegram ha ancora messaggi in attesa per lui, E\n//   - nel frattempo il bot non ne ha elaborato nemmeno uno.\nvar ADMIN = '858001417';\nvar info = (msg.payload && msg.payload.ok && msg.payload.result) ? msg.payload.result : null;\nif (!info) return [null, null];            // risposta anomala/errore di rete: non decido nulla\n\nfunction avviso(testo) {\n    var rome = new Date(new Date().toLocaleString('en-US', {timeZone: 'Europe/Rome'}));\n    var notte = rome.getHours() < 7;       // di notte l'avviso arriva senza suono\n    return {payload: {chatId: ADMIN, type: 'message', content: testo,\n                      options: {disable_notification: notte}}};\n}\n\nvar now = Date.now();\nvar pending = info.pending_update_count || 0;\nvar lastIn = flow.get('last_incoming_ts') || 0;\nvar prev = flow.get('wd_poll_prev') || {pending: 0, lastIn: 0, t: 0};\nflow.set('wd_poll_prev', {pending: pending, lastIn: lastIn, t: now});\n\nvar fermo = pending > 0 && prev.pending > 0 && lastIn === prev.lastIn;\nif (!fermo) {\n    if (flow.get('wd_poll_alerted')) flow.set('wd_poll_alerted', false);\n    return [null, null];\n}\n\nnode.warn('🐕 Watchdog polling: ' + pending + ' messaggi in attesa su Telegram e nessuno elaborato dal bot');\n\n// Protezione anti-loop: al massimo 1 riavvio ogni 15 minuti e 3 al giorno\nvar storico = (flow.get('wd_poll_restarts') || []).filter(function (t) { return now - t < 24 * 3600 * 1000; });\nvar ultimo = storico.length ? storico[storico.length - 1] : 0;\nif (now - ultimo < 15 * 60 * 1000 || storico.length >= 3) {\n    if (flow.get('wd_poll_alerted')) return [null, null];     // un solo avviso per blocco\n    flow.set('wd_poll_alerted', true);\n    return [null, avviso('🚨 Il bot è ancora fermo (' + pending + ' messaggi in attesa su Telegram) e il riavvio automatico non ha risolto, oppure ne sono già stati fatti troppi. Riavvia da Railway.')];\n}\nstorico.push(now);\nflow.set('wd_poll_restarts', storico);\nreturn [{payload: 'riavvio'},\n        avviso('🔄 Il bot non stava ricevendo messaggi da Telegram (' + pending + ' in attesa). Riavvio i flussi in automatico, ci vogliono pochi secondi.')];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 3750,
+        "wires": [
+            [
+                "wdPollDelay01"
+            ],
+            [
+                "f5e6d7c8b9a01234"
+            ]
+        ]
+    },
+    {
+        "id": "wdPollDelay01",
+        "type": "delay",
+        "z": "3b1ba02266387c24",
+        "name": "3s (lascia partire l'avviso)",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 2010,
+        "y": 3690,
+        "wires": [
+            [
+                "wdGetFlows01"
+            ]
+        ]
+    },
+    {
+        "id": "wdGetFlows01",
+        "type": "http request",
+        "z": "3b1ba02266387c24",
+        "name": "Leggi flussi attuali",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:1880/flows",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 2280,
+        "y": 3690,
+        "wires": [
+            [
+                "wdReloadPrep01"
+            ]
+        ]
+    },
+    {
+        "id": "wdReloadPrep01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Prepara riavvio (reload)",
+        "func": "// msg.payload = elenco dei flussi attuali, appena letto da Node-RED (GET /flows).\n// Lo rimandiamo con \"reload\": riavvia tutti i nodi (compreso l'ascolto Telegram) senza cambiare nulla.\nvar flows = msg.payload;\nif (!Array.isArray(flows) || flows.length < 50) {\n    node.warn('🐕 Watchdog: elenco flussi non valido, riavvio annullato');\n    return [null, {payload: {chatId: '858001417', type: 'message',\n        content: '⚠️ Riavvio automatico annullato (non sono riuscito a leggere i flussi). Riavvia da Railway.'}}];\n}\nreturn [{payload: flows}, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2540,
+        "y": 3690,
+        "wires": [
+            [
+                "wdReload01"
+            ],
+            [
+                "f5e6d7c8b9a01234"
+            ]
+        ]
+    },
+    {
+        "id": "wdReload01",
+        "type": "http request",
+        "z": "3b1ba02266387c24",
+        "name": "Riavvia flussi (reload)",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:1880/flows",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Node-RED-Deployment-Type",
+                "valueType": "other",
+                "valueValue": "reload"
+            }
+        ],
+        "x": 2800,
+        "y": 3690,
+        "wires": [
+            [
+                "wdReloadRes01"
+            ]
+        ]
+    },
+    {
+        "id": "wdReloadRes01",
+        "type": "function",
+        "z": "3b1ba02266387c24",
+        "name": "Esito riavvio",
+        "func": "// Se Node-RED rifiuta la richiesta (es. admin protetto da password) lo diciamo all'admin.\n// Se il riavvio parte davvero, questo nodo può anche non ricevere mai la risposta: è normale.\nvar code = msg.statusCode;\nif (code && code >= 400) {\n    node.warn('🐕 Watchdog: riavvio rifiutato, codice ' + code);\n    return {payload: {chatId: '858001417', type: 'message',\n        content: '⚠️ Riavvio automatico NON riuscito (Node-RED ha risposto ' + code + '). Riavvia da Railway.'}};\n}\nnode.warn('🐕 Watchdog: riavvio flussi eseguito (codice ' + code + ')');\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 3050,
+        "y": 3690,
+        "wires": [
+            [
+                "f5e6d7c8b9a01234"
+            ]
+        ]
     }
 ]
